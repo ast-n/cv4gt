@@ -1,2 +1,2 @@
 # cv4gt
-Computer Vision for tarbage truck driver safety
+Computer Vision for garbage truck driver safety
