@@ -1,3 +1,4 @@
+from __future__ import annotations
 """ IMAGE PROCESSING """
 """ This script should:
     - Take in key frames. 
@@ -7,11 +8,8 @@
     - Send frames off to be GPS tagged.
     - Find bounds of detected hazards."""
 
-class InputQueue():
-    def __init__(self):
-        return NotImplementedError
 
-class Image():
+class InputQueue():
     def __init__(self):
         return NotImplementedError
 
