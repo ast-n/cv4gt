@@ -4,7 +4,6 @@
     - Handle passing data directly to and from AI models.
     - Handle any mid-operation self-improvement or retraining systems."""
 
-from huggingface_hub import hf_hub_download
 from ultralytics import YOLO
 import os
 
@@ -14,44 +13,53 @@ class ModelManager:
         self.object_detection_model = None
         self.model_loaded = False
 
-    def load_object_detection_model(self, model_path="models/YOLOv8-cv4gt-data-11-04_10e.pt"):
+    def get_latest_model(self, models_dir="models"):
+        """
+        Finds most recently modified .pt model in dir
+        """
+
+        if not os.path.exists(models_dir):
+            print(f"Model directory '{models_dir}' not found.")
+            return None
+        
+        pt_files = [os.path.join(models_dir, f) for f in os.listdir(models_dir) if f.endswith("pt")]
+
+        if not pt_files:
+            print("No model files found. Please download models using the 'functions.ipynb' notebook - function 1.")
+
+        # Sort by modified - THIS MIGHT NOT WORK, modification may occur all at once on download, test this brah
+        pt_files.sort(key=os.path.getmtime, reverse=True)
+        return pt_files[0]
+
+    def load_object_detection_model(self, model_path=None):
         """
         Loads a YOLO model from a local path.
         """
+
+        if not model_path:
+            model_path = self.get_latest_model()
+
+        if not model_path or not os.path.exists(model_path):
+            print(f"Model not found at: {model_path}")
+            return False
+        
         try:
-            if model_path and os.path.exists(model_path):
-                self.object_detection_model = YOLO(model_path)
-                self.model_loaded = True
-                print(f"Model loaded from local path: {model_path}")
-                return True
-            else:
-                raise FileNotFoundError(f"Model file not found at: {model_path}")
+            self.object_detection_model = YOLO(model_path)
+            self.model_loaded = True
+            print(f"Model loaded: {model_path}")
+            return True
         except Exception as e:
             print(f"Error loading model: {e}")
             return False
 
-    """   
-    Broken rn 
-    def download_model_from_huggingface(self):
-
-        repo_id = "ast-n/cv4gt"
-        filename = "YOLOv8-cv4gt-bad-dataset_epochs500.pt"
-
-        model_path = hf_hub_download(repo_id=repo_id, filename=filename, local_dir="models")
-        return model_path
-
-    """
-    
     def detect_objects(self, image):
         """
         Runs object detection on an image
         """
         if not self.model_loaded:
-            raise Exception("Model not loaded. Call load_object_detection first")
-        
-        results = self.object_detection_model(image)
-        return results[0]
-    
+            raise Exception("Model not loaded. Call load_object_detection_model() first.")
+        return self.object_detection_model(image)[0]
+
     def get_objects(self, image):
         """
         Returns detected objects and their bounding boxes
@@ -76,7 +84,7 @@ class ModelManager:
 
 model_manager = ModelManager()
 
-def load_object_detection_model(model_path="models/YOLOv8-cv4gt-data-11-04_10e.pt"):
+def load_object_detection_model(model_path=None):
     return model_manager.load_object_detection_model(model_path)
 
 def get_objects(image):
@@ -90,3 +98,4 @@ def get_bounds():
 
 def self_improve():
     return NotImplementedError
+
