@@ -5,17 +5,9 @@ from __future__ import annotations
     - Tag hazard frames with GPS and time then store them.
     - Storage of any other permanent files which the codebase needs access to (config, maybe frontend files, etc.)"""
 
-
-import pyexiv2.convert
-import pyexiv2.lib
-import pyexiv2.reference #Better type hints
-from PIL import Image, ExifTags
+from PIL import Image
 from camera_feed import get_camera_gps
 import datetime
-import exif
-import pyexiv2
-import fractions
-from numbers import Rational
 
 tagged_folder_path = "/data/tagged"
 
@@ -31,37 +23,30 @@ def to_deg(value, loc):
     t1 = (abs_value-deg)*60
     min = int(t1)
     sec = round((t1 - min)* 60,5)
-    print(deg, min, sec, loc_value)
     return (deg, min, sec, loc_value)
 
 
 def tag_and_store(image: Image.Image) -> str:
     
-    filename = store_image(image)
+    GPS_INFO_TAG = 34853
     
     current_gps = get_gps()
     
     lat_deg = to_deg(current_gps[0], ["S", "N"])
     lng_deg = to_deg(current_gps[1], ["W", "E"])
     
-    # No, this code doesn't make sense. Yes, this is the only way it works. I don't even know. It took me 5 hours to make this work correctly.
-    exiv_lat = (0,0,(lat_deg[0],lat_deg[1],lat_deg[2]))
-    exiv_lng = (0,0,(lng_deg[0],lng_deg[1],lng_deg[2]))
+    exiv_lat = (lat_deg[0],lat_deg[1],lat_deg[2])
+    exiv_lng = (lng_deg[0],lng_deg[1],lng_deg[2])
     
-    exiv_image = pyexiv2.Image(filename)
-    exiv_image.read_exif()
+    image_exif = image.getexif()
     
-    exif_dict = {
-        "Exif.GPSInfo.GPSLatitude" : exiv_lat,
-        "Exif.GPSInfo.GPSLatitude" : exiv_lat,
-        "Exif.GPSInfo.GPSLatitudeRef" : lat_deg[3],
-        "Exif.GPSInfo.GPSLongitude" : exiv_lng,
-        "Exif.GPSInfo.GPSLongitudeRef" : lng_deg[3],
-        "Exif.Image.GPSTag" : 654
-    }
+    gps_tags = [1, 2, 3, 4] # latRef, Lat, LongRef, Long
     
-    exiv_image.modify_exif(exif_dict)
-    exiv_image.close()
+    exif_dict = {GPS_INFO_TAG : dict(zip(gps_tags, [lat_deg[3], exiv_lat, lng_deg[3], exiv_lng]))}
+    
+    image_exif.update(exif_dict)
+    
+    filename = store_image(image, image_exif)
     
     return filename
 
@@ -74,10 +59,10 @@ def get_gps() -> tuple:
     else:
         return (0,0) # Decide on some fallback return.
 
-def store_image(image: Image.Image) -> str:
+def store_image(image: Image.Image, img_exif: dict) -> str:
     now = datetime.datetime.now()
     filename = f"data/tagged/{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}.jpg"
-    image.save(filename)
+    image.save(filename, exif=img_exif)
     return filename
 
 def get_image():
