@@ -4,7 +4,7 @@ Computer Vision for garbage truck driver safety
 ### Run the current demo
 ```python
 
-python demo.py
+python src/demo.py
 
 ```
 
