@@ -84,4 +84,4 @@ def process_video(video_path, output_path=None, model_path="models/YOLOv8-cv4gt-
 
 if __name__ == "__main__":
     # Make sure to replace this with the actual video file path
-    process_video("data/input.mp4", output_path="data/output_clip.avi")
+    process_video("data/input.mp4", output_path="data/output_clip.avi", model_path="models/YOLOv8-cv4gt-bad-dataset_epochs500.pt")

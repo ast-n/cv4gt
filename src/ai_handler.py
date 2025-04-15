@@ -90,4 +90,3 @@ def get_bounds():
 
 def self_improve():
     return NotImplementedError
-
