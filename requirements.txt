@@ -1,0 +1,7 @@
+ultralytics>=8.3.108
+opencv-python>=4.11.0
+pillow>=11.0.0
+huggingface_hub>=0.30.0
+pyexiv2>=2.15.0
+roboflow>=1.1.60
+exif>=1.6.1
