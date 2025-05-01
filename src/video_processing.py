@@ -9,6 +9,7 @@ This script should:
     - Handles video output generation and display - again, modulate later!!!!
 """
 
+from collections import defaultdict
 import ai_handler
 import store
 import cv2
@@ -50,7 +51,7 @@ class VideoProcessor:
         Helper function to draw bounding boxes and labels on a frame
 
         """
-
+        
         annotated_frame = frame.copy()
         relevant_objects_found = []
 
@@ -60,6 +61,9 @@ class VideoProcessor:
 
             object_class = det['class']
             confidence = det['confidence']
+            
+            track_id = det['track_id'].int().tolist()[0]
+            centre_x, centre_y = map(float, det['centre'])
 
             relevance = 0
             colour = DEFAULT_COLOUR
@@ -75,7 +79,7 @@ class VideoProcessor:
                 relevant_objects_found.append(det)
 
             # Draw label
-            label = f"{object_class} {confidence:.2f} R:{relevance}"    
+            label = f"[{track_id}] {object_class} {confidence:.2f} R:{relevance}"    
 
             # Draw rectangle
             cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), colour, thickness)
@@ -86,10 +90,19 @@ class VideoProcessor:
             cv2.rectangle(annotated_frame, (x1, text_y - h - 5) , (x1 + w, text_y + 5), colour, -1)
             cv2.putText(annotated_frame, label, (x1, text_y),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), thickness)
+            
+            # Draw tracking line
+            track = self.track_history[track_id]
+            track.append((centre_x, centre_y))
+            if len(track) > 20:
+                track.pop(0)
+            points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
+            cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)
+            
 
         return annotated_frame, relevant_objects_found
 
-    def process_video(self, input_video_path, output_video_path=None, display=True):
+    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True):
         """
 
         Reads video, processes frames, saves and displays
@@ -128,6 +141,7 @@ class VideoProcessor:
                 out = None
 
         # Main video processing loop
+        self.track_history = defaultdict(lambda: [])
         frame_num = 0
         while True:
             ret, frame = cap.read()
@@ -141,14 +155,23 @@ class VideoProcessor:
                 print(f"Processing frame {frame_num}")
 
             # Detect
+            """
             try:
                 detections = ai_handler.get_objects(frame)
             except Exception as e:
                 print(f"Error during detection, on frame: {e}")
                 detections = []
-
+            """
+                
+            # Track
+            try:
+                tracks = ai_handler.get_tracking(frame)
+            except Exception as e:
+                print(f"Error during tracking, on frame: {e}")
+                tracks = []
+            
             # Annotate -> hazard identify, to be implemented
-            annotated_frame, relevant_objects = self.annotate_frame(frame, detections)
+            annotated_frame, relevant_objects = self.annotate_frame(frame, tracks)
 
             # Store frame if highly relevant hazard found
             if relevant_objects:
@@ -158,13 +181,14 @@ class VideoProcessor:
                 if high_relevance_objects:
                     print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
                           f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
-                    try:
-                        img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                        stored_path = store.tag_and_store(img_pil)
-                        print(f"Stored frame with high relevance objects at: {stored_path}")
-                    except Exception as e:
-                        print(f"Warning: Failed to store frame {frame_num}: {e}")
-
+                    if(logging):
+                        try:
+                            img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                            stored_path = store.tag_and_store(img_pil)
+                            print(f"Stored frame with high relevance objects at: {stored_path}")
+                        except Exception as e:
+                            print(f"Warning: Failed to store frame {frame_num}: {e}")
+            
             # Write frames as output
             if out:
                 out.write(annotated_frame)

@@ -11,6 +11,7 @@ def main():
     INPUT_VIDEO = "data/input.mp4"
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
+    ENABLE_LOGGING = False
 
     if not os.path.isfile(INPUT_VIDEO):
         print(f"Input video file not found: {INPUT_VIDEO}")
@@ -24,7 +25,8 @@ def main():
         processor.process_video(
             input_video_path=INPUT_VIDEO,
             output_video_path=OUTPUT_VIDEO,
-            display=ENABLE_DISPLAY
+            display=ENABLE_DISPLAY,
+            logging=ENABLE_LOGGING
         )
 
     except Exception as e:

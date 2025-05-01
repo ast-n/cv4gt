@@ -81,6 +81,43 @@ class ModelManager:
                 'bbox': [x1, y1, x2, y2]
             })
         return detections
+    
+    def run_tracking(self, image):
+        """
+        Runs tracking on an image
+        """
+        if not self.model_loaded:
+            raise Exception("Model not loaded. Call load_object_detection_model() first.")
+        return self.object_detection_model.track(image, persist=True)[0]
+    
+    def track_objects(self, image):
+        """
+        Returns bounding box positions of objects and IDs
+        """
+        
+        results = self.run_tracking(image)
+        
+        tracks = []
+        
+        for box in results.boxes:
+            track_id = box.id.int()
+            class_id = int(box.cls)
+            class_name = results.names[class_id]
+            confidence = float(box.conf)
+            x1, y1, x2, y2, = box.xyxy[0].tolist()
+            centre_x, centre_y, w, h = box.xywh[0].tolist()
+            
+            tracks.append({
+                'class': class_name,
+                'track_id': track_id,
+                'confidence': confidence,
+                'bbox': [x1, y1, x2, y2],
+                'centre': [centre_x, centre_y]
+            })
+        
+        return tracks
+        
+        
 
 model_manager = ModelManager()
 
@@ -89,6 +126,9 @@ def load_object_detection_model(model_path=None):
 
 def get_objects(image):
     return model_manager.get_objects(image)
+
+def get_tracking(image):
+    return model_manager.track_objects(image)
 
 def load_bound_detector():
     return NotImplementedError
