@@ -26,6 +26,7 @@ RELEVANCE_COLORS = {
     1: (255, 255, 0)   # Cyan - Lowest relevance
 }
 DEFAULT_COLOUR = (255, 0, 0) # Blue
+CLASS_IGNORE_LIST = ["sideloader_arm"]
 
 
 class VideoProcessor:
@@ -92,15 +93,48 @@ class VideoProcessor:
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), thickness)
             
             # Draw tracking line
-            track = self.track_history[track_id]
-            track.append((centre_x, centre_y))
-            if len(track) > 20:
-                track.pop(0)
+            track = self.track_history[track_id]['history']
+            print(track, label)
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
             cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)
             
 
         return annotated_frame, relevant_objects_found
+    
+    def update_track_ids(self, detections, frame_num):
+        """
+        Updates tracking history with new frame and cuts any old IDs from the dictionary.
+        """
+        
+        # Update tracking data
+        for det in detections:
+            track_id = det['track_id'].int().tolist()[0]
+            centre_x, centre_y = map(float, det['centre'])
+            object_class = det['class']
+            
+            
+            
+            self.track_history[track_id]['last_frame'] = frame_num
+            track = self.track_history[track_id]['history']
+            
+            track.append((centre_x, centre_y))
+            
+            if object_class in CLASS_IGNORE_LIST and len(track) > 1:
+                track.pop(0)
+            elif len(track) > 20:
+                track.pop(0)
+                
+    
+        # Cut old IDs
+        cut_list = []
+        for tracking_id in self.track_history.keys():
+            if self.track_history[tracking_id]['last_frame'] + 40 < frame_num:
+                cut_list.append(tracking_id)
+                
+        for cut_id in cut_list:
+            self.track_history.pop(cut_id)
+                        
+        
 
     def process_video(self, input_video_path, output_video_path=None, display=True, logging=True):
         """
@@ -141,7 +175,12 @@ class VideoProcessor:
                 out = None
 
         # Main video processing loop
-        self.track_history = defaultdict(lambda: [])
+        self.track_history = defaultdict(lambda: defaultdict(lambda: []))
+        # id: int
+        #     last_frame: int
+        #     history: []
+
+        
         frame_num = 0
         while True:
             ret, frame = cap.read()
@@ -169,6 +208,9 @@ class VideoProcessor:
             except Exception as e:
                 print(f"Error during tracking, on frame: {e}")
                 tracks = []
+                
+            # Update track history
+            self.update_track_ids(tracks, frame_num)
             
             # Annotate -> hazard identify, to be implemented
             annotated_frame, relevant_objects = self.annotate_frame(frame, tracks)
