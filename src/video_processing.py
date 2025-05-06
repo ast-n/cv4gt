@@ -84,12 +84,13 @@ class VideoProcessor:
             
             # Run smoothing
             track = self.track_history[track_id]['history']
-            smoothing_offset = self.get_smoothed_box_pos(track)
-                        
-            x1 += int(smoothing_offset[0])
-            y1 += int(smoothing_offset[1])
-            x2 += int(smoothing_offset[0])
-            y2 += int(smoothing_offset[1])
+            if (smoothing):
+                smoothing_offset = self.get_smoothed_box_pos(track)
+                            
+                x1 += int(smoothing_offset[0])
+                y1 += int(smoothing_offset[1])
+                x2 += int(smoothing_offset[0])
+                y2 += int(smoothing_offset[1])
             
             # Draw rectangle
             cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), colour, thickness)
