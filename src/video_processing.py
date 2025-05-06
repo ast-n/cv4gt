@@ -25,6 +25,7 @@ RELEVANCE_COLORS = {
     2: (0, 255, 0),    # Green
     1: (255, 255, 0)   # Cyan - Lowest relevance
 }
+
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 CLASS_IGNORE_LIST = ["sideloader_arm"]
 
@@ -46,7 +47,7 @@ class VideoProcessor:
             print("Model load failed")
             exit
 
-    def annotate_frame(self, frame, detections):
+    def annotate_frame(self, frame, detections, smoothing):
         """
 
         Helper function to draw bounding boxes and labels on a frame
@@ -64,7 +65,6 @@ class VideoProcessor:
             confidence = det['confidence']
             
             track_id = det['track_id'].int().tolist()[0]
-            centre_x, centre_y = map(float, det['centre'])
 
             relevance = 0
             colour = DEFAULT_COLOUR
@@ -81,7 +81,16 @@ class VideoProcessor:
 
             # Draw label
             label = f"[{track_id}] {object_class} {confidence:.2f} R:{relevance}"    
-
+            
+            # Run smoothing
+            track = self.track_history[track_id]['history']
+            smoothing_offset = self.get_smoothed_box_pos(track)
+                        
+            x1 += int(smoothing_offset[0])
+            y1 += int(smoothing_offset[1])
+            x2 += int(smoothing_offset[0])
+            y2 += int(smoothing_offset[1])
+            
             # Draw rectangle
             cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), colour, thickness)
 
@@ -93,13 +102,43 @@ class VideoProcessor:
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), thickness)
             
             # Draw tracking line
-            track = self.track_history[track_id]['history']
-            print(track, label)
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
             cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)
             
 
         return annotated_frame, relevant_objects_found
+    
+    
+    def get_smoothed_box_pos(self, tracking_history):
+        """
+        Gets the offset to the new position for the bounding box after object tracking movement smoothing.
+        """
+        # Can't smooth if there isn't enough history
+        if len(tracking_history) < 6:
+            return (0,0)
+        
+        # Separate out the true final position
+        final_pos = tracking_history[-1]
+        
+        prediction_data = np.array(tracking_history)[-6:]
+        x_values, y_values = zip(*prediction_data)
+        
+        coefficients = np.polyfit(x_values, y_values, 1)
+        polynomial = np.poly1d(coefficients)
+        
+        # Get average x distance between points
+        differences = [-(x_values[i+1] - x_values[i]) for i in range(len(x_values) - 1)]
+        avg_distance = sum(differences) / len(differences) # Could also consider using median here.
+        
+        x_pred = list(x_values[:-1])
+        x_pred.append(x_pred[-1] + avg_distance)
+        final_x = x_pred[-1]
+        
+        final_y = polynomial(x_pred)[-1]
+                
+        offset = np.subtract((final_x, final_y),(final_pos))
+        return np.round(offset)
+    
     
     def update_track_ids(self, detections, frame_num):
         """
@@ -133,10 +172,10 @@ class VideoProcessor:
                 
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
-                        
-        
+    
+    
 
-    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True):
+    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=True):
         """
 
         Reads video, processes frames, saves and displays
@@ -213,7 +252,7 @@ class VideoProcessor:
             self.update_track_ids(tracks, frame_num)
             
             # Annotate -> hazard identify, to be implemented
-            annotated_frame, relevant_objects = self.annotate_frame(frame, tracks)
+            annotated_frame, relevant_objects = self.annotate_frame(frame, tracks, smoothing)
 
             # Store frame if highly relevant hazard found
             if relevant_objects:
