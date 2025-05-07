@@ -86,7 +86,9 @@ class VideoProcessor:
             track = self.track_history[track_id]['history']
             if (smoothing):
                 smoothing_offset = self.get_smoothed_box_pos(track)
-                            
+                
+                smoothing_offset = np.multiply(smoothing_offset, smoothing)
+                
                 x1 += int(smoothing_offset[0])
                 y1 += int(smoothing_offset[1])
                 x2 += int(smoothing_offset[0])
@@ -105,7 +107,6 @@ class VideoProcessor:
             # Draw tracking line
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
             cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)
-            
 
         return annotated_frame, relevant_objects_found
     
@@ -176,7 +177,7 @@ class VideoProcessor:
     
     
 
-    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=True):
+    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=1.0):
         """
 
         Reads video, processes frames, saves and displays
