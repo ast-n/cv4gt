@@ -7,6 +7,8 @@ from PIL import Image
 import os
 from obstacle_relevance import get_obstacle_relevance_rating, RELEVANCE_RATING
 from object_scales import OBJECT_SCALE_MAP
+import colour_correction
+
 
 RELEVANCE_COLORS = {
     5: (0, 0, 255),    # Red - Highest relevance
@@ -97,7 +99,8 @@ class VideoProcessor:
             track = self.track_history[track_id]['history']
             if smoothing:
                 smoothing_offset = self.get_smoothed_box_pos(track)
-
+                smoothing_offset = np.multiply(smoothing_offset, smoothing)
+                
                 x1 += int(smoothing_offset[0])
                 y1 += int(smoothing_offset[1])
                 x2 += int(smoothing_offset[0])
@@ -115,7 +118,7 @@ class VideoProcessor:
 
             # Draw tracking line
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
-            cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=5)
+            cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)
 
         return annotated_frame, relevant_objects_found
 
@@ -178,7 +181,7 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=True):
+    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=1.0):
         """
         Reads video, processes frames, saves and displays
         """
@@ -217,6 +220,7 @@ class VideoProcessor:
         frame_num = 0
         while True:
             ret, frame = cap.read()
+
             if not ret:
                 print("Finished processing video, or encountered error")
                 break
@@ -225,7 +229,23 @@ class VideoProcessor:
             if frame_num % 100 == 0:
                 print(f"Processing frame {frame_num}")
 
+            # Colour conversion
+            try:
+                frame = colour_correction.colour_convert(frame)
+            except Exception as e:
+                print(f"Error during colour correction, on frame: {e}")
+
+            # Detect
+            """
+            try:
+                detections = ai_handler.get_objects(frame)
+            except Exception as e:
+                print(f"Error during detection, on frame: {e}")
+                detections = []
+            """
+                
             # Detect and track objects
+
             try:
                 tracks = ai_handler.get_tracking(frame)
             except Exception as e:
