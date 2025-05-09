@@ -34,29 +34,18 @@ MAX_DEPTH = 40 # Maximum depth in meters for depth estimation
 
 def estimate_depth(bbox, object_class):
     """
-    Estimates the depth of an object based on the bounding box area.
-    
-    Args:
-    bbox (tuple): The bounding box of the object (x1, y1, x2, y2).
-    object_class (str): The class of the object 
-    
-    Returns:
-    float: Estimated depth of the object in meters.
+    Estimates the depth of an object based on the bounding box area
+    using a square root inverse area model.
     """
-    # Extract bounding box dimensions
     x1, y1, x2, y2 = bbox
     width = x2 - x1
     height = y2 - y1
-
-    # Calculate object area
     area = width * height
+    if area <= 0:
+        return MAX_DEPTH
 
-    # Default scale for object size, based on the average size of the object class (in meters)
-    object_scale = OBJECT_SCALE_MAP.get(object_class, 1)  
-
-    # Assuming a camera model where the depth is inversely proportional to the area
-    # and scaled by the real-world size of the object
-    depth = (object_scale ** 2) / area  # Inverse square relationship: scale^2 / area
+    object_scale = OBJECT_SCALE_MAP.get(object_class, 1.0)  # in meters
+    depth = object_scale / (area ** 0.5)  # square root inverse area
 
     return depth
 
