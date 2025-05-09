@@ -12,6 +12,7 @@ def main():
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
     ENABLE_LOGGING = False
+    SMOOTHING_FACTOR = 0.3
 
     if not os.path.isfile(INPUT_VIDEO):
         print(f"Input video file not found: {INPUT_VIDEO}")
@@ -26,7 +27,8 @@ def main():
             input_video_path=INPUT_VIDEO,
             output_video_path=OUTPUT_VIDEO,
             display=ENABLE_DISPLAY,
-            logging=ENABLE_LOGGING
+            logging=ENABLE_LOGGING,
+            smoothing=SMOOTHING_FACTOR
         )
 
     except Exception as e:
