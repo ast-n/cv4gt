@@ -17,6 +17,7 @@ import numpy as np
 from PIL import Image
 import os
 from obstacle_relevance import get_obstacle_relevance_rating, RELEVANCE_RATING
+from object_scales import OBJECT_SCALE_MAP
 
 RELEVANCE_COLORS = {
     5: (0, 0, 255),    # Red - Highest relevance
@@ -31,10 +32,32 @@ CLASS_IGNORE_LIST = ["sideloader_arm"]
 
 MAX_DEPTH = 40 # Maximum depth in meters for depth estimation
 
-def estimate_depth(bbox):
+def estimate_depth(bbox, object_class):
+    """
+    Estimates the depth of an object based on the bounding box area.
+    
+    Args:
+    bbox (tuple): The bounding box of the object (x1, y1, x2, y2).
+    object_class (str): The class of the object 
+    
+    Returns:
+    float: Estimated depth of the object in meters.
+    """
+    # Extract bounding box dimensions
     x1, y1, x2, y2 = bbox
-    area = max((x2 - x1) * (y2 - y1), 1)
-    depth = 10000 / area  # You can tweak 3000 up/down
+    width = x2 - x1
+    height = y2 - y1
+
+    # Calculate object area
+    area = width * height
+
+    # Default scale for object size, based on the average size of the object class (in meters)
+    object_scale = OBJECT_SCALE_MAP.get(object_class, 1)  
+
+    # Assuming a camera model where the depth is inversely proportional to the area
+    # and scaled by the real-world size of the object
+    depth = (object_scale ** 2) / area  # Inverse square relationship: scale^2 / area
+
     return depth
 
 class VideoProcessor:
@@ -75,7 +98,7 @@ class VideoProcessor:
             track_id = det['track_id'].int().tolist()[0]
 
             # --- Estimate depth ---
-            depth = estimate_depth(det['bbox'])
+            depth = estimate_depth(det['bbox'], object_class)
 
             # --- Filter out objects that are too far ---
             if depth > MAX_DEPTH:
