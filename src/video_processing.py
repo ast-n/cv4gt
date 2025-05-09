@@ -29,6 +29,13 @@ RELEVANCE_COLORS = {
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 CLASS_IGNORE_LIST = ["sideloader_arm"]
 
+MAX_DEPTH = 40 # Maximum depth in meters for depth estimation
+
+def estimate_depth(bbox):
+    x1, y1, x2, y2 = bbox
+    area = max((x2 - x1) * (y2 - y1), 1)
+    depth = 10000 / area  # You can tweak 3000 up/down
+    return depth
 
 class VideoProcessor:
     def __init__(self):
@@ -51,7 +58,8 @@ class VideoProcessor:
         """
 
         Helper function to draw bounding boxes and labels on a frame
-
+        Now includes depth estimation and filtering based on MAX_DEPTH.
+        
         """
         
         annotated_frame = frame.copy()
@@ -66,6 +74,13 @@ class VideoProcessor:
             
             track_id = det['track_id'].int().tolist()[0]
 
+            # --- Estimate depth ---
+            depth = estimate_depth(det['bbox'])
+
+            # --- Filter out objects that are too far ---
+            if depth > MAX_DEPTH:
+                continue  # Skip object
+
             relevance = 0
             colour = DEFAULT_COLOUR
             thickness = 1
@@ -77,10 +92,11 @@ class VideoProcessor:
 
                 # Add detection to the lsit if defined relevance
                 det['relevance'] =  relevance # Adds to dict
+                det['depth'] = depth
                 relevant_objects_found.append(det)
 
             # Draw label
-            label = f"[{track_id}] {object_class} {confidence:.2f} R:{relevance}"    
+            label = f"[{track_id}] {object_class} {confidence:.2f} R:{relevance} D:{depth:.1f}m"    
             
             # Run smoothing
             track = self.track_history[track_id]['history']
