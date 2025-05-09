@@ -17,6 +17,7 @@ import numpy as np
 from PIL import Image
 import os
 from obstacle_relevance import get_obstacle_relevance_rating, RELEVANCE_RATING
+import colour_correction
 
 RELEVANCE_COLORS = {
     5: (0, 0, 255),    # Red - Highest relevance
@@ -225,6 +226,7 @@ class VideoProcessor:
         frame_num = 0
         while True:
             ret, frame = cap.read()
+
             if not ret:
                 print("Finished processing video, or encountered error")
                 break
@@ -233,6 +235,12 @@ class VideoProcessor:
             # Print progress every 100
             if frame_num % 100 == 0:
                 print(f"Processing frame {frame_num}")
+
+            # Colour conversion
+            try:
+                frame = colour_correction.colour_convert(frame)
+            except Exception as e:
+                print(f"Error during colour correction, on frame: {e}")
 
             # Detect
             """
