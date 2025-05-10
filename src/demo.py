@@ -1,6 +1,6 @@
 """
 
-cv4gt - 1st PoC demonstration script
+cv4gt - 2nd PoC demonstration script
 
 """
 from video_processing import VideoProcessor
@@ -8,7 +8,7 @@ import os
 
 def main():
     # Config
-    INPUT_VIDEO = "data/input.mp4"
+    INPUT_VIDEO = "data/ground_truth.mp4"
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
     ENABLE_LOGGING = False
