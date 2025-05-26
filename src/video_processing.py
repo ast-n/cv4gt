@@ -42,14 +42,14 @@ def estimate_depth(bbox, object_class):
     return depth
 
 class VideoProcessor:
-    def __init__(self):
+    def __init__(self, model_path=None):
         """
         Initialises VideoProcessor and loads object detection model
         """
         self.model_ready = False
 
         # Loading model
-        if ai_handler.load_object_detection_model():
+        if ai_handler.load_object_detection_model(model_path):
             self.model_ready = True
             print("Model successfully loaded, now to process")
         else:
@@ -195,7 +195,7 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=1.0):
+    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
         """
         Reads video, processes frames, saves and displays
         """
@@ -244,10 +244,11 @@ class VideoProcessor:
                 print(f"Processing frame {frame_num}")
 
             # Colour conversion
-            try:
-                frame = colour_correction.colour_convert(frame)
-            except Exception as e:
-                print(f"Error during colour correction, on frame: {e}")
+            if (enable_colour_correction):
+                try:
+                    frame = colour_correction.colour_convert(frame)
+                except Exception as e:
+                    print(f"Error during colour correction, on frame: {e}")
 
             # Detect
             """
