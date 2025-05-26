@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import os
+
 from obstacle_relevance import get_obstacle_relevance_rating, RELEVANCE_RATING
 from object_scales import OBJECT_SCALE_MAP
 import colour_correction
@@ -41,14 +42,14 @@ def estimate_depth(bbox, object_class):
     return depth
 
 class VideoProcessor:
-    def __init__(self):
+    def __init__(self, model_path=None):
         """
         Initialises VideoProcessor and loads object detection model
         """
         self.model_ready = False
 
         # Loading model
-        if ai_handler.load_object_detection_model():
+        if ai_handler.load_object_detection_model(model_path):
             self.model_ready = True
             print("Model successfully loaded, now to process")
         else:
@@ -61,19 +62,21 @@ class VideoProcessor:
         Now, depth is already attached to detections, so no need to calculate here.
         """
         annotated_frame = frame.copy()
+        H, W, _ = frame.shape # Mask scaling 
         relevant_objects_found = []
 
         for det in detections:
+            if det['track_id'] is None:
+                continue
+                
             x1, y1, x2, y2 = map(int, det['bbox'])
-            label = f"{det['class']} {det['confidence']:.2f}"
-
             object_class = det['class']
             confidence = det['confidence']
+            track_id = det['track_id'] # Already an int
 
-            track_id = det['track_id'].int().tolist()[0]
-
-            # --- Use pre-calculated depth from detections ---
-            depth = det.get('depth', MAX_DEPTH)
+            # Calculate depth for the object - changed
+            depth = det.get('depth', estimate_depth(det['bbox'], object_class))
+            det['depth'] = depth
 
             # --- Filter out objects that are too far ---
             if depth > MAX_DEPTH:
@@ -92,9 +95,6 @@ class VideoProcessor:
                 det['relevance'] = relevance  # Adds to dict
                 relevant_objects_found.append(det)
 
-            # Draw label
-            label = f"[{track_id}] {object_class} {confidence:.2f} R:{relevance} D:{depth:.1f}m"
-
             # Run smoothing
             track = self.track_history[track_id]['history']
             if smoothing:
@@ -106,9 +106,23 @@ class VideoProcessor:
                 x2 += int(smoothing_offset[0])
                 y2 += int(smoothing_offset[1])
 
-            # Draw rectangle
-            cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), colour, thickness)
+            # Handle mask drawing
+            if det.get('mask_polygon_norm') is not None:
+                polygon_norm = det.get('mask_polygon_norm')
+                polygon_pixel = (polygon_norm * np.array([W, H])).astype(np.int32)
 
+                # Draw polygon
+                cv2.polylines(annotated_frame, [polygon_pixel], isClosed=True, color=colour, thickness=2)
+
+                # Draw bounding box - a bit lighter
+                cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), colour, 1)
+            else:
+                # Draw standard bounding box
+                cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), colour, thickness)
+
+            # Draw label with all information - moved this
+            label = f"[{track_id}] {object_class} {confidence:.2f} R:{relevance} D:{depth:.1f}m"
+            
             # Draw label background
             text_y = y1 - 10 if y1 - 10 > 10 else y1 + 20
             (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, thickness)
@@ -158,7 +172,7 @@ class VideoProcessor:
         """
         # Update tracking data
         for det in detections:
-            track_id = det['track_id'].int().tolist()[0]
+            track_id = det['track_id'] # already an int
             centre_x, centre_y = map(float, det['centre'])
             object_class = det['class']
 
@@ -181,7 +195,7 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=1.0):
+    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
         """
         Reads video, processes frames, saves and displays
         """
@@ -230,10 +244,11 @@ class VideoProcessor:
                 print(f"Processing frame {frame_num}")
 
             # Colour conversion
-            try:
-                frame = colour_correction.colour_convert(frame)
-            except Exception as e:
-                print(f"Error during colour correction, on frame: {e}")
+            if (enable_colour_correction):
+                try:
+                    frame = colour_correction.colour_convert(frame)
+                except Exception as e:
+                    print(f"Error during colour correction, on frame: {e}")
 
             # Detect
             """

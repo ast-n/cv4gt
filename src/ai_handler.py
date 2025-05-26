@@ -96,30 +96,41 @@ class ModelManager:
         """
         
         results = self.run_tracking(image)
+        tracks_with_masks = []
+
+        if results.boxes is None or len(results.boxes) == 0:
+            return tracks_with_masks
         
-        tracks = []
-        
-        for box in results.boxes:
-            track_id = box.id.int()
+        for i in range(len(results.boxes)):
+            box = results.boxes[i]
+
+            track_id_tensor = box.id
+            track_id = track_id_tensor.int().tolist()[0] if track_id_tensor is not None else None
             class_id = int(box.cls)
             class_name = results.names[class_id]
             confidence = float(box.conf)
-            x1, y1, x2, y2, = box.xyxy[0].tolist()
+            x1, y1, x2, y2 = box.xyxy[0].tolist()
             centre_x, centre_y, w, h = box.xywh[0].tolist()
             
-            tracks.append({
+            # Mask handling logic
+            mask_polygon_norm = None
+
+            if results.masks is not None and i < len(results.masks):
+                mask_polygon_norm = results.masks.xyn[i]
+    
+            tracks_with_masks.append({
                 'class': class_name,
                 'track_id': track_id,
                 'confidence': confidence,
                 'bbox': [x1, y1, x2, y2],
-                'centre': [centre_x, centre_y]
-            })
-        
-        return tracks
-        
-        
+                'centre': [centre_x, centre_y],
+                'mask_polygon_norm': mask_polygon_norm
+            })  
 
+        return tracks_with_masks
+        
 model_manager = ModelManager()
+
 
 def load_object_detection_model(model_path=None):
     return model_manager.load_object_detection_model(model_path)

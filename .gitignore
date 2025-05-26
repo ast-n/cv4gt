@@ -1,6 +1,10 @@
 
 data/training/
 data/tagged/
+data/autodistill_inputs
+data/autodistill_outputs
+data/*.avi
+
 
 
 models/*.pt
