@@ -30,10 +30,10 @@ if (err != sl.ERROR_CODE.SUCCESS):
 i = 0
 zed_pose = sl.Pose()
 
-zed_sensors = sl.SensorData()
+zed_sensors = sl.SensorsData()
 runtime_parameters = sl.RuntimeParameters()
 
-movement_history = np.array([])
+movement_history = np.empty((0, 3))
 time_history = np.array([])
 
 while i < 3600: # Run for 3600 frames (60 seconds)
@@ -56,10 +56,20 @@ while i < 3600: # Run for 3600 frames (60 seconds)
         if time_history.size > 5:
             time_history = time_history[-5:]
         
-        velocity = np.sum(movement_history, axis=0) / np.sum(time_history) # Output should be 3-dim vector of velocity along x, y, z.
-        
-        
-        print(f"Velocity: {velocity}, Timestamp: {curr_time}\n")
+        if len(time_history) > 1:  # Need at least 2 points to calculate velocity
+            # Calculate velocity as change in position over change in time
+
+            # Latest - oldest position
+            position_change = movement_history[-1] - movement_history[0]
+            # Convert ms to seconds
+            time_change = (time_history[-1] - time_history[0]) / 1000.0 
+            
+            if time_change > 0:
+                velocity = position_change / time_change  # meters per second
+                print(f"Velocity: {velocity} m/s, Timestamp: {curr_time}\n")
+            else:
+                print(f"No time change, Timestamp: {curr_time}\n")
         
         # Should also add a way to account for rotation
         # The camera does track this but its with quaternions which are uh yeah...
+    i += 1

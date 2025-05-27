@@ -2,9 +2,12 @@
 data/training/
 data/tagged/
 
+docker_scripts/
 
 models/*.pt
 yolo/*.pt
+models/*.onnx
+models/*.engine
 
 .ipynb_checkpoints/
 __pycache__/
