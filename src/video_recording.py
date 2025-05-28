@@ -24,8 +24,8 @@ def main():
 
     init = sl.InitParameters()
 
-    recording_param = sl.RecordingParameters(opt.output_svo_file, sl.SVO_COMPRESSION_MODE.H264)
-    
+    recording_param = sl.RecordingParameters(opt.output_svo_file, sl.SVO_COMPRESSION_MODE.LOSSLESS) 
+
     status = cam.open(init) 
     if status != sl.ERROR_CODE.SUCCESS: 
         print("Camera Open", status, "Exit program.")
@@ -43,7 +43,7 @@ def main():
     while True:
         if cam.grab(runtime) == sl.ERROR_CODE.SUCCESS:
             frames_recorded += 1
-            print("Frames recorded: "+ frames_recorded )
+            print(f"Frames recorded: {frames_recorded}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

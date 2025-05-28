@@ -1,0 +1,68 @@
+# Start from DustyNV's PyTorch image for L4T R36.2.0 (JetPack 6.0 DP)
+# This is compatible with L4T R36.3 (JetPack 6.0 Production)
+FROM dustynv/l4t-pytorch:r36.2.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install prerequisites for ZED SDK, Ultralytics, and potential build steps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    zstd \
+    udev \
+    build-essential \
+    libopenmpi3 \
+    git \
+    python3-pip \
+    libjpeg-dev libpng-dev ninja-build pkg-config \
+    cmake libgtk-3-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+    x11-apps \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# --- ZED SDK Installation ---
+ENV ZED_SDK_VERSION="5.0.1"
+ENV L4T_VERSION="36.3" 
+ENV ZED_SDK_RUN_FILENAME="ZED_SDK_Tegra_L4T${L4T_VERSION}_v${ZED_SDK_VERSION}.zstd.run"
+ENV ZED_SDK_INSTALLER_PATH="/tmp/${ZED_SDK_RUN_FILENAME}"
+
+# Create /etc/nv_tegra_release for ZED SDK L4T detection
+RUN echo "# R36 (release), REVISION: 3.0" > /etc/nv_tegra_release
+
+# Copy and Install ZED SDK
+COPY ${ZED_SDK_RUN_FILENAME} ${ZED_SDK_INSTALLER_PATH}
+RUN chmod +x "${ZED_SDK_INSTALLER_PATH}" && \
+    "${ZED_SDK_INSTALLER_PATH}" silent skip_drivers && \
+    # Verify get_python_api.py exists (crucial for PyZED)
+    if [ ! -f "/usr/local/zed/get_python_api.py" ]; then \
+        echo "ERROR: get_python_api.py not found after ZED SDK install!" && exit 1; \
+    fi && \
+    rm "${ZED_SDK_INSTALLER_PATH}"
+
+# --- PyZED Installation ---
+# PyZED 5.0 needs Cython >= 3.0.0. Base image has older.
+# Install/Upgrade Cython, then run PyZED's installer.
+# get_python_api.py will also attempt to install/upgrade numpy to 2.x.
+RUN pip3 install --no-cache-dir --upgrade cython wheel setuptools && \
+    python3 /usr/local/zed/get_python_api.py && \
+    rm -rf ~/.cache/pip
+
+# --- Install Ultralytics ---
+# This will pull its dependencies, including opencv-python and will check numpy.
+RUN pip3 install --no-cache-dir ultralytics
+
+# --- Install ONNX ---
+RUN pip3 install --no-cache-dir onnx
+
+# --- CRITICAL: Force desired NumPy version LAST ---
+RUN pip3 install --no-cache-dir --force-reinstall numpy==1.26.4
+
+# --- User's Project Requirements (Optional, uncomment if needed) ---
+WORKDIR /app
+
+# --- Set environment variables ---
+# Dusty's image sets CUDA/PyTorch paths. Add ZED and ensure /usr/lib/aarch64-linux-gnu.
+ENV LD_LIBRARY_PATH=/usr/local/zed/lib:/usr/lib/aarch64-linux-gnu:${LD_LIBRARY_PATH}
+ENV PATH=/usr/local/zed/bin:${PATH}
+
+# Default to /app
+WORKDIR /app
+USER root

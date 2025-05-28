@@ -4,7 +4,10 @@ data/tagged/
 
 
 models/*.pt
+models/*.onnx
+models/*.engine
 yolo/*.pt
+
 
 .ipynb_checkpoints/
 __pycache__/
