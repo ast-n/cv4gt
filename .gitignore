@@ -6,9 +6,13 @@ data/autodistill_outputs
 data/*.avi
 
 
-
 models/*.pt
+models/*.onnx
+models/*.engine
 yolo/*.pt
+models/*.onnx
+models/*.engine
+
 
 .ipynb_checkpoints/
 __pycache__/
