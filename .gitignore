@@ -2,8 +2,6 @@
 data/training/
 data/tagged/
 
-docker_scripts/
-
 models/*.pt
 models/*.onnx
 models/*.engine
