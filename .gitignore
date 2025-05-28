@@ -5,9 +5,12 @@ data/tagged/
 docker_scripts/
 
 models/*.pt
+models/*.onnx
+models/*.engine
 yolo/*.pt
 models/*.onnx
 models/*.engine
+
 
 .ipynb_checkpoints/
 __pycache__/
