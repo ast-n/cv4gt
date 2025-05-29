@@ -3,10 +3,16 @@ import cv2
 
 camera_feed.setup_cam(recording_path="data\\recordings\\HD720_SN33773243_10-13-17.svo2")
 
+#MODE = 'IMAGE'
+MODE = 'DEPTH'
+
 while True:
     try:
         camera_feed.go_next_frame()
-        im = camera_feed.get_depth_display()
+        if MODE == 'IMAGE':
+            im = camera_feed.get_image()
+        elif MODE == 'DEPTH':
+            im = camera_feed.get_depth_display()
         
         cv2.imshow("Test video",im)
         
