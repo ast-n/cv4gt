@@ -10,6 +10,13 @@ from obstacle_relevance import get_obstacle_relevance_rating, RELEVANCE_RATING
 from object_scales import OBJECT_SCALE_MAP
 import colour_correction
 
+try:
+    import pyzed.sl as sl
+    ZED_AVAILABLE = True
+    print("PyZED SDK found. Depth enabled.")
+except ImportError:
+    ZED_AVAILABLE = False
+    print("WARNING: PyZED SDK not found. Depth will be estimated from bbox area.")
 
 RELEVANCE_COLORS = {
     5: (0, 0, 255),    # Red - Highest relevance
@@ -42,11 +49,13 @@ def estimate_depth(bbox, object_class):
     return depth
 
 class VideoProcessor:
-    def __init__(self, model_path=None):
+    def __init__(self, model_path=None, use_zed_depth=False):
         """
         Initialises VideoProcessor and loads object detection model
         """
         self.model_ready = False
+        self.use_zed_depth = use_zed_depth and ZED_AVAILABLE
+        self.zed = None
 
         # Loading model
         if ai_handler.load_object_detection_model(model_path):
@@ -55,6 +64,55 @@ class VideoProcessor:
         else:
             print("Model load failed")
             exit()
+
+        if self.use_zed_depth:
+            self.zed = sl.Camera()
+            init_params = sl.InitParameters()
+            init_params.camera_resolution = sl.RESOLUTION.HD720  # or as needed
+            init_params.camera_fps = 30
+            err = self.zed.open(init_params)
+            if err != sl.ERROR_CODE.SUCCESS:
+                print(f"ZED camera failed to open: {err}. Falling back to no ZED.")
+                self.use_zed_depth = False
+                self.zed = None
+            else:
+                self.runtime_params = sl.RuntimeParameters()
+                self.depth_measure = sl.Mat()
+
+    def get_depth_from_zed(self, bbox):
+        if self.zed is None:
+            return MAX_DEPTH
+
+        x1, y1, x2, y2 = bbox
+        frame_width = self.zed.get_resolution().width
+        frame_height = self.zed.get_resolution().height
+
+        # Clamp bbox inside frame
+        x1 = max(0, min(frame_width - 1, int(x1)))
+        x2 = max(0, min(frame_width - 1, int(x2)))
+        y1 = max(0, min(frame_height - 1, int(y1)))
+        y2 = max(0, min(frame_height - 1, int(y2)))
+
+        if x2 <= x1 or y2 <= y1:
+            return MAX_DEPTH
+
+        if self.zed.grab(self.runtime_params) != sl.ERROR_CODE.SUCCESS:
+            return MAX_DEPTH
+        self.zed.retrieve_measure(self.depth_measure, sl.MEASURE.DEPTH)
+
+        depth_array = self.depth_measure.get_data()
+        if depth_array is None:
+            return MAX_DEPTH
+
+        bbox_depths = depth_array[y1:y2, x1:x2]
+
+        valid_depths = bbox_depths[(bbox_depths > 0) & (bbox_depths < MAX_DEPTH)]
+
+        if valid_depths.size == 0:
+            return MAX_DEPTH
+
+        median_depth = np.median(valid_depths)
+        return float(median_depth)
 
     def annotate_frame(self, frame, detections, smoothing):
         """
@@ -87,7 +145,7 @@ class VideoProcessor:
             thickness = 1
 
             if object_class in RELEVANCE_RATING:
-                relevance = get_obstacle_relevance_rating(object_class)
+                relevance = get_obstacle_relevance_rating(object_class, depth)
                 colour = RELEVANCE_COLORS.get(relevance, DEFAULT_COLOUR)
                 thickness = 2 if relevance >= 4 else 1
 
@@ -268,9 +326,13 @@ class VideoProcessor:
                 tracks = []
 
             # Attach depth to each detection
-            for det in tracks:
-                object_class = det['class']
-                det['depth'] = estimate_depth(det['bbox'], object_class)
+            if self.use_zed_depth and self.zed.grab(self.runtime_params) == sl.ERROR_CODE.SUCCESS:
+                self.zed.retrieve_measure(self.depth_measure, sl.MEASURE.DEPTH)
+                for det in tracks:
+                    det['depth'] = self.get_depth_from_zed(det['bbox'])
+            else:
+                for det in tracks:
+                    det['depth'] = estimate_depth(det['bbox'], det['class'])
 
             # Update track history
             self.update_track_ids(tracks, frame_num)

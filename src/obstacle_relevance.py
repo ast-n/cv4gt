@@ -48,14 +48,28 @@ RELEVANCE_RATING = {
     "aeroplane": 1
 }
 
-def get_obstacle_relevance_rating(object_class: str) -> int:
+def get_obstacle_relevance_rating(object_class: str, depth: float) -> int:
     """
-    Returns the relevance rating for a given object class.
-    
+    Returns the relevance rating for a given object class, adjusted by depth.
+
     Args:
-    - object_class (str): The class of the detected object.
-    
+        object_class (str): The class of the detected object.
+        depth (float): The depth/distance to the object in meters.
+
     Returns:
-    - int: The relevance rating for the object class.
+        int: The adjusted relevance rating for the object.
     """
-    return RELEVANCE_RATING.get(object_class, 1)  # Default to 1 if not found
+    base_rating = RELEVANCE_RATING.get(object_class, 1)
+
+    if object_class == "sideloader_arm":
+        return base_rating
+
+    if depth < 2:
+        # Add 2 to base rating, capped at 5
+        return min(base_rating + 2, 5)
+    elif depth < 5:
+        # Add 1 to base rating, capped at 5
+        return min(base_rating + 1, 5)
+    else:
+        # No change to base rating
+        return base_rating
