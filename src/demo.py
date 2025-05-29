@@ -14,7 +14,7 @@ def main():
     ENABLE_LOGGING = False
     COLOUR_CORRECTION = False
     SMOOTHING_FACTOR = 0.0
-    MODEL_PATH = "models\YOLOv8-cv4gt-data-15-04_100e.pt"
+    MODEL_PATH = "models\\YOLOv8-cv4gt-data-15-04_100e.pt"
 
     if not os.path.isfile(INPUT_VIDEO):
         print(f"Input video file not found: {INPUT_VIDEO}")
