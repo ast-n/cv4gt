@@ -7,7 +7,6 @@ from PIL import Image
 import os
 
 from obstacle_relevance import get_obstacle_relevance_rating, RELEVANCE_RATING
-from object_scales import OBJECT_SCALE_MAP
 import colour_correction
 
 try:
@@ -29,33 +28,12 @@ RELEVANCE_COLORS = {
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 CLASS_IGNORE_LIST = ["sideloader_arm"]
 
-MAX_DEPTH = 40 # Maximum depth in meters for depth estimation
-
-def estimate_depth(bbox, object_class):
-    """
-    Estimates the depth of an object based on the bounding box area
-    using a square root inverse area model.
-    """
-    x1, y1, x2, y2 = bbox
-    width = x2 - x1
-    height = y2 - y1
-    area = width * height
-    if area <= 0:
-        return MAX_DEPTH
-
-    object_scale = OBJECT_SCALE_MAP.get(object_class, 1.0)  # in meters
-    depth = object_scale / (area ** 0.5)  # square root inverse area
-
-    return depth
-
 class VideoProcessor:
-    def __init__(self, model_path=None, use_zed_depth=False):
+    def __init__(self, model_path=None):
         """
         Initialises VideoProcessor and loads object detection model
         """
         self.model_ready = False
-        self.use_zed_depth = use_zed_depth and ZED_AVAILABLE
-        self.zed = None
 
         # Loading model
         if ai_handler.load_object_detection_model(model_path):
@@ -64,20 +42,6 @@ class VideoProcessor:
         else:
             print("Model load failed")
             exit()
-
-        if self.use_zed_depth:
-            self.zed = sl.Camera()
-            init_params = sl.InitParameters()
-            init_params.camera_resolution = sl.RESOLUTION.HD720
-            init_params.camera_fps = 30
-            err = self.zed.open(init_params)
-            if err != sl.ERROR_CODE.SUCCESS:
-                print(f"ZED camera failed to open: {err}. Falling back to no ZED.")
-                self.use_zed_depth = False
-                self.zed = None
-            else:
-                self.runtime_params = sl.RuntimeParameters()
-                self.depth_measure = sl.Mat()
 
     def get_depth_from_zed(self, bbox):
         if self.zed is None:
@@ -307,15 +271,6 @@ class VideoProcessor:
                     frame = colour_correction.colour_convert(frame)
                 except Exception as e:
                     print(f"Error during colour correction, on frame: {e}")
-
-            # Detect
-            """
-            try:
-                detections = ai_handler.get_objects(frame)
-            except Exception as e:
-                print(f"Error during detection, on frame: {e}")
-                detections = []
-            """
                 
             # Detect and track objects
 

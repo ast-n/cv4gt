@@ -1,5 +1,3 @@
-# obstacle_relevance.py
-
 # Mapping each obstacle class to its relevance rating
 RELEVANCE_RATING = {
     "adult": 5,
@@ -48,6 +46,56 @@ RELEVANCE_RATING = {
     "aeroplane": 1
 }
 
+#the numbers are the average pixel sizes of the objects in the dataset
+OBJECT_SCALE_MAP = {
+    "adult": 350,
+    "child": 250,
+    "dog": 200,
+    "cat": 150,
+    "car": 1000,
+    "van": 1500,
+    "truck": 2000,
+    "motorbike": 750,
+    "bicycle": 600,
+    "person": 350,
+    "cyclist_back": 500,
+    "cyclist_front": 500,
+    "cyclist_side": 500,
+    "head": 100,
+    "helmet": 75,
+    "sideloader_arm": 100,
+    "fallen_bin": 300,
+    "junk": 250,
+    "bench": 350,
+    "bin": 250,
+    "shopping_cart": 400,
+    "street_furniture": 500,
+    "mailbox": 200,
+    "bollard": 200,
+    "pole": 400,
+    "signpost": 500,
+    "sign": 400,
+    "power_box": 200,
+    "power_pole": 400,
+    "bus_shelter": 2000,
+    "tree": 2500,
+    "bird": 50,
+    "boat": 2500,
+    "bottle": 40,
+    "bus": 3000,
+    "chair": 150,
+    "diningtable": 500,
+    "horse": 750,
+    "pottedplant": 150,
+    "sheep": 400,
+    "sofa": 500,
+    "train": 4000,
+    "tvmonitor": 150,
+    "aeroplane": 10000
+}
+
+MAX_DEPTH = 10 # Maximum depth in meters for depth estimation
+
 def get_obstacle_relevance_rating(object_class: str, depth: float) -> int:
     """
     Returns the relevance rating for a given object class, adjusted by depth.
@@ -73,3 +121,20 @@ def get_obstacle_relevance_rating(object_class: str, depth: float) -> int:
     else:
         # No change to base rating
         return base_rating
+
+def estimate_depth(object_class:str, bbox):
+    """
+    Estimates the depth of an object based on the bounding box area
+    using a square root inverse area model.
+    """
+    x1, y1, x2, y2 = bbox
+    width = x2 - x1
+    height = y2 - y1
+    area = width * height
+    if area <= 0:
+        return MAX_DEPTH
+
+    object_scale = OBJECT_SCALE_MAP.get(object_class, 1.0)  # in meters
+    depth = object_scale / (area ** 0.5)  # square root inverse area
+
+    return depth
