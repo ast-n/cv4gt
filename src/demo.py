@@ -1,14 +1,13 @@
 """
-
-cv4gt - 2nd PoC demonstration script
-
+cv4gt - Proof-of-concept demonstration script
 """
 from video_processing import VideoProcessor
 import os
 
 def main():
     # Config
-    INPUT_VIDEO = "data/ground_truth.mp4"
+    INPUT_VIDEO = "data\\recordings\\HD720_SN33773243_10-13-17.svo2"
+    USING_ZED = True
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
     ENABLE_LOGGING = False
@@ -27,6 +26,7 @@ def main():
 
         processor.process_video(
             input_video_path=INPUT_VIDEO,
+            using_zed=USING_ZED,
             output_video_path=OUTPUT_VIDEO,
             display=ENABLE_DISPLAY,
             logging=ENABLE_LOGGING,

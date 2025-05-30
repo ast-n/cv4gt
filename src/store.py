@@ -1,6 +1,6 @@
 from __future__ import annotations
-""" STORE """
-""" This script should:
+""" STORE
+This script should:
     - Handle storage, stowing, and retrieval of any data in long-term storage.
     - Tag hazard frames with GPS and time then store them.
     - Storage of any other permanent files which the codebase needs access to (config, maybe frontend files, etc.)"""

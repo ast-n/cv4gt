@@ -1,5 +1,5 @@
-""" AI HANDLER """
-""" This script should:
+""" AI HANDLER
+This script should:
     - Handle setup and loading of AI models into memory.
     - Handle passing data directly to and from AI models.
     - Handle any mid-operation self-improvement or retraining systems."""
@@ -125,7 +125,7 @@ class ModelManager:
                 'bbox': [x1, y1, x2, y2],
                 'centre': [centre_x, centre_y],
                 'mask_polygon_norm': mask_polygon_norm
-            })  
+            })
 
         return tracks_with_masks
         

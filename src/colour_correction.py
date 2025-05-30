@@ -1,5 +1,4 @@
-""" COLOUR CORRECTION """
-""" 
+""" COLOUR CORRECTION
 This script should:
     - Take in video streams or files...
     - Automatically perform colour correction by converting the colour space of the image from BGR to LAB 

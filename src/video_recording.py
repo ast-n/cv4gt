@@ -1,7 +1,5 @@
 """
-
 Script to record SVO file from ZED camera
-
 """
 
 import sys

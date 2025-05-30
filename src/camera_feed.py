@@ -1,8 +1,8 @@
-""" CAMERA FEED """
-""" This script should:
-    - Handle receiving the camera feed.
-    - Bundle camera feed into frames to find key ones.
-    - Selecting key frames to send further down the pipeline.
+""" CAMERA FEED
+ This script should:
+    - Handle receiving the camera feed from ZED.
+    - Allow frame-by-frame retrieval to be synchronised across the project.
+    - Provide access to depth and sensor data.
     - Allow the camera to give GPS data upon request. """
 
 import pyzed.sl as sl
@@ -15,8 +15,10 @@ class ZEDCam:
         self.grabbed_image = None
         
         init_params = sl.InitParameters()
-        init_params.camera_resolution = sl.RESOLUTION.HD720  # Start with HD720, can change
-        init_params.camera_fps = 30
+        self.resolution = sl.RESOLUTION.HD720  # Start with HD720, can change
+        init_params.camera_resolution = self.resolution
+        self.fps = 30
+        init_params.camera_fps = self.fps
         init_params.coordinate_system = sl.COORDINATE_SYSTEM.RIGHT_HANDED_Y_UP
         init_params.coordinate_units = sl.UNIT.METER
         init_params.depth_mode = sl.DEPTH_MODE.NEURAL
@@ -74,8 +76,7 @@ class ZEDCam:
     def prepare_frame(self):
         grab_status = self.zed.grab(self.runtime_parameters)
         if grab_status != sl.ERROR_CODE.SUCCESS:
-            self.zed.disable_object_detection()
-            self.zed.close()
+            self.shutdown()
             print("Error grabbing frame from ZED camera.")
             raise Exception()
         
@@ -93,19 +94,16 @@ class ZEDCam:
                 current_frame_for_cv = copied_frame
             else:
                 print(f"Unexpected channels from ZED frame: {copied_frame.shape[2]}")
-                self.zed.disable_object_detection()
-                self.zed.close()
+                self.shutdown()
                 raise Exception()
         else:
             print("ZED frame is in invalid format or null.")
-            self.zed.disable_object_detection()
-            self.zed.close()
+            self.shutdown()
             raise Exception()
         
         if current_frame_for_cv is None:
             print("Failed to retrieve valid data from ZED frame.")
-            self.zed.disable_object_detection()
-            self.zed.close()
+            self.shutdown()
             raise Exception()
         
         return current_frame_for_cv
@@ -118,8 +116,7 @@ class ZEDCam:
             pass
         else:
             print("Retrieved depth map is in invalid format or null.")
-            self.zed.disable_object_detection()
-            self.zed.close()
+            self.shutdown()
             raise Exception()
         
         return depth_image
@@ -132,8 +129,7 @@ class ZEDCam:
             pass
         else:
             print("Retrieved depth map is in invalid format or null.")
-            self.zed.disable_object_detection()
-            self.zed.close()
+            self.shutdown()
             raise Exception()
         
         return depth_image
@@ -148,6 +144,13 @@ class ZEDCam:
         #Figure this out later....
         raise NotImplementedError
         return
+    
+    def get_resolution(self):
+        resolution = sl.get_resolution(self.resolution)
+        return (resolution.width, resolution.height)
+    
+    def get_fps(self):
+        return self.fps
     
     def shutdown(self):
         self.zed.disable_object_detection()
@@ -242,9 +245,28 @@ def get_object_detections() -> list:
     det_array = zed_cam.get_object_detections()
     return det_array
 
+def get_zed_resolution() -> tuple:
+    """
+        Method to retrieve the resolution of the currently connected ZED camera or recording.
+    """
+    
+    global zed_cam
+    resolution = zed_cam.get_resolution()
+    return resolution
+
+def get_zed_fps() -> int:
+    """
+        Method to retrieve the FPS of the currently connected ZED camera or recording.
+    """
+    
+    global zed_cam
+    fps = zed_cam.get_fps()
+    return fps
+
 def shutdown_cam():
     """
         Method to call to ensure proper shutdown of the ZED camera reading pipeline.
     """
     global zed_cam
     zed_cam.shutdown()
+    

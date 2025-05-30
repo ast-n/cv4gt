@@ -1,3 +1,6 @@
+import camera_feed
+import numpy as np
+
 # Mapping each obstacle class to its relevance rating
 RELEVANCE_RATING = {
     "adult": 5,
@@ -94,9 +97,9 @@ OBJECT_SCALE_MAP = {
     "aeroplane": 10000
 }
 
-MAX_DEPTH = 10 # Maximum depth in meters for depth estimation
+MAX_DEPTH = 20 # Maximum depth in meters for depth estimation
 
-def get_obstacle_relevance_rating(object_class: str, depth: float) -> int:
+def get_obstacle_relevance_rating(object_class:str, depth:float) -> int:
     """
     Returns the relevance rating for a given object class, adjusted by depth.
     
@@ -113,9 +116,10 @@ def get_obstacle_relevance_rating(object_class: str, depth: float) -> int:
         return base_rating
 
     # Cull anything ≥ 10m — too far to be hazardous
+    if depth >= MAX_DEPTH:
+        return 0
     if depth >= 10:
         return max(base_rating - 4, 0)
-    # Subtract based on distance tiers
     elif depth >= 5:
         return max(base_rating - 2, 0)
     elif depth >= 3:
@@ -139,3 +143,41 @@ def estimate_depth(object_class:str, bbox):
     depth = object_scale / (area ** 0.5)  # square root inverse area
 
     return depth
+
+def real_depth(bbox, depth_map):
+    x1, y1, x2, y2 = bbox
+    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+
+    if x2 <= x1 or y2 <= y1:
+        return MAX_DEPTH
+
+    if depth_map is None:
+        return MAX_DEPTH
+
+    bbox_depths = depth_map[y1:y2, x1:x2]
+
+    # Epsilon value
+    valid_depth_map = np.greater(bbox_depths, 1e-6).astype(np.float32) * np.less(bbox_depths, MAX_DEPTH).astype(np.float32)
+    valid_depths = bbox_depths * valid_depth_map
+    valid_depths[~np.isfinite(valid_depths)] = 0
+
+    if not np.any(valid_depth_map): # Return max if no valid values
+        return MAX_DEPTH
+
+    median_depth = np.median(valid_depths[np.nonzero(valid_depths)])
+    return float(median_depth)
+
+def get_object_median_depths(objects:list, use_zed:bool=True) -> list:
+    """
+        Takes in a list of objects then returns the same list with depths calculated and attached to them.
+    """
+    
+    if not use_zed:
+        for obj in objects:
+            obj['depth'] = estimate_depth(obj['class'], obj['bbox'])
+    else:
+        depth_map = camera_feed.get_depth_map()
+        for obj in objects:
+            obj['depth'] = real_depth(obj['bbox'], depth_map)
+            
+    return objects

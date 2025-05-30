@@ -6,8 +6,9 @@ import numpy as np
 from PIL import Image
 import os
 
-from obstacle_relevance import get_obstacle_relevance_rating, RELEVANCE_RATING
+from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
 import colour_correction
+import camera_feed
 
 try:
     import pyzed.sl as sl
@@ -43,45 +44,9 @@ class VideoProcessor:
             print("Model load failed")
             exit()
 
-    def get_depth_from_zed(self, bbox):
-        if self.zed is None:
-            return MAX_DEPTH
-
-        x1, y1, x2, y2 = bbox
-        frame_width = self.zed.get_resolution().width
-        frame_height = self.zed.get_resolution().height
-
-        # Clamp bbox inside frame
-        x1 = max(0, min(frame_width - 1, int(x1)))
-        x2 = max(0, min(frame_width - 1, int(x2)))
-        y1 = max(0, min(frame_height - 1, int(y1)))
-        y2 = max(0, min(frame_height - 1, int(y2)))
-
-        if x2 <= x1 or y2 <= y1:
-            return MAX_DEPTH
-
-        if self.zed.grab(self.runtime_params) != sl.ERROR_CODE.SUCCESS:
-            return MAX_DEPTH
-        self.zed.retrieve_measure(self.depth_measure, sl.MEASURE.DEPTH)
-
-        depth_array = self.depth_measure.get_data()
-        if depth_array is None:
-            return MAX_DEPTH
-
-        bbox_depths = depth_array[y1:y2, x1:x2]
-
-        valid_depths = bbox_depths[(bbox_depths > 0) & (bbox_depths < MAX_DEPTH)]
-
-        if valid_depths.size == 0:
-            return MAX_DEPTH
-
-        median_depth = np.median(valid_depths)
-        return float(median_depth)
-
     def annotate_frame(self, frame, detections, smoothing):
         """
         Helper function to draw bounding boxes and labels on a frame.
-        Now, depth is already attached to detections, so no need to calculate here.
         """
         annotated_frame = frame.copy()
         H, W, _ = frame.shape # Mask scaling 
@@ -95,10 +60,7 @@ class VideoProcessor:
             object_class = det['class']
             confidence = det['confidence']
             track_id = det['track_id'] # Already an int
-
-            # Calculate depth for the object - changed
-            depth = det.get('depth', estimate_depth(det['bbox'], object_class))
-            det['depth'] = depth
+            depth = det['depth']
 
             # --- Filter out objects that are too far ---
             if depth > MAX_DEPTH:
@@ -217,24 +179,30 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    def process_video(self, input_video_path, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
+    def process_video(self, input_video_path, using_zed=True, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
         """
         Reads video, processes frames, saves and displays
         """
         if not self.model_ready:
             print("Model not loaded. Cannot process frame")
 
-        # Begin video processing
-        cap = cv2.VideoCapture(input_video_path)
-        if not cap.isOpened():
-            print(f"Error: Could not open video file: {input_video_path}")
-            return
+        if not using_zed:
+            # Begin video processing
+            cap = cv2.VideoCapture(input_video_path)
+            if not cap.isOpened():
+                print(f"Error: Could not open video file: {input_video_path}")
+                return
 
-        # Get video properties
-        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        fps = cap.get(cv2.CAP_PROP_FPS)
-
+            # Get video properties
+            frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            fps = cap.get(cv2.CAP_PROP_FPS)
+        else:
+            camera_feed.setup_cam(recording_path=input_video_path)
+            frame_width, frame_height = camera_feed.get_zed_resolution()
+            fps = camera_feed.get_zed_fps()
+            
+        
         # Setup for saving if outputting video
         out = None
         if output_video_path:
@@ -255,12 +223,21 @@ class VideoProcessor:
         
         frame_num = 0
         while True:
-            ret, frame = cap.read()
+            if not using_zed:
+                ret, frame = cap.read()
+                
+                if not ret:
+                    print("Finished processing video, or encountered error")
+                    break
+            else:
+                try: 
+                    camera_feed.go_next_frame()
+                    frame = camera_feed.get_image()
+                except:
+                    print("Finished processing video, or encountered error")
+                    break
 
-            if not ret:
-                print("Finished processing video, or encountered error")
-                break
-
+            
             frame_num += 1
             if frame_num % 100 == 0:
                 print(f"Processing frame {frame_num}")
@@ -273,22 +250,14 @@ class VideoProcessor:
                     print(f"Error during colour correction, on frame: {e}")
                 
             # Detect and track objects
-
             try:
                 tracks = ai_handler.get_tracking(frame)
             except Exception as e:
                 print(f"Error during tracking, on frame: {e}")
                 tracks = []
 
-            # Attach depth to each detection
-            if self.use_zed_depth and self.zed.grab(self.runtime_params) == sl.ERROR_CODE.SUCCESS:
-                self.zed.retrieve_measure(self.depth_measure, sl.MEASURE.DEPTH)
-                for det in tracks:
-                    det['depth'] = self.get_depth_from_zed(det['bbox'])
-            else:
-                for det in tracks:
-                    det['depth'] = estimate_depth(det['bbox'], det['class'])
-
+            tracks = get_object_median_depths(tracks, using_zed)
+            
             # Update track history
             self.update_track_ids(tracks, frame_num)
 
@@ -320,8 +289,11 @@ class VideoProcessor:
                 if key == ord('q') or key == 27:
                     print("Quitting")
                     break
-
-        cap.release()
+        
+        if using_zed:
+            camera_feed.shutdown_cam()
+        else:
+            cap.release()
         if out:
             out.release()
         if display:
