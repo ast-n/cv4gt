@@ -26,7 +26,6 @@ if (err != sl.ERROR_CODE.SUCCESS):
     zed.close()
     exit(-1)
 
-
 i = 0
 zed_pose = sl.Pose()
 
@@ -62,7 +61,7 @@ while i < 3600: # Run for 3600 frames (60 seconds)
             # Latest - oldest position
             position_change = movement_history[-1] - movement_history[0]
             # Convert ms to seconds
-            time_change = (time_history[-1] - time_history[0]) / 1000.0 
+            time_change = (time_history[-1] - time_history[0]) / 1000.0  
             
             if time_change > 0:
                 velocity = position_change / time_change  # meters per second
