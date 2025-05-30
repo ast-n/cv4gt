@@ -99,11 +99,11 @@ MAX_DEPTH = 10 # Maximum depth in meters for depth estimation
 def get_obstacle_relevance_rating(object_class: str, depth: float) -> int:
     """
     Returns the relevance rating for a given object class, adjusted by depth.
-
+    
     Args:
         object_class (str): The class of the detected object.
         depth (float): The depth/distance to the object in meters.
-
+    
     Returns:
         int: The adjusted relevance rating for the object.
     """
@@ -112,14 +112,15 @@ def get_obstacle_relevance_rating(object_class: str, depth: float) -> int:
     if object_class == "sideloader_arm":
         return base_rating
 
-    if depth < 2:
-        # Add 2 to base rating, capped at 5
-        return min(base_rating + 2, 5)
-    elif depth < 5:
-        # Add 1 to base rating, capped at 5
-        return min(base_rating + 1, 5)
+    # Cull anything ≥ 10m — too far to be hazardous
+    if depth >= 10:
+        return max(base_rating - 4, 0)
+    # Subtract based on distance tiers
+    elif depth >= 5:
+        return max(base_rating - 2, 0)
+    elif depth >= 3:
+        return max(base_rating - 1, 0)
     else:
-        # No change to base rating
         return base_rating
 
 def estimate_depth(object_class:str, bbox):
