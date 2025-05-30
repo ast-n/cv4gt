@@ -68,7 +68,7 @@ class VideoProcessor:
         if self.use_zed_depth:
             self.zed = sl.Camera()
             init_params = sl.InitParameters()
-            init_params.camera_resolution = sl.RESOLUTION.HD720  # or as needed
+            init_params.camera_resolution = sl.RESOLUTION.HD720
             init_params.camera_fps = 30
             err = self.zed.open(init_params)
             if err != sl.ERROR_CODE.SUCCESS:
