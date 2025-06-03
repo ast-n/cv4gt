@@ -62,6 +62,11 @@ class VideoProcessor:
             confidence = det['confidence']
             track_id = det['track_id'] # Already an int
             depth = det['depth']
+            
+            velocity = 0
+            if 'velocity' in det.keys():
+                if not np.any(np.isnan(det['velocity'])):
+                    velocity = np.linalg.norm(det['velocity']) # Linear norm a.k.a. magnitude
 
             # --- Filter out objects that are too far ---
             if depth > MAX_DEPTH:
@@ -73,7 +78,7 @@ class VideoProcessor:
             thickness = 1
 
             if object_class in RELEVANCE_RATING:
-                relevance = get_obstacle_relevance_rating(object_class, depth)
+                relevance = get_obstacle_relevance_rating(object_class, depth, velocity)
                 colour = RELEVANCE_COLORS.get(relevance, DEFAULT_COLOUR)
                 thickness = 2 if relevance >= 4 else 1
                 text_colour = (0, 0, 0) if sum(colour)/3 > 127 else text_colour
@@ -92,6 +97,10 @@ class VideoProcessor:
                 y1 += int(smoothing_offset[1])
                 x2 += int(smoothing_offset[0])
                 y2 += int(smoothing_offset[1])
+
+            # Cut off drawing here if relevance 0
+            if relevance == 0:
+                continue
 
             # Handle mask drawing
             if det.get('mask_polygon_norm') is not None:
