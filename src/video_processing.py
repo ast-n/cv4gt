@@ -248,14 +248,18 @@ class VideoProcessor:
                     frame = colour_correction.colour_convert(frame)
                 except Exception as e:
                     print(f"Error during colour correction, on frame: {e}")
-                
+            
             # Detect and track objects
             try:
-                tracks = ai_handler.get_tracking(frame)
+                if using_zed:
+                    dets = ai_handler.get_tracking(frame)
+                    tracks = camera_feed.track_object_detections(dets)
+                else:
+                    tracks = ai_handler.get_tracking(frame)
             except Exception as e:
                 print(f"Error during tracking, on frame: {e}")
                 tracks = []
-
+                
             tracks = get_object_median_depths(tracks, using_zed)
             
             # Update track history

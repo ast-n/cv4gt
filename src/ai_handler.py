@@ -77,6 +77,7 @@ class ModelManager:
 
             detections.append({
                 'class': class_name,
+                'class_id': class_id,
                 'confidence': confidence,
                 'bbox': [x1, y1, x2, y2]
             })
@@ -120,6 +121,7 @@ class ModelManager:
     
             tracks_with_masks.append({
                 'class': class_name,
+                'class_id': class_id,
                 'track_id': track_id,
                 'confidence': confidence,
                 'bbox': [x1, y1, x2, y2],
