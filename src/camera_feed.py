@@ -250,7 +250,7 @@ def track_object_detections(detections:list) -> list:
     
     for det in detections:
         tmp = sl.CustomBoxObjectData()
-        tmp.unique_object_id = str(det['track_id'])
+        tmp.unique_object_id = sl.generate_unique_id()
         det_tracking_ids.append(tmp.unique_object_id)
         tmp.probability = det['confidence']
         tmp.label = int(det['class_id'])
@@ -287,8 +287,6 @@ def track_object_detections(detections:list) -> list:
             'mask': obj_mask,
             'velocity': obj_velocity
         })
-        
-    print(f"orig: {det_tracking_ids}, new: {[obj['track_id'] for obj in track_list]}")
     
     return track_list
 

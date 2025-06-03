@@ -27,6 +27,7 @@ RELEVANCE_COLORS = {
 }
 
 DEFAULT_COLOUR = (255, 0, 0) # Blue
+DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
 CLASS_IGNORE_LIST = ["sideloader_arm"]
 
 class VideoProcessor:
@@ -68,12 +69,14 @@ class VideoProcessor:
 
             relevance = 0
             colour = DEFAULT_COLOUR
+            text_colour = DEFAULT_TEXT_COLOUR
             thickness = 1
 
             if object_class in RELEVANCE_RATING:
                 relevance = get_obstacle_relevance_rating(object_class, depth)
                 colour = RELEVANCE_COLORS.get(relevance, DEFAULT_COLOUR)
                 thickness = 2 if relevance >= 4 else 1
+                text_colour = (0, 0, 0) if sum(colour)/3 > 127 else text_colour
 
                 # Add detection to the list if relevance is defined
                 det['relevance'] = relevance  # Adds to dict
@@ -105,14 +108,14 @@ class VideoProcessor:
                 cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), colour, thickness)
 
             # Draw label with all information - moved this
-            label = f"[{track_id}] {object_class} {confidence:.2f} R:{relevance} D:{depth:.1f}m"
+            label = f"{object_class} {confidence:.2f} R:{relevance} D:{depth:.1f}m"
             
             # Draw label background
             text_y = y1 - 10 if y1 - 10 > 10 else y1 + 20
             (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, thickness)
             cv2.rectangle(annotated_frame, (x1, text_y - h - 5), (x1 + w, text_y + 5), colour, -1)
             cv2.putText(annotated_frame, label, (x1, text_y),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), thickness)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_colour, thickness)
 
             # Draw tracking line
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
@@ -252,7 +255,7 @@ class VideoProcessor:
             # Detect and track objects
             try:
                 if using_zed:
-                    dets = ai_handler.get_tracking(frame)
+                    dets = ai_handler.get_objects(frame)
                     tracks = camera_feed.track_object_detections(dets)
                 else:
                     tracks = ai_handler.get_tracking(frame)
