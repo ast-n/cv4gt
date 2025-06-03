@@ -7,9 +7,9 @@ RELEVANCE_RATING = {
     "child": 5,
     "dog": 4,
     "cat": 4,
-    "car": 5,
-    "van": 5,
-    "truck": 5,
+    "car": 4,
+    "van": 4,
+    "truck": 4,
     "motorbike": 5,
     "bicycle": 5,
     "person": 5,
@@ -97,9 +97,9 @@ OBJECT_SCALE_MAP = {
     "aeroplane": 10000
 }
 
-MAX_DEPTH = 20 # Maximum depth in meters for depth estimation
+MAX_DEPTH = 10.5 # Maximum depth in meters for depth estimation
 
-def get_obstacle_relevance_rating(object_class:str, depth:float) -> int:
+def get_obstacle_relevance_rating(object_class:str, depth:float, velocity:float) -> int:
     """
     Returns the relevance rating for a given object class, adjusted by depth.
     
@@ -115,17 +115,22 @@ def get_obstacle_relevance_rating(object_class:str, depth:float) -> int:
     if object_class == "sideloader_arm":
         return base_rating
 
+    rating = base_rating
     # Cull anything ≥ 10m — too far to be hazardous
     if depth >= MAX_DEPTH:
         return 0
-    if depth >= 10:
-        return max(base_rating - 4, 0)
+    
+    if depth >= 7:
+        rating -= 4
     elif depth >= 5:
-        return max(base_rating - 2, 0)
+        rating -= 2
     elif depth >= 3:
-        return max(base_rating - 1, 0)
-    else:
-        return base_rating
+        rating -= 1
+        
+    if 0.6 < velocity < 10: # Max value set because velocity is misinterpreted as some incredibly high value sometimes. 10m/s = 36km/hr.
+        rating += 2
+        
+    return max(0, min(rating, 5))
 
 def estimate_depth(object_class:str, bbox):
     """
