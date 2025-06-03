@@ -45,14 +45,15 @@ class ZEDCam:
         obj_param = sl.ObjectDetectionParameters()
         obj_param.enable_tracking=True
         
-        if masks:
+        self.masks = masks
+        if self.masks:
             obj_param.enable_mask_output=True
             
         if custom_model_onnx_path:
             obj_param.custom_onnx_file = custom_model_onnx_path
             obj_param.detection_model = sl.OBJECT_DETECTION_MODEL.CUSTOM_YOLOLIKE_BOX_OBJECTS
         else:
-            obj_param.detection_model = sl.OBJECT_DETECTION_MODEL.MULTI_CLASS_BOX_MEDIUM
+            obj_param.detection_model = sl.OBJECT_DETECTION_MODEL.CUSTOM_BOX_OBJECTS
         
         err = self.zed.enable_object_detection(obj_param)
         if err != sl.ERROR_CODE.SUCCESS :
@@ -139,11 +140,12 @@ class ZEDCam:
         location = (-37.814167, 144.963056)
         return location
     
-    def get_object_detections(self):
-        # self.zed.retrieve_objects(self.objects, self.obj_runtime_params)
-        #Figure this out later....
-        raise NotImplementedError
-        return
+    def track_object_detections(self, det_objects:list):
+        self.zed.ingest_custom_box_objects(det_objects)
+        
+        self.zed.retrieve_objects(self.objects, self.obj_runtime_param)
+        
+        return self.objects.object_list
     
     def get_resolution(self):
         resolution = sl.get_resolution(self.resolution)
@@ -233,7 +235,7 @@ def get_camera_gps() -> tuple:
     gps_loc = zed_cam.get_gps()
     return gps_loc
 
-def get_object_detections() -> list:
+def track_object_detections(detections:list) -> list:
     """
         Method to retrieve object detections, tracking, positions, movement, etc for the current frame.
         Returns a list of dictionaries, which each dict holding information for each object present.
@@ -241,9 +243,52 @@ def get_object_detections() -> list:
         NOT CURRENTLY IMPLEMENTED
     """
     
+    temp_class_dict = {}
+    
+    det_objects = []
+    det_tracking_ids = []
+    
+    for det in detections:
+        tmp = sl.CustomBoxObjectData()
+        tmp.unique_object_id = sl.generate_unique_id()
+        det_tracking_ids.append(tmp.unique_object_id)
+        tmp.probability = det['confidence']
+        tmp.label = int(det['class_id'])
+        bbox = det['bbox']
+        tmp.bounding_box_2d = np.array([[bbox[0], bbox[1]], [bbox[2], bbox[1]], [bbox[0], bbox[3]], [bbox[2], bbox[3]]])
+        tmp.is_grounded = True
+        det_objects.append(tmp)
+        temp_class_dict[tmp.label] = det['class']
+
     global zed_cam
-    det_array = zed_cam.get_object_detections()
-    return det_array
+    track_objects = zed_cam.track_object_detections(det_objects)
+    
+    track_list = []
+    for obj in track_objects:
+        obj_track_id = obj.unique_object_id
+        if obj_track_id not in det_tracking_ids:
+            continue
+        obj_class_id = obj.raw_label
+        if obj_class_id not in temp_class_dict.keys():
+            continue
+        obj_velocity = obj.velocity
+        obj_bbox_2d = [obj.bounding_box_2d[0][0], obj.bounding_box_2d[0][1], obj.bounding_box_2d[1][0], obj.bounding_box_2d[2][1]]
+        obj_centre = list(((obj_bbox_2d[0]+obj_bbox_2d[2])/2, (obj_bbox_2d[1]+obj_bbox_2d[3])/2))
+        obj_confidence = obj.confidence
+        obj_mask = obj.mask
+        
+        track_list.append({
+            'class': temp_class_dict[obj_class_id],
+            'class_id': obj_class_id,
+            'track_id': obj_track_id,
+            'confidence': obj_confidence,
+            'bbox': obj_bbox_2d,
+            'centre': obj_centre,
+            'mask': obj_mask,
+            'velocity': obj_velocity
+        })
+    
+    return track_list
 
 def get_zed_resolution() -> tuple:
     """
