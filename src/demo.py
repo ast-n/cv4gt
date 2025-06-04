@@ -13,7 +13,8 @@ def main():
     ENABLE_LOGGING = False
     COLOUR_CORRECTION = False
     SMOOTHING_FACTOR = 0.0
-    MODEL_PATH = "models\\YOLOv8-cv4gt-data-15-04_100e.pt"
+    MODEL_PATH = "models\\YOLOv8s-cv4gt-data-20-05_239e.onnx"
+    ZED_OBJECT_DETECT = True
 
     if not os.path.isfile(INPUT_VIDEO):
         print(f"Input video file not found: {INPUT_VIDEO}")
@@ -22,7 +23,7 @@ def main():
     
     # Run
     try:
-        processor = VideoProcessor(MODEL_PATH)
+        processor = VideoProcessor(MODEL_PATH, ZED_OBJECT_DETECT)
 
         processor.process_video(
             input_video_path=INPUT_VIDEO,

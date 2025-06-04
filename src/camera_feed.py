@@ -10,7 +10,7 @@ import numpy as np
 import cv2
 
 class ZEDCam:
-    def __init__(self, recording_path:str=None, custom_model_onnx_path:str=None, masks:bool=False):
+    def __init__(self, recording_path:str=None, custom_model_onnx_path:str=None, masks:bool=False, custom_labels:dict=None):
         self.zed = sl.Camera()
         self.grabbed_image = None
         
@@ -50,6 +50,10 @@ class ZEDCam:
             obj_param.enable_mask_output=True
             
         if custom_model_onnx_path:
+            if not custom_labels:
+                print("Warning: Object detection labels not passed. Pipeline will not be able to identify objects.")
+            else:
+                self.custom_labels = custom_labels
             obj_param.custom_onnx_file = custom_model_onnx_path
             obj_param.detection_model = sl.OBJECT_DETECTION_MODEL.CUSTOM_YOLOLIKE_BOX_OBJECTS
         else:
@@ -147,6 +151,11 @@ class ZEDCam:
         
         return self.objects.object_list
     
+    def run_object_detections(self):
+        self.zed.retrieve_objects(self.objects, self.obj_runtime_param)
+        
+        return self.objects.object_list
+    
     def get_resolution(self):
         resolution = sl.get_resolution(self.resolution)
         return (resolution.width, resolution.height)
@@ -163,13 +172,13 @@ class ZEDCam:
             
 zed_cam = None
 
-def setup_cam(recording_path:str=None, custom_model_onnx_path:str=None, masks:bool=False):
+def setup_cam(recording_path:str=None, custom_model_onnx_path:str=None, masks:bool=False, custom_labels:dict=None):
     """
         Initialises the ZED camera or simulated camera from a recording.
     """
     
     global zed_cam
-    zed_cam = ZEDCam(recording_path, custom_model_onnx_path, masks)
+    zed_cam = ZEDCam(recording_path, custom_model_onnx_path, masks, custom_labels)
 
 def go_next_frame():
     """
@@ -279,6 +288,37 @@ def track_object_detections(detections:list) -> list:
         
         track_list.append({
             'class': temp_class_dict[obj_class_id],
+            'class_id': obj_class_id,
+            'track_id': obj_track_id,
+            'confidence': obj_confidence,
+            'bbox': obj_bbox_2d,
+            'centre': obj_centre,
+            'mask': obj_mask,
+            'velocity': obj_velocity
+        })
+    
+    return track_list
+
+def run_object_detections() -> tuple[np.ndarray, list]:
+    """
+        Method to run the end-to-end object detection pipeline from ZED. ZED will handle frame intake, detection, and tracking.
+    """
+    global zed_cam
+    track_objects = zed_cam.run_object_detections()
+    
+    track_list = []
+    for obj in track_objects:
+        obj_track_id = obj.unique_object_id
+        obj_class_id = obj.raw_label
+        obj_class = zed_cam.custom_labels[obj_class_id]
+        obj_velocity = obj.velocity
+        obj_bbox_2d = [obj.bounding_box_2d[0][0], obj.bounding_box_2d[0][1], obj.bounding_box_2d[1][0], obj.bounding_box_2d[2][1]]
+        obj_centre = list(((obj_bbox_2d[0]+obj_bbox_2d[2])/2, (obj_bbox_2d[1]+obj_bbox_2d[3])/2))
+        obj_confidence = obj.confidence
+        obj_mask = obj.mask
+        
+        track_list.append({
+            'class': obj_class,
             'class_id': obj_class_id,
             'track_id': obj_track_id,
             'confidence': obj_confidence,

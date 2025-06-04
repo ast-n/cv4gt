@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 from PIL import Image
 import os
+import onnx
+import ast
 
 from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
 import colour_correction
@@ -31,14 +33,19 @@ DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
 CLASS_IGNORE_LIST = ["sideloader_arm"]
 
 class VideoProcessor:
-    def __init__(self, model_path=None):
+    def __init__(self, model_path=None, zed_object_detect=False):
         """
         Initialises VideoProcessor and loads object detection model
         """
         self.model_ready = False
+        self.model_path = model_path
+        self.zed_object_detect = zed_object_detect
 
         # Loading model
-        if ai_handler.load_object_detection_model(model_path):
+        if (zed_object_detect):
+            print("ZED detection mode enabled. Skipping AI handler.")
+            self.model_ready = True
+        elif ai_handler.load_object_detection_model(model_path):
             self.model_ready = True
             print("Model successfully loaded, now to process")
         else:
@@ -49,8 +56,9 @@ class VideoProcessor:
         """
         Helper function to draw bounding boxes and labels on a frame.
         """
+        
         annotated_frame = frame.copy()
-        H, W, _ = frame.shape # Mask scaling 
+        H, W, _ = frame.shape # Mask scaling
         relevant_objects_found = []
 
         for det in detections:
@@ -210,7 +218,17 @@ class VideoProcessor:
             frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             fps = cap.get(cv2.CAP_PROP_FPS)
         else:
-            camera_feed.setup_cam(recording_path=input_video_path)
+            if (self.zed_object_detect):
+                
+                # Retrieve the labels from the onnx model by loading it, reading metadata, then unloading it. This is kind of awful but no idea how else to do it.
+                temp_model = onnx.load(self.model_path)
+                properties = { p.key : p.value for p in temp_model.metadata_props }
+                del temp_model
+                class_labels = ast.literal_eval(properties['names'])
+                
+                camera_feed.setup_cam(recording_path=input_video_path, custom_model_onnx_path=self.model_path, custom_labels=class_labels)
+            else:
+                camera_feed.setup_cam(recording_path=input_video_path)
             frame_width, frame_height = camera_feed.get_zed_resolution()
             fps = camera_feed.get_zed_fps()
             
@@ -263,9 +281,11 @@ class VideoProcessor:
             
             # Detect and track objects
             try:
-                if using_zed:
+                if using_zed and not self.zed_object_detect:
                     dets = ai_handler.get_objects(frame)
                     tracks = camera_feed.track_object_detections(dets)
+                elif using_zed and self.zed_object_detect:
+                    tracks = camera_feed.run_object_detections()
                 else:
                     tracks = ai_handler.get_tracking(frame)
             except Exception as e:

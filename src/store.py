@@ -6,7 +6,7 @@ This script should:
     - Storage of any other permanent files which the codebase needs access to (config, maybe frontend files, etc.)"""
 
 from PIL import Image
-from camera_feed import get_camera_gps
+import camera_feed
 import datetime
 
 tagged_folder_path = "/data/tagged"
@@ -52,7 +52,7 @@ def tag_and_store(image: Image.Image) -> str:
 
 def get_gps() -> tuple:
     # Get current GPS location, probably from the camera.
-    location = get_camera_gps()
+    location = camera_feed.get_camera_gps()
     # Code to turn it into a tuple if thats not the format its given in.
     if location != None:
         return location
