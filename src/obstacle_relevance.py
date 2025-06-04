@@ -3,6 +3,7 @@ import numpy as np
 
 # Mapping each obstacle class to its relevance rating
 RELEVANCE_RATING = {
+    "person": 5,
     "adult": 5,
     "child": 5,
     "dog": 4,
@@ -51,6 +52,7 @@ RELEVANCE_RATING = {
 
 #the numbers are the average pixel sizes of the objects in the dataset
 OBJECT_SCALE_MAP = {
+    "person": 350,
     "adult": 350,
     "child": 250,
     "dog": 200,
@@ -97,7 +99,7 @@ OBJECT_SCALE_MAP = {
     "aeroplane": 10000
 }
 
-MAX_DEPTH = 10.5 # Maximum depth in meters for depth estimation
+MAX_DEPTH = 15 # Maximum depth in meters for depth estimation
 
 def get_obstacle_relevance_rating(object_class:str, depth:float, velocity:float) -> int:
     """
@@ -163,8 +165,8 @@ def real_depth(bbox, depth_map):
 
     # Epsilon value
     valid_depth_map = np.greater(bbox_depths, 1e-6).astype(np.float32) * np.less(bbox_depths, MAX_DEPTH).astype(np.float32)
+    bbox_depths[~np.isfinite(bbox_depths)] = 0
     valid_depths = bbox_depths * valid_depth_map
-    valid_depths[~np.isfinite(valid_depths)] = 0
 
     if not np.any(valid_depth_map): # Return max if no valid values
         return MAX_DEPTH
