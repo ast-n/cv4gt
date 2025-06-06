@@ -11,6 +11,8 @@ import ast
 from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
 import colour_correction
 import camera_feed
+import store
+from enum import Enum
 
 try:
     import pyzed.sl as sl
@@ -27,6 +29,12 @@ RELEVANCE_COLORS = {
     2: (0, 255, 0),    # Green
     1: (255, 255, 0)   # Cyan - Lowest relevance
 }
+
+class GripperState(Enum):
+    NEUTRAL = 0
+    GOOD = 1
+    BAD = 2
+    NONE = 3
 
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
@@ -60,6 +68,12 @@ class VideoProcessor:
         annotated_frame = frame.copy()
         H, W, _ = frame.shape # Mask scaling
         relevant_objects_found = []
+        gripper_state = GripperState.NONE
+        
+        indicator_x_line1 = int(W * 0.45)
+        indicator_x_line2 = int(W * 0.65)
+        indicator_y1 = int(H * 0.1)
+        indicator_y2 = int(H * 0.9)
 
         for det in detections:
             if det['track_id'] is None:
@@ -79,7 +93,7 @@ class VideoProcessor:
             # --- Filter out objects that are too far ---
             if depth > MAX_DEPTH:
                 continue  # Skip object
-
+            
             relevance = 0
             colour = DEFAULT_COLOUR
             text_colour = DEFAULT_TEXT_COLOUR
@@ -109,6 +123,16 @@ class VideoProcessor:
             # Cut off drawing here if relevance 0
             if relevance == 0:
                 continue
+            
+            if object_class == "bin" and gripper_state != GripperState.BAD: # Bad gripper state overrides all
+                if gripper_state == GripperState.NONE:
+                    gripper_state = GripperState.NEUTRAL
+                    
+                bin_inside = [indicator_x_line1 <= x1 <= indicator_x_line2 and indicator_y1 <= y1 <= indicator_y2, indicator_x_line1 <= x2 <= indicator_x_line2 and indicator_y1 <= y2 <= indicator_y2]
+                if all(bin_inside):
+                    gripper_state = GripperState.GOOD
+                elif any(bin_inside):
+                    gripper_state = GripperState.BAD
 
             # Handle mask drawing
             if det.get('mask_polygon_norm') is not None:
@@ -135,10 +159,64 @@ class VideoProcessor:
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_colour, thickness)
 
             # Draw tracking line
+            """
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
             cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)
+            """
+            
+        # Draw bin alignment indicator
+        if gripper_state != GripperState.NONE:
+            match gripper_state:
+                case GripperState.GOOD:
+                    gripper_colour = (0,255,0)
+                    gripper_icon = store.get_grabber_indicator("check")
+                case GripperState.BAD:
+                    gripper_colour = (0,0,255)
+                    gripper_icon = store.get_grabber_indicator("cross")
+                case _:
+                    gripper_colour = (255,255,255)
+                    gripper_icon = None
+            
+            cv2.line(annotated_frame, (indicator_x_line1, indicator_y1), (indicator_x_line1, indicator_y2), gripper_colour, thickness=4)
+            cv2.line(annotated_frame, (indicator_x_line2, indicator_y1), (indicator_x_line2, indicator_y2), gripper_colour, thickness=4)
+            
+            if gripper_icon is not None:
+                self.overlay_transparent(annotated_frame, gripper_icon, (indicator_x_line1+indicator_x_line2)//2-32, indicator_y1)
 
         return annotated_frame, relevant_objects_found
+    
+    # Used for overlaying the bin gripper warning/checkmark icon
+    def overlay_transparent(self, background, overlay, x, y):
+
+        background_width = background.shape[1]
+        background_height = background.shape[0]
+
+        if x >= background_width or y >= background_height:
+            return background
+
+        h, w = overlay.shape[0], overlay.shape[1]
+
+        if x + w > background_width:
+            w = background_width - x
+            overlay = overlay[:, :w]
+
+        if y + h > background_height:
+            h = background_height - y
+            overlay = overlay[:h]
+
+        if overlay.shape[2] < 4:
+            overlay = np.concatenate(
+                [
+                    overlay,
+                    np.ones((overlay.shape[0], overlay.shape[1], 1), dtype = overlay.dtype) * 255
+                ],
+                axis = 2,
+            )
+
+        overlay_image = overlay[..., :3]
+        mask = overlay[..., 3:] / 255.0
+
+        background[y:y+h, x:x+w] = (1.0 - mask) * background[y:y+h, x:x+w] + mask * overlay_image
 
     def get_smoothed_box_pos(self, tracking_history):
         """
