@@ -1,16 +1,20 @@
 """
-
-cv4gt - 1st PoC demonstration script
-
+cv4gt - Proof-of-concept demonstration script
 """
 from video_processing import VideoProcessor
 import os
 
 def main():
     # Config
-    INPUT_VIDEO = "data/input.mp4"
+    INPUT_VIDEO = "data\\input.mp4"
+    USING_ZED = False
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
+    ENABLE_LOGGING = False
+    COLOUR_CORRECTION = False
+    SMOOTHING_FACTOR = 0.0
+    MODEL_PATH = "models\\YOLOv8s-cv4gt-data-20-05_239e.onnx"
+    ZED_OBJECT_DETECT = False
 
     if not os.path.isfile(INPUT_VIDEO):
         print(f"Input video file not found: {INPUT_VIDEO}")
@@ -19,12 +23,16 @@ def main():
     
     # Run
     try:
-        processor = VideoProcessor()
+        processor = VideoProcessor(MODEL_PATH, ZED_OBJECT_DETECT)
 
         processor.process_video(
             input_video_path=INPUT_VIDEO,
+            using_zed=USING_ZED,
             output_video_path=OUTPUT_VIDEO,
-            display=ENABLE_DISPLAY
+            display=ENABLE_DISPLAY,
+            logging=ENABLE_LOGGING,
+            smoothing=SMOOTHING_FACTOR,
+            enable_colour_correction=COLOUR_CORRECTION
         )
 
     except Exception as e:

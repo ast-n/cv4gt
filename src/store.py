@@ -1,13 +1,15 @@
 from __future__ import annotations
-""" STORE """
-""" This script should:
+""" STORE
+This script should:
     - Handle storage, stowing, and retrieval of any data in long-term storage.
     - Tag hazard frames with GPS and time then store them.
     - Storage of any other permanent files which the codebase needs access to (config, maybe frontend files, etc.)"""
 
 from PIL import Image
-from camera_feed import get_camera_gps
+import camera_feed
 import datetime
+import numpy as np
+import cv2
 
 tagged_folder_path = "/data/tagged"
 
@@ -52,7 +54,7 @@ def tag_and_store(image: Image.Image) -> str:
 
 def get_gps() -> tuple:
     # Get current GPS location, probably from the camera.
-    location = get_camera_gps()
+    location = camera_feed.get_camera_gps()
     # Code to turn it into a tuple if thats not the format its given in.
     if location != None:
         return location
@@ -65,8 +67,28 @@ def store_image(image: Image.Image, img_exif: dict) -> str:
     image.save(filename, exif=img_exif)
     return filename
 
-def get_image():
-    return NotImplementedError
+def get_image(path:str) -> np.ndarray:
+    image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    return image
+
+checkmark_image = None
+cross_image = None
+
+def get_grabber_indicator(indicator:str) -> np.ndarrray | None:
+    match indicator:
+        case "check":
+            global checkmark_image
+            if checkmark_image is None:
+                checkmark_image = get_image("data/UI/check.png")
+            return checkmark_image
+        case "cross":
+            global cross_image
+            if cross_image is None:
+                cross_image = get_image("data/UI/cancel.png")
+            return cross_image
+        case _:
+            return None
+            
 
 def get_model():
     return NotImplementedError

@@ -1,10 +1,18 @@
 
 data/training/
 data/tagged/
+data/autodistill_inputs
+data/autodistill_outputs
+data/*.avi
 
 
 models/*.pt
+models/*.onnx
+models/*.engine
 yolo/*.pt
+models/*.onnx
+models/*.engine
+
 
 .ipynb_checkpoints/
 __pycache__/
@@ -21,3 +29,6 @@ runs/
 
 venv/
 env/
+PyOpenGL_accelerate-3.1.6-cp311-cp311-win_amd64.whl
+pyzed-4.2-cp311-cp311-win_amd64.whl
+PyOpenGL-3.1.6-cp311-cp311-win_amd64.whl

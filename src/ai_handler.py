@@ -1,5 +1,5 @@
-""" AI HANDLER """
-""" This script should:
+""" AI HANDLER
+This script should:
     - Handle setup and loading of AI models into memory.
     - Handle passing data directly to and from AI models.
     - Handle any mid-operation self-improvement or retraining systems."""
@@ -77,18 +77,71 @@ class ModelManager:
 
             detections.append({
                 'class': class_name,
+                'class_id': class_id,
                 'confidence': confidence,
                 'bbox': [x1, y1, x2, y2]
             })
         return detections
+    
+    def run_tracking(self, image):
+        """
+        Runs tracking on an image
+        """
+        if not self.model_loaded:
+            raise Exception("Model not loaded. Call load_object_detection_model() first.")
+        return self.object_detection_model.track(image, persist=True)[0]
+    
+    def track_objects(self, image):
+        """
+        Returns bounding box positions of objects and IDs
+        """
+        
+        results = self.run_tracking(image)
+        tracks_with_masks = []
 
+        if results.boxes is None or len(results.boxes) == 0:
+            return tracks_with_masks
+        
+        for i in range(len(results.boxes)):
+            box = results.boxes[i]
+
+            track_id_tensor = box.id
+            track_id = track_id_tensor.int().tolist()[0] if track_id_tensor is not None else None
+            class_id = int(box.cls)
+            class_name = results.names[class_id]
+            confidence = float(box.conf)
+            x1, y1, x2, y2 = box.xyxy[0].tolist()
+            centre_x, centre_y, w, h = box.xywh[0].tolist()
+            
+            # Mask handling logic
+            mask_polygon_norm = None
+
+            if results.masks is not None and i < len(results.masks):
+                mask_polygon_norm = results.masks.xyn[i]
+    
+            tracks_with_masks.append({
+                'class': class_name,
+                'class_id': class_id,
+                'track_id': track_id,
+                'confidence': confidence,
+                'bbox': [x1, y1, x2, y2],
+                'centre': [centre_x, centre_y],
+                'mask_polygon_norm': mask_polygon_norm
+            })
+
+        return tracks_with_masks
+        
 model_manager = ModelManager()
+
 
 def load_object_detection_model(model_path=None):
     return model_manager.load_object_detection_model(model_path)
 
 def get_objects(image):
     return model_manager.get_objects(image)
+
+def get_tracking(image):
+    return model_manager.track_objects(image)
 
 def load_bound_detector():
     return NotImplementedError
