@@ -380,7 +380,7 @@ class VideoProcessor:
 
             # Store frame if highly relevant hazard found
             if relevant_objects:
-                high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 4]
+                high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 5]
                 if high_relevance_objects:
                     print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
                           f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
