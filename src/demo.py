@@ -6,15 +6,15 @@ import os
 
 def main():
     # Config
-    INPUT_VIDEO = "data\\recordings\\HD720_SN33773243_10-13-17.svo2"
-    USING_ZED = True
+    INPUT_VIDEO = "data\\input.mp4"
+    USING_ZED = False
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
     ENABLE_LOGGING = False
     COLOUR_CORRECTION = False
     SMOOTHING_FACTOR = 0.0
     MODEL_PATH = "models\\YOLOv8s-cv4gt-data-20-05_239e.onnx"
-    ZED_OBJECT_DETECT = True
+    ZED_OBJECT_DETECT = False
 
     if not os.path.isfile(INPUT_VIDEO):
         print(f"Input video file not found: {INPUT_VIDEO}")

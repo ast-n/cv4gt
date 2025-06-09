@@ -248,8 +248,6 @@ def track_object_detections(detections:list) -> list:
     """
         Method to retrieve object detections, tracking, positions, movement, etc for the current frame.
         Returns a list of dictionaries, which each dict holding information for each object present.
-        
-        NOT CURRENTLY IMPLEMENTED
     """
     
     temp_class_dict = {}

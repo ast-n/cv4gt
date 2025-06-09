@@ -8,6 +8,8 @@ This script should:
 from PIL import Image
 import camera_feed
 import datetime
+import numpy as np
+import cv2
 
 tagged_folder_path = "/data/tagged"
 
@@ -65,8 +67,28 @@ def store_image(image: Image.Image, img_exif: dict) -> str:
     image.save(filename, exif=img_exif)
     return filename
 
-def get_image():
-    return NotImplementedError
+def get_image(path:str) -> np.ndarray:
+    image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    return image
+
+checkmark_image = None
+cross_image = None
+
+def get_grabber_indicator(indicator:str) -> np.ndarrray | None:
+    match indicator:
+        case "check":
+            global checkmark_image
+            if checkmark_image is None:
+                checkmark_image = get_image("data/UI/check.png")
+            return checkmark_image
+        case "cross":
+            global cross_image
+            if cross_image is None:
+                cross_image = get_image("data/UI/cancel.png")
+            return cross_image
+        case _:
+            return None
+            
 
 def get_model():
     return NotImplementedError
