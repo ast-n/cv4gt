@@ -6,8 +6,8 @@ import os
 
 def main():
     # Config
-    INPUT_VIDEO = "data\\input.mp4"
-    USING_ZED = False
+    INPUT_VIDEO = "data\\recordings\\HD720_test.svo2"
+    USING_ZED = True
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
     ENABLE_LOGGING = False
