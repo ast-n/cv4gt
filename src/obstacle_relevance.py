@@ -19,7 +19,7 @@ RELEVANCE_RATING = {
     "cyclist_side": 5,
     "head": 4,
     "helmet": 3,
-    "sideloader_arm": 1,
+    "sideloader_arm": 0,
     "fallen_bin": 4,
     "junk": 3,
     "bench": 2,
@@ -118,7 +118,7 @@ def get_obstacle_relevance_rating(object_class:str, depth:float, velocity:float)
         return base_rating
 
     rating = base_rating
-    # Cull anything ≥ 10m — too far to be hazardous
+    # Cull anything ≥ max depth — too far to be hazardous
     if depth >= MAX_DEPTH:
         return 0
     
