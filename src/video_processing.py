@@ -396,6 +396,9 @@ class VideoProcessor:
             if out:
                 out.write(annotated_frame)
 
+            # Yield frame
+            yield annotated_frame
+            
             # Display frames
             if display:
                 cv2.imshow("Hazard detection", annotated_frame)
