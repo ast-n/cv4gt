@@ -1,7 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from websockets.exceptions import ConnectionClosed
 from fastapi.responses import StreamingResponse
-from video_processing import VideoProcessor
+from fastapi.templating import Jinja2Templates
+import uvicorn
+import asyncio
 import cv2
+import json
+
+from video_processing import VideoProcessor
 
 # Config
 INPUT_VIDEO = "data\\ground_truth.mp4"
@@ -17,9 +23,17 @@ ZED_OBJECT_DETECT = False
 processor = VideoProcessor(MODEL_PATH, ZED_OBJECT_DETECT)
 
 app = FastAPI()
+templates = Jinja2Templates(directory="src/templates")
 
-def video_generator(VP: VideoProcessor):
-    for frame in VP.process_video(
+@app.get('/')
+def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.websocket("/ws")
+async def get_stream(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        for frame, objects in processor.process_video(
             input_video_path=INPUT_VIDEO,
             using_zed=USING_ZED,
             output_video_path=OUTPUT_VIDEO,
@@ -27,18 +41,19 @@ def video_generator(VP: VideoProcessor):
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
             enable_colour_correction=COLOUR_CORRECTION
-        ):
-        
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame_bytes = buffer.tobytes()
-        
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+            ):
+            
+            ret, buffer = cv2.imencode('.jpg', frame)
+            
+            await websocket.send_text(json.dumps(objects))
+            await websocket.send_bytes(buffer.tobytes())
+            
+            await asyncio.sleep(0.001)
+    except (WebSocketDisconnect, ConnectionClosed):
+        print("Client disconnected")
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+#I think the plan here is to make the streaming response return a JSON or something with the frame and other info attached,
+# then the frontend just extracts the relevant elements?
 
-@app.get("/view/annotated_video")
-def get_annotated_video():
-    return StreamingResponse(video_generator(processor), media_type="multipart/x-mixed-replace; boundary=frame")
+if __name__ == '__main__':
+    uvicorn.run(app, host='127.0.0.1', port=8000)

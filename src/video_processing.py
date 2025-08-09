@@ -397,7 +397,7 @@ class VideoProcessor:
                 out.write(annotated_frame)
 
             # Yield frame
-            yield annotated_frame
+            yield annotated_frame, relevant_objects
             
             # Display frames
             if display:
