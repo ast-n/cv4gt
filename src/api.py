@@ -10,17 +10,19 @@ import json
 from video_processing import VideoProcessor
 
 # Config
-INPUT_VIDEO = "data\\ground_truth.mp4"
-USING_ZED = False
+# INPUT_VIDEO = "data/ground_truth.mp4"
+INPUT_VIDEO = None
+USE_REALSENSE = True
 OUTPUT_VIDEO = "data/output.avi"
 ENABLE_DISPLAY = False
 ENABLE_LOGGING = False
 COLOUR_CORRECTION = False
 SMOOTHING_FACTOR = 0.0
-MODEL_PATH = "models\\YOLOv8s-cv4gt-data-20-05_239e.onnx"
-ZED_OBJECT_DETECT = False
 
-processor = VideoProcessor(MODEL_PATH, ZED_OBJECT_DETECT)
+
+MODEL_PATH = "models/YOLOv8s-10-06-193e.pt"
+
+processor = VideoProcessor(MODEL_PATH)
 
 app = FastAPI()
 templates = Jinja2Templates(directory="src/templates")
@@ -35,7 +37,7 @@ async def get_stream(websocket: WebSocket):
     try:
         for frame, objects in processor.process_video(
             input_video_path=INPUT_VIDEO,
-            using_zed=USING_ZED,
+            use_realsense=USE_REALSENSE,
             output_video_path=OUTPUT_VIDEO,
             display=ENABLE_DISPLAY,
             logging=ENABLE_LOGGING,
