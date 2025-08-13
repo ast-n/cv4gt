@@ -14,14 +14,6 @@ import camera_feed
 import store
 from enum import Enum
 
-try:
-    import pyzed.sl as sl
-    ZED_AVAILABLE = True
-    print("PyZED SDK found. Depth enabled.")
-except ImportError:
-    ZED_AVAILABLE = False
-    print("WARNING: PyZED SDK not found. Depth will be estimated from bbox area.")
-
 RELEVANCE_COLORS = {
     5: (0, 0, 255),    # Red - Highest relevance
     4: (0, 165, 255),  # Orange
@@ -47,13 +39,8 @@ class VideoProcessor:
         """
         self.model_ready = False
         self.model_path = model_path
-        self.zed_object_detect = zed_object_detect
 
-        # Loading model
-        if (zed_object_detect):
-            print("ZED detection mode enabled. Skipping AI handler.")
-            self.model_ready = True
-        elif ai_handler.load_object_detection_model(model_path):
+        if ai_handler.load_object_detection_model(model_path):
             self.model_ready = True
             print("Model successfully loaded, now to process")
         else:
@@ -277,39 +264,30 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    def process_video(self, input_video_path, using_zed=True, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
+    def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
         """
         Reads video, processes frames, saves and displays
         """
         if not self.model_ready:
             print("Model not loaded. Cannot process frame")
+            return
 
-        if not using_zed:
-            # Begin video processing
+        if use_realsense:
+            print("Using RealSense camera feed.")
+            camera_feed.setup_cam(recording_path=input_video_path)
+            frame_width, frame_height = camera_feed.realsense_cam.get_resolution()
+            fps = camera_feed.realsense_cam.get_fps()
+        else:
+            print("Using standard video file (OpenCV).")
+            if not input_video_path:
+                raise ValueError("An input video path is required when not using RealSense.")
             cap = cv2.VideoCapture(input_video_path)
             if not cap.isOpened():
                 print(f"Error: Could not open video file: {input_video_path}")
                 return
-
-            # Get video properties
-            frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
             frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
             fps = cap.get(cv2.CAP_PROP_FPS)
-        else:
-            if (self.zed_object_detect):
-                
-                # Retrieve the labels from the onnx model by loading it, reading metadata, then unloading it. This is kind of awful but no idea how else to do it.
-                temp_model = onnx.load(self.model_path)
-                properties = { p.key : p.value for p in temp_model.metadata_props }
-                del temp_model
-                class_labels = ast.literal_eval(properties['names'])
-                
-                camera_feed.setup_cam(recording_path=input_video_path, custom_model_onnx_path=self.model_path, custom_labels=class_labels)
-            else:
-                camera_feed.setup_cam(recording_path=input_video_path)
-            frame_width, frame_height = camera_feed.get_zed_resolution()
-            fps = camera_feed.get_zed_fps()
-            
         
         # Setup for saving if outputting video
         out = None
@@ -330,88 +308,81 @@ class VideoProcessor:
         self.track_history = defaultdict(lambda: defaultdict(lambda: []))
         
         frame_num = 0
-        while True:
-            if not using_zed:
-                ret, frame = cap.read()
+        try:
+
+            while True:
+                if use_realsense:
+                    aligned_frames, success = camera_feed.get_frames()
+                    if not success:
+                        break
+                    frame = camera_feed.get_image(aligned_frames)
+                    depth_map = camera_feed.get_depth_map(aligned_frames)
+                else: # Using standard video 
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
+                    depth_map = None
+
+                if frame is None:
+                    continue
+
+                frame_num += 1
+                if frame_num % 100 == 0:
+                    print(f"Processing frame {frame_num}")
+
+                # Colour conversion
+                if (enable_colour_correction):
+                    try:
+                        frame = colour_correction.colour_convert(frame)
+                    except Exception as e:
+                        print(f"Error during colour correction, on frame: {e}")
                 
-                if not ret:
-                    print("Finished processing video, or encountered error")
-                    break
-            else:
-                try: 
-                    camera_feed.go_next_frame()
-                    frame = camera_feed.get_image()
-                except:
-                    print("Finished processing video, or encountered error")
-                    break
-
-            
-            frame_num += 1
-            if frame_num % 100 == 0:
-                print(f"Processing frame {frame_num}")
-
-            # Colour conversion
-            if (enable_colour_correction):
+                # Detect and track objects
                 try:
-                    frame = colour_correction.colour_convert(frame)
-                except Exception as e:
-                    print(f"Error during colour correction, on frame: {e}")
-            
-            # Detect and track objects
-            try:
-                if using_zed and not self.zed_object_detect:
-                    dets = ai_handler.get_objects(frame)
-                    tracks = camera_feed.track_object_detections(dets)
-                elif using_zed and self.zed_object_detect:
-                    tracks = camera_feed.run_object_detections()
-                else:
                     tracks = ai_handler.get_tracking(frame)
-            except Exception as e:
-                print(f"Error during tracking, on frame: {e}")
-                tracks = []
+                except Exception as e:
+                    print(f"Error during tracking, on frame: {e}")
+                    tracks = []
+                    
+                tracks = get_object_median_depths(tracks, depth_map=depth_map)
                 
-            tracks = get_object_median_depths(tracks, using_zed)
-            
-            # Update track history
-            self.update_track_ids(tracks, frame_num)
+                # Update track history
+                self.update_track_ids(tracks, frame_num)
 
-            # Annotate -> hazard identify, to be implemented
-            annotated_frame, relevant_objects = self.annotate_frame(frame, tracks, smoothing)
+                # Annotate -> hazard identify, to be implemented
+                annotated_frame, relevant_objects = self.annotate_frame(frame, tracks, smoothing)
 
-            # Store frame if highly relevant hazard found
-            if relevant_objects:
-                high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 5]
-                if high_relevance_objects:
-                    print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
-                          f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
-                    if logging:
-                        try:
-                            img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                            stored_path = store.tag_and_store(img_pil)
-                            print(f"Stored frame with high relevance objects at: {stored_path}")
-                        except Exception as e:
-                            print(f"Warning: Failed to store frame {frame_num}: {e}")
+                # Store frame if highly relevant hazard found
+                if relevant_objects:
+                    high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 5]
+                    if high_relevance_objects:
+                        print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
+                            f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
+                        if logging:
+                            try:
+                                img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                                stored_path = store.tag_and_store(img_pil)
+                                print(f"Stored frame with high relevance objects at: {stored_path}")
+                            except Exception as e:
+                                print(f"Warning: Failed to store frame {frame_num}: {e}")
 
-            # Write frames as output
-            if out:
-                out.write(annotated_frame)
+                # Write frames as output
+                if out:
+                    out.write(annotated_frame)
 
-            # Yield frame
-            yield annotated_frame, relevant_objects
-            
-            # Display frames
-            if display:
-                cv2.imshow("Hazard detection", annotated_frame)
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord('q') or key == 27:
-                    print("Quitting")
-                    break
-        
-        if using_zed:
+                # Yield frame
+                yield annotated_frame, relevant_objects
+                
+                # Display frames
+                if display:
+                    cv2.imshow("Hazard detection", annotated_frame)
+                    key = cv2.waitKey(1) & 0xFF
+                    if key == ord('q') or key == 27:
+                        print("Quitting")
+                        break
+        finally:
             camera_feed.shutdown_cam()
-        else:
-            cap.release()
-        if out:
-            out.release()
-        if display:
-            cv2.destroyAllWindows()
+            if out:
+                out.release()
+            if display:
+                cv2.destroyAllWindows()

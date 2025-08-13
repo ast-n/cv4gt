@@ -152,39 +152,44 @@ def estimate_depth(object_class:str, bbox):
     return depth
 
 def real_depth(bbox, depth_map):
-    x1, y1, x2, y2 = bbox
-    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+    x1, y1, x2, y2 = map(int, bbox)
+    if x2 <= x1 or y2 <= y1 or depth_map is None:
+        return MAX_DEPTH
+    
+    # Find depth in bounding
+    bbox_depths_mm = depth_map[y1:y2, x1:x2]
 
-    if x2 <= x1 or y2 <= y1:
+    # Convert to meters
+    valid_depths_m = bbox_depths_mm[bbox_depths_mm > 0].astype(np.float32) / 1000.0
+
+    # Filter
+    valid_depths_in_range = valid_depths_m[valid_depths_m < MAX_DEPTH]
+
+    if valid_depths_in_range.size == 0:
         return MAX_DEPTH
 
-    if depth_map is None:
-        return MAX_DEPTH
-
-    bbox_depths = depth_map[y1:y2, x1:x2]
-
-    # Epsilon value
-    valid_depth_map = np.greater(bbox_depths, 1e-6).astype(np.float32) * np.less(bbox_depths, MAX_DEPTH).astype(np.float32)
-    bbox_depths[~np.isfinite(bbox_depths)] = 0
-    valid_depths = bbox_depths * valid_depth_map
-
-    if not np.any(valid_depth_map): # Return max if no valid values
-        return MAX_DEPTH
-
-    median_depth = np.median(valid_depths[np.nonzero(valid_depths)])
+    # Calculate the median of the valid, in-range depth values
+    median_depth = np.median(valid_depths_in_range)
+    
     return float(median_depth)
 
-def get_object_median_depths(objects:list, use_zed:bool=True) -> list:
+def get_object_median_depths(objects:list, depth_map: np.ndarray | None) -> list:
     """
         Takes in a list of objects then returns the same list with depths calculated and attached to them.
     """
-    
-    if not use_zed:
-        for obj in objects:
-            obj['depth'] = estimate_depth(obj['class'], obj['bbox'])
-    else:
-        depth_map = camera_feed.get_depth_map()
-        for obj in objects:
-            obj['depth'] = real_depth(obj['bbox'], depth_map)
+    for obj in objects:
+        #  Estimation first 
+        estimated_d = estimate_depth(obj['class'], obj['bbox'])
+        
+        # Real Depth second
+        if depth_map is not None:
+            real_d = real_depth(obj['bbox'], depth_map)
+            
+            if real_d < MAX_DEPTH:
+                obj['depth'] = real_d
+            else:
+                obj['depth'] = estimated_d
+        else:
+            obj['depth'] = estimated_d
             
     return objects
