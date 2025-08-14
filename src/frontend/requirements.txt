@@ -1,4 +1,0 @@
-cd frontend
-npm install
-npm install tailwindcss postcss autoprefixer
-npm run dev
