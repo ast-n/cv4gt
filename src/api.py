@@ -10,10 +10,10 @@ import json
 from video_processing import VideoProcessor
 
 # Config
-# INPUT_VIDEO = "data/ground_truth.mp4"
-INPUT_VIDEO = None
-USE_REALSENSE = True
-OUTPUT_VIDEO = "data/output.avi"
+INPUT_VIDEO = "data/ground_truth.mp4"
+USE_REALSENSE = False
+#OUTPUT_VIDEO = "data/output.avi"
+OUTPUT_VIDEO = None
 ENABLE_DISPLAY = False
 ENABLE_LOGGING = False
 COLOUR_CORRECTION = False

@@ -102,16 +102,16 @@ class ModelManager:
         if results.boxes is None or len(results.boxes) == 0:
             return tracks_with_masks
         
-        for i in range(len(results.boxes)):
+        for i in range(len(results.boxes)): # ------- MAYBE WE CAN POOL THIS TO MAKE THEM ALL RUN AT THE SAME TIME? THE ORDER OF THEM IS IRRELEVANT AFTER ALL, THEY HAVE IDs.
             box = results.boxes[i]
 
             track_id_tensor = box.id
-            track_id = track_id_tensor.int().tolist()[0] if track_id_tensor is not None else None
+            track_id = int(track_id_tensor) if track_id_tensor is not None else None
             class_id = int(box.cls)
             class_name = results.names[class_id]
             confidence = float(box.conf)
             x1, y1, x2, y2 = box.xyxy[0].tolist()
-            centre_x, centre_y, w, h = box.xywh[0].tolist()
+            centre_x, centre_y = ((x1 + x2)/2, (y1 + y2/2))
             
             # Mask handling logic
             mask_polygon_norm = None

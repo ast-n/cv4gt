@@ -358,7 +358,8 @@ class VideoProcessor:
                     if high_relevance_objects:
                         print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
                             f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
-                        if logging:
+                        if logging: # ----------------- THIS REALLY NEEDS TO BE ASYNCED SOMEHOW. THIS CODE IS WAY TOO SLOW TO RUN IN THE MAIN LOOP. MAYBE HAVE SOME FUNCTION OUTSIDE HERE READ THE FRAMES AND DO THIS SAVING SEPARATELY?
+                                    # The plan is to catch this in the API loop then do multiprocessing.Process on the method to make it run independently.
                             try:
                                 img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
                                 stored_path = store.tag_and_store(img_pil)
