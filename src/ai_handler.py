@@ -7,9 +7,6 @@ This script should:
 from ultralytics import YOLO
 import os
 import asyncio
-from functools import partial
-import cv2
-
 
 class ModelManager:
     def __init__(self):
