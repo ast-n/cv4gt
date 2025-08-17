@@ -6,6 +6,9 @@ This script should:
 
 from ultralytics import YOLO
 import os
+import asyncio
+from functools import partial
+import cv2
 
 
 class ModelManager:
@@ -83,26 +86,34 @@ class ModelManager:
             })
         return detections
     
-    def run_tracking(self, image):
+    # Proxy function needed since loop.run_in_executor can't handle kwargs for some reason.
+    def proxy_track(self, image, persist):
+        return self.object_detection_model.track(image, persist=persist)
+    
+    async def run_tracking(self, image):
         """
         Runs tracking on an image
         """
         if not self.model_loaded:
             raise Exception("Model not loaded. Call load_object_detection_model() first.")
-        return self.object_detection_model.track(image, persist=True)[0]
+        
+        loop = asyncio.get_running_loop()
+        
+        result = await loop.run_in_executor(None, self.proxy_track, image, True)
+        return result[0]
     
-    def track_objects(self, image):
+    async def track_objects(self, image):
         """
         Returns bounding box positions of objects and IDs
         """
         
-        results = self.run_tracking(image)
+        results = await self.run_tracking(image)
         tracks_with_masks = []
 
         if results.boxes is None or len(results.boxes) == 0:
             return tracks_with_masks
         
-        for i in range(len(results.boxes)): # ------- MAYBE WE CAN POOL THIS TO MAKE THEM ALL RUN AT THE SAME TIME? THE ORDER OF THEM IS IRRELEVANT AFTER ALL, THEY HAVE IDs.
+        for i in range(len(results.boxes)):
             box = results.boxes[i]
 
             track_id_tensor = box.id
@@ -128,7 +139,7 @@ class ModelManager:
                 'centre': [centre_x, centre_y],
                 'mask_polygon_norm': mask_polygon_norm
             })
-
+        
         return tracks_with_masks
         
 model_manager = ModelManager()
@@ -140,8 +151,8 @@ def load_object_detection_model(model_path=None):
 def get_objects(image):
     return model_manager.get_objects(image)
 
-def get_tracking(image):
-    return model_manager.track_objects(image)
+async def get_tracking(image):
+    return await model_manager.track_objects(image)
 
 def load_bound_detector():
     return NotImplementedError

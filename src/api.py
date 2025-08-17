@@ -35,7 +35,7 @@ def index(request: Request):
 async def get_stream(websocket: WebSocket):
     await websocket.accept()
     try:
-        for frame, objects in processor.process_video(
+        async for frame, objects in processor.process_video(
             input_video_path=INPUT_VIDEO,
             use_realsense=USE_REALSENSE,
             output_video_path=OUTPUT_VIDEO,

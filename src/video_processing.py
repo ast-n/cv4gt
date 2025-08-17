@@ -7,6 +7,7 @@ from PIL import Image
 import os
 import onnx
 import ast
+import asyncio
 
 from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
 import colour_correction
@@ -264,7 +265,7 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
+    async def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
         """
         Reads video, processes frames, saves and displays
         """
@@ -339,7 +340,7 @@ class VideoProcessor:
                 
                 # Detect and track objects
                 try:
-                    tracks = ai_handler.get_tracking(frame)
+                    tracks = await ai_handler.get_tracking(frame)
                 except Exception as e:
                     print(f"Error during tracking, on frame: {e}")
                     tracks = []
@@ -382,7 +383,8 @@ class VideoProcessor:
                         print("Quitting")
                         break
         finally:
-            camera_feed.shutdown_cam()
+            if use_realsense:
+                camera_feed.shutdown_cam()
             if out:
                 out.release()
             if display:
