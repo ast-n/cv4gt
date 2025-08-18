@@ -50,7 +50,7 @@ async def get_stream(websocket: WebSocket):
             await websocket.send_text(json.dumps(objects))
             await websocket.send_bytes(buffer.tobytes())
             
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.033) #30 fps
     except (WebSocketDisconnect, ConnectionClosed):
         print("Client disconnected")
 

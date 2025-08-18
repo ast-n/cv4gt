@@ -316,6 +316,7 @@ class VideoProcessor:
         
         frame_num = 0
         final_loop = False
+        stored_path_task = None
         try:
 
             while True:
@@ -351,7 +352,7 @@ class VideoProcessor:
                         tracks_task = await begin_task(ai_handler.get_tracking(frame))
                     except Exception as e:
                         print(f"Error during tracking, on frame: {e}")
-                        tracks_task = []
+                        tracks_task = None
                 
                 # Restart loop if first frame since we need to initate the first frame.
                 if frame_num == 1:
@@ -368,16 +369,17 @@ class VideoProcessor:
 
                 # Store frame if highly relevant hazard found
                 if relevant_objects:
-                    high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 5]
+                    high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 4]
                     if high_relevance_objects:
                         print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
                             f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
-                        if logging: # ----------------- THIS REALLY NEEDS TO BE ASYNCED SOMEHOW. THIS CODE IS WAY TOO SLOW TO RUN IN THE MAIN LOOP. MAYBE HAVE SOME FUNCTION OUTSIDE HERE READ THE FRAMES AND DO THIS SAVING SEPARATELY?
-                                    # The plan is to catch this in the API loop then do multiprocessing.Process on the method to make it run independently.
+                        if logging:
                             try:
+                                if stored_path_task != None:
+                                    await stored_path_task # Pick up the previous logging task thread.
                                 img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                                stored_path = store.tag_and_store(img_pil)
-                                print(f"Stored frame with high relevance objects at: {stored_path}")
+                                stored_path_task = await begin_task(store.tag_and_store(img_pil))
+                                print(f"Stored frame with high relevance objects.")
                             except Exception as e:
                                 print(f"Warning: Failed to store frame {frame_num}: {e}")
 
@@ -388,6 +390,12 @@ class VideoProcessor:
                 # Yield frame
                 yield annotated_frame, relevant_objects
                 
+                # Pull the new tracks frame from the background processing AI. Also wrap up any remaining logging tasks if on final loop.
+                if not final_loop:
+                    tracks = await tracks_task
+                else:
+                    await stored_path_task
+                
                 # Display frames
                 if display:
                     cv2.imshow("Hazard detection", annotated_frame)
@@ -396,9 +404,6 @@ class VideoProcessor:
                         print("Quitting")
                         break
                 
-                # Pull the new tracks frame from the background processing AI.
-                if not final_loop:
-                    tracks = await tracks_task
         finally:
             if use_realsense:
                 camera_feed.shutdown_cam()
