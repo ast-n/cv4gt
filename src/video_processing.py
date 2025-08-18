@@ -33,6 +33,12 @@ DEFAULT_COLOUR = (255, 0, 0) # Blue
 DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
 CLASS_IGNORE_LIST = ["sideloader_arm"]
 
+async def begin_task(coro):
+    """Awaitable function that adds a coroutine to the event loop and sets it running."""
+    task = asyncio.create_task(coro)
+    await asyncio.sleep(0)
+    return task
+
 class VideoProcessor:
     def __init__(self, model_path=None, zed_object_detect=False):
         """
@@ -309,6 +315,7 @@ class VideoProcessor:
         self.track_history = defaultdict(lambda: defaultdict(lambda: []))
         
         frame_num = 0
+        final_loop = False
         try:
 
             while True:
@@ -325,7 +332,7 @@ class VideoProcessor:
                     depth_map = None
 
                 if frame is None:
-                    continue
+                    final_loop = True
 
                 frame_num += 1
                 if frame_num % 100 == 0:
@@ -339,11 +346,17 @@ class VideoProcessor:
                         print(f"Error during colour correction, on frame: {e}")
                 
                 # Detect and track objects
-                try:
-                    tracks = await ai_handler.get_tracking(frame)
-                except Exception as e:
-                    print(f"Error during tracking, on frame: {e}")
-                    tracks = []
+                if not final_loop:
+                    try:
+                        tracks_task = await begin_task(ai_handler.get_tracking(frame))
+                    except Exception as e:
+                        print(f"Error during tracking, on frame: {e}")
+                        tracks_task = []
+                
+                # Restart loop if first frame since we need to initate the first frame.
+                if frame_num == 1:
+                    tracks = await tracks_task
+                    continue
                     
                 tracks = get_object_median_depths(tracks, depth_map=depth_map)
                 
@@ -382,6 +395,10 @@ class VideoProcessor:
                     if key == ord('q') or key == 27:
                         print("Quitting")
                         break
+                
+                # Pull the new tracks frame from the background processing AI.
+                if not final_loop:
+                    tracks = await tracks_task
         finally:
             if use_realsense:
                 camera_feed.shutdown_cam()
