@@ -102,6 +102,9 @@ class ModelManager:
         # Tracker's update method is synchronous and CPU
         return self.tracker.update(detections_for_tracker, image_info, image_info)
     
+    def proxy_predict(self, image, verbose):
+        return self.object_detection_model.predict(image, verbose=verbose)
+    
     async def track_objects(self, image):
         """
         Returns bounding box positions of objects and IDs using decoupled ByteTrack tracker.
@@ -109,7 +112,9 @@ class ModelManager:
         # Get raw detections from YOLOv8
         #results = self.object_detection_model.predict(image)[0]
 
-        results = self.object_detection_model.predict(image, verbose=False)[0]
+        loop = asyncio.get_running_loop()
+        results = await loop.run_in_executor(None, self.proxy_predict, image, False)
+        results = results[0]
     
         # Format detections for ByteTrack
         detections_list = []
@@ -127,7 +132,7 @@ class ModelManager:
         # Get image dimensions to pass 
         img_h, img_w = image.shape[:2]
 
-        # Run synchrnous tracker update in background thread
+        # Run synchronous tracker update in background thread
         loop = asyncio.get_running_loop()
         online_tracks = await loop.run_in_executor(None, self.proxy_bytetrack_update, detections_for_tracker, (img_h, img_w))
         

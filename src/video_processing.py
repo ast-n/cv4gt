@@ -314,22 +314,25 @@ class VideoProcessor:
         self.track_history = defaultdict(lambda: defaultdict(lambda: []))
         
         frame_num = 0
-        final_loop = False
         stored_path_task = None
+        tracks_task = None
+        next_frame = None
         try:
 
             while True:
+                frame = next_frame
                 if use_realsense:
                     aligned_frames, success = camera_feed.get_frames()
                     if not success:
                         break
-                    frame = camera_feed.get_image(aligned_frames)
-                    depth_map = camera_feed.get_depth_map(aligned_frames)
+                    next_frame = camera_feed.get_image(aligned_frames)
+                    next_depth_map = camera_feed.get_depth_map(aligned_frames)
                 else: # Using standard video 
-                    ret, frame = cap.read()
+                    ret, next_frame = cap.read()
                     if not ret:
                         break
-                    depth_map = None
+                    next_depth_map = None
+                
 
                 frame_num += 1
                 if frame_num % 100 == 0:
@@ -337,23 +340,24 @@ class VideoProcessor:
             
                 # Start sequential processing
 
-                # 1. Get tracking results for current frame
+                # 1. Start AI processing on the next frame
                 try:
-                    tracks = await ai_handler.get_tracking(frame)
+                    if next_frame is not None:
+                        tracks_task = await begin_task(ai_handler.get_tracking(next_frame))
                 except Exception as e:
                     print(f'Error during tracking, frame: {e}')
-                    tracks = []
-
-                # 2. Add depth info to results
-                tracks_with_depth = get_object_median_depths(tracks, depth_map=depth_map)
-
-                # 3. Update tracking history
-                self.update_track_ids(tracks_with_depth, frame_num)
-
-                # 4. Annotate current frame with results
+                    tracks_task = None
+                
+                # Bail out of iteration if it is the first one, after finishing AI processing.
+                if frame_num == 1:
+                    if tracks_task is not None and next_frame is not None:
+                        tracks = await tracks_task
+                        tracks_with_depth = get_object_median_depths(tracks, depth_map=next_depth_map) # Add depth map to tracking data
+                        self.update_track_ids(tracks_with_depth, frame_num) # Update tracking ID history
+                        continue
+                
+                # Annotate current frame with current tracking data (provided by previous iteration's AI processing)
                 annotated_frame, relevant_objects = self.annotate_frame(frame, tracks_with_depth, smoothing)
-
-                # End 
 
                 # Store relevant objects
                 if relevant_objects:
@@ -377,6 +381,15 @@ class VideoProcessor:
 
                 # Yield frame
                 yield annotated_frame, relevant_objects
+                
+                # Finish up AI processing for this iteration
+                if tracks_task is not None and next_frame is not None:
+                    tracks = await tracks_task
+                    tracks_with_depth = get_object_median_depths(tracks, depth_map=next_depth_map)
+                    self.update_track_ids(tracks_with_depth, frame_num)
+                    
+                if next_frame is None:
+                    break
                 
                 # Display frames
                 if display:
