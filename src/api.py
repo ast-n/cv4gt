@@ -42,7 +42,6 @@ async def get_stream(websocket: WebSocket):
             display=ENABLE_DISPLAY,
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
-            enable_colour_correction=COLOUR_CORRECTION
             ):
             
             ret, buffer = cv2.imencode('.jpg', frame)

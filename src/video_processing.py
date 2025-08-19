@@ -10,7 +10,6 @@ import ast
 import asyncio
 
 from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
-import colour_correction
 import camera_feed
 import store
 from enum import Enum
@@ -77,8 +76,8 @@ class VideoProcessor:
             object_class = det['class']
             confidence = det['confidence']
             track_id = det['track_id'] # Already an int
-            depth = det['depth']
-            
+            depth = det.get('depth', 0.0) 
+
             velocity = 0
             if 'velocity' in det.keys():
                 if not np.any(np.isnan(det['velocity'])):
@@ -271,7 +270,7 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    async def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
+    async def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0):
         """
         Reads video, processes frames, saves and displays
         """
@@ -332,42 +331,31 @@ class VideoProcessor:
                         break
                     depth_map = None
 
-                if frame is None:
-                    final_loop = True
-
                 frame_num += 1
                 if frame_num % 100 == 0:
                     print(f"Processing frame {frame_num}")
+            
+                # Start sequential processing
 
-                # Colour conversion
-                if (enable_colour_correction):
-                    try:
-                        frame = colour_correction.colour_convert(frame)
-                    except Exception as e:
-                        print(f"Error during colour correction, on frame: {e}")
-                
-                # Detect and track objects
-                if not final_loop:
-                    try:
-                        tracks_task = await begin_task(ai_handler.get_tracking(frame))
-                    except Exception as e:
-                        print(f"Error during tracking, on frame: {e}")
-                        tracks_task = None
-                
-                # Restart loop if first frame since we need to initate the first frame.
-                if frame_num == 1:
-                    tracks = await tracks_task
-                    continue
-                    
-                tracks = get_object_median_depths(tracks, depth_map=depth_map)
-                
-                # Update track history
-                self.update_track_ids(tracks, frame_num)
+                # 1. Get tracking results for current frame
+                try:
+                    tracks = await ai_handler.get_tracking(frame)
+                except Exception as e:
+                    print(f'Error during tracking, frame: {e}')
+                    tracks = []
 
-                # Annotate -> hazard identify, to be implemented
-                annotated_frame, relevant_objects = self.annotate_frame(frame, tracks, smoothing)
+                # 2. Add depth info to results
+                tracks_with_depth = get_object_median_depths(tracks, depth_map=depth_map)
 
-                # Store frame if highly relevant hazard found
+                # 3. Update tracking history
+                self.update_track_ids(tracks_with_depth, frame_num)
+
+                # 4. Annotate current frame with results
+                annotated_frame, relevant_objects = self.annotate_frame(frame, tracks_with_depth, smoothing)
+
+                # End 
+
+                # Store relevant objects
                 if relevant_objects:
                     high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 4]
                     if high_relevance_objects:
@@ -390,12 +378,6 @@ class VideoProcessor:
                 # Yield frame
                 yield annotated_frame, relevant_objects
                 
-                # Pull the new tracks frame from the background processing AI. Also wrap up any remaining logging tasks if on final loop.
-                if not final_loop:
-                    tracks = await tracks_task
-                else:
-                    await stored_path_task
-                
                 # Display frames
                 if display:
                     cv2.imshow("Hazard detection", annotated_frame)
@@ -405,9 +387,11 @@ class VideoProcessor:
                         break
                 
         finally:
-            if use_realsense:
-                camera_feed.shutdown_cam()
-            if out:
+            if cap is not None:
+                cap.release()
+            if out is not None:
                 out.release()
             if display:
                 cv2.destroyAllWindows()
+            if use_realsense:
+                camera_feed.shutdown_cam()
