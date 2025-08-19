@@ -6,26 +6,30 @@ import uvicorn
 import asyncio
 import cv2
 import json
+import os
 
 from video_processing import VideoProcessor
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Config
-# INPUT_VIDEO = "data/ground_truth.mp4"
-INPUT_VIDEO = None
-USE_REALSENSE = True
-OUTPUT_VIDEO = "data/output.avi"
+INPUT_VIDEO = os.path.join(BASE_DIR, "data", "ground_truth.mp4")
+# INPUT_VIDEO = None
+USE_REALSENSE = False
+# USE_REALSENSE = True
+OUTPUT_VIDEO = os.path.join(BASE_DIR, "data", "output.avi")
 ENABLE_DISPLAY = False
 ENABLE_LOGGING = False
 COLOUR_CORRECTION = False
 SMOOTHING_FACTOR = 0.0
 
 
-MODEL_PATH = "models/YOLOv8s-10-06-193e.pt"
+MODEL_PATH = os.path.join(BASE_DIR, "models", "YOLOv8s-10-06-193e.pt")
 
 processor = VideoProcessor(MODEL_PATH)
 
 app = FastAPI()
-templates = Jinja2Templates(directory="src/templates")
+templates = Jinja2Templates(directory="templates")
 
 @app.get('/')
 def index(request: Request):
