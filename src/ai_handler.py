@@ -6,12 +6,27 @@ This script should:
 
 from ultralytics import YOLO
 import os
+import asyncio
+from utils.bytetracker.tracker.byte_tracker import BYTETracker, STrack
+import numpy as np
 
+class TrackerArgs:
+    """
+    Class to hold tracker config args, since these are not accurate in ByteTracker implementation
+    """
+    def __init__(self):
+        self.track_thresh = 0.25
+        self.track_buffer = 30
+        self.match_thresh = 0.8
+        self.mot20 = False
 
 class ModelManager:
     def __init__(self):
         self.object_detection_model = None
         self.model_loaded = False
+        # Tracker instance
+        tracker_args = TrackerArgs()
+        self.tracker = BYTETracker(args=tracker_args, frame_rate=30)
 
     def get_latest_model(self, models_dir="models"):
         """
@@ -83,56 +98,65 @@ class ModelManager:
             })
         return detections
     
-    def run_tracking(self, image):
-        """
-        Runs tracking on an image
-        """
-        if not self.model_loaded:
-            raise Exception("Model not loaded. Call load_object_detection_model() first.")
-        return self.object_detection_model.track(image, persist=True)[0]
+    def proxy_bytetrack_update(self, detections_for_tracker, image_info):
+        # Tracker's update method is synchronous and CPU
+        return self.tracker.update(detections_for_tracker, image_info, image_info)
     
-    def track_objects(self, image):
+    def proxy_predict(self, image, verbose):
+        return self.object_detection_model.predict(image, verbose=verbose)
+    
+    async def track_objects(self, image):
         """
-        Returns bounding box positions of objects and IDs
-        """
-        
-        results = self.run_tracking(image)
-        tracks_with_masks = []
+        Returns bounding box positions of objects and IDs using decoupled ByteTrack tracker.
+        """        
+        # Get raw detections from YOLOv8
+        #results = self.object_detection_model.predict(image)[0]
 
-        if results.boxes is None or len(results.boxes) == 0:
-            return tracks_with_masks
-        
-        for i in range(len(results.boxes)):
-            box = results.boxes[i]
-
-            track_id_tensor = box.id
-            track_id = track_id_tensor.int().tolist()[0] if track_id_tensor is not None else None
-            class_id = int(box.cls)
-            class_name = results.names[class_id]
-            confidence = float(box.conf)
+        loop = asyncio.get_running_loop()
+        results = await loop.run_in_executor(None, self.proxy_predict, image, False)
+        results = results[0]
+    
+        # Format detections for ByteTrack
+        detections_list = []
+        for box in results.boxes:
             x1, y1, x2, y2 = box.xyxy[0].tolist()
-            centre_x, centre_y, w, h = box.xywh[0].tolist()
-            
-            # Mask handling logic
-            mask_polygon_norm = None
+            score = float(box.conf)
+            class_id = int(box.cls)
+            detections_list.append([x1, y1, x2, y2, score, class_id])
 
-            if results.masks is not None and i < len(results.masks):
-                mask_polygon_norm = results.masks.xyn[i]
-    
+        if not detections_list:
+            return []
+
+        detections_for_tracker = np.array(detections_list)
+
+        # Get image dimensions to pass 
+        img_h, img_w = image.shape[:2]
+
+        # Run synchronous tracker update in background thread
+        loop = asyncio.get_running_loop()
+        online_tracks = await loop.run_in_executor(None, self.proxy_bytetrack_update, detections_for_tracker, (img_h, img_w))
+        
+        # Format tracker output into desired structure
+        tracks_with_masks = []
+        for track in online_tracks:
+            x1, y1, x2, y2 = track.tlbr
+            track_id = track.track_id
+            class_id = int(track.class_id)
+            class_name = results.names[class_id]
+
             tracks_with_masks.append({
                 'class': class_name,
                 'class_id': class_id,
                 'track_id': track_id,
-                'confidence': confidence,
+                'confidence': track.score,
                 'bbox': [x1, y1, x2, y2],
-                'centre': [centre_x, centre_y],
-                'mask_polygon_norm': mask_polygon_norm
+                'centre': [(x1 + x2) / 2, (y1 + y2) / 2],
+                'mask_polygon_norm': None
             })
 
         return tracks_with_masks
-        
+    
 model_manager = ModelManager()
-
 
 def load_object_detection_model(model_path=None):
     return model_manager.load_object_detection_model(model_path)
@@ -140,8 +164,8 @@ def load_object_detection_model(model_path=None):
 def get_objects(image):
     return model_manager.get_objects(image)
 
-def get_tracking(image):
-    return model_manager.track_objects(image)
+async def get_tracking(image):
+    return await model_manager.track_objects(image)
 
 def load_bound_detector():
     return NotImplementedError

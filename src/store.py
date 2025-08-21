@@ -28,11 +28,11 @@ def to_deg(value, loc):
     return (deg, min, sec, loc_value)
 
 
-def tag_and_store(image: Image.Image) -> str:
+async def tag_and_store(image: Image.Image) -> str:
     
     GPS_INFO_TAG = 34853
     
-    current_gps = get_gps()
+    current_gps = await get_gps()
     
     lat_deg = to_deg(current_gps[0], ["S", "N"])
     lng_deg = to_deg(current_gps[1], ["W", "E"])
@@ -48,11 +48,11 @@ def tag_and_store(image: Image.Image) -> str:
     
     image_exif.update(exif_dict)
     
-    filename = store_image(image, image_exif)
+    filename = await store_image(image, image_exif)
     
     return filename
 
-def get_gps() -> tuple:
+async def get_gps() -> tuple:
     # Get current GPS location, probably from the camera.
     location = camera_feed.get_camera_gps()
     # Code to turn it into a tuple if thats not the format its given in.
@@ -61,7 +61,7 @@ def get_gps() -> tuple:
     else:
         return (0,0) # Decide on some fallback return.
 
-def store_image(image: Image.Image, img_exif: dict) -> str:
+async def store_image(image: Image.Image, img_exif: dict) -> str:
     now = datetime.datetime.now()
     filename = f"data/tagged/{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}.jpg"
     image.save(filename, exif=img_exif)

@@ -6,19 +6,20 @@ import uvicorn
 import asyncio
 import cv2
 import json
+import time
 
 from video_processing import VideoProcessor
 
 # Config
-# INPUT_VIDEO = "data/ground_truth.mp4"
-INPUT_VIDEO = None
-USE_REALSENSE = True
-OUTPUT_VIDEO = "data/output.avi"
+INPUT_VIDEO = "data/ground_truth.mp4"
+USE_REALSENSE = False
+#OUTPUT_VIDEO = "data/output.avi"
+OUTPUT_VIDEO = None
 ENABLE_DISPLAY = False
 ENABLE_LOGGING = False
 COLOUR_CORRECTION = False
 SMOOTHING_FACTOR = 0.0
-
+FPS_CAP = 30 # Set to 0 to turn off.
 
 MODEL_PATH = "models/YOLOv8s-10-06-193e.pt"
 
@@ -33,24 +34,34 @@ def index(request: Request):
 
 @app.websocket("/ws")
 async def get_stream(websocket: WebSocket):
+    if FPS_CAP == 0:
+        frametime = 0
+    else:
+        frametime = 1/FPS_CAP
+        
     await websocket.accept()
+    
     try:
-        for frame, objects in processor.process_video(
+        async for frame, objects in processor.process_video(
             input_video_path=INPUT_VIDEO,
             use_realsense=USE_REALSENSE,
             output_video_path=OUTPUT_VIDEO,
             display=ENABLE_DISPLAY,
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
-            enable_colour_correction=COLOUR_CORRECTION
             ):
+            starttime = time.monotonic()
             
             ret, buffer = cv2.imencode('.jpg', frame)
             
             await websocket.send_text(json.dumps(objects))
             await websocket.send_bytes(buffer.tobytes())
             
-            await asyncio.sleep(0.001)
+            elapsedtime = time.monotonic() - starttime
+            if elapsedtime < frametime:
+                await asyncio.sleep(frametime - elapsedtime) # Return control to main loop with asyncio while pausing to ensure framerate.
+            else:
+                await asyncio.sleep(0)
     except (WebSocketDisconnect, ConnectionClosed):
         print("Client disconnected")
 

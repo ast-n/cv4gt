@@ -7,9 +7,9 @@ from PIL import Image
 import os
 import onnx
 import ast
+import asyncio
 
 from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
-import colour_correction
 import camera_feed
 import store
 from enum import Enum
@@ -31,6 +31,12 @@ class GripperState(Enum):
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
 CLASS_IGNORE_LIST = ["sideloader_arm"]
+
+async def begin_task(coro):
+    """Awaitable function that adds a coroutine to the event loop and sets it running."""
+    task = asyncio.create_task(coro)
+    await asyncio.sleep(0)
+    return task
 
 class VideoProcessor:
     def __init__(self, model_path=None, zed_object_detect=False):
@@ -70,8 +76,8 @@ class VideoProcessor:
             object_class = det['class']
             confidence = det['confidence']
             track_id = det['track_id'] # Already an int
-            depth = det['depth']
-            
+            depth = det.get('depth', 0.0) 
+
             velocity = 0
             if 'velocity' in det.keys():
                 if not np.any(np.isnan(det['velocity'])):
@@ -264,7 +270,7 @@ class VideoProcessor:
         for cut_id in cut_list:
             self.track_history.pop(cut_id)
 
-    def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0, enable_colour_correction=True):
+    async def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0):
         """
         Reads video, processes frames, saves and displays
         """
@@ -308,61 +314,64 @@ class VideoProcessor:
         self.track_history = defaultdict(lambda: defaultdict(lambda: []))
         
         frame_num = 0
+        stored_path_task = None
+        tracks_task = None
+        next_frame = None
         try:
 
             while True:
+                frame = next_frame
                 if use_realsense:
                     aligned_frames, success = camera_feed.get_frames()
                     if not success:
                         break
-                    frame = camera_feed.get_image(aligned_frames)
-                    depth_map = camera_feed.get_depth_map(aligned_frames)
+                    next_frame = camera_feed.get_image(aligned_frames)
+                    next_depth_map = camera_feed.get_depth_map(aligned_frames)
                 else: # Using standard video 
-                    ret, frame = cap.read()
+                    ret, next_frame = cap.read()
                     if not ret:
                         break
-                    depth_map = None
-
-                if frame is None:
-                    continue
+                    next_depth_map = None
+                
 
                 frame_num += 1
                 if frame_num % 100 == 0:
                     print(f"Processing frame {frame_num}")
+            
+                # Start sequential processing
 
-                # Colour conversion
-                if (enable_colour_correction):
-                    try:
-                        frame = colour_correction.colour_convert(frame)
-                    except Exception as e:
-                        print(f"Error during colour correction, on frame: {e}")
-                
-                # Detect and track objects
+                # 1. Start AI processing on the next frame
                 try:
-                    tracks = ai_handler.get_tracking(frame)
+                    if next_frame is not None:
+                        tracks_task = await begin_task(ai_handler.get_tracking(next_frame))
                 except Exception as e:
-                    print(f"Error during tracking, on frame: {e}")
-                    tracks = []
-                    
-                tracks = get_object_median_depths(tracks, depth_map=depth_map)
+                    print(f'Error during tracking, frame: {e}')
+                    tracks_task = None
                 
-                # Update track history
-                self.update_track_ids(tracks, frame_num)
+                # Bail out of iteration if it is the first one, after finishing AI processing.
+                if frame_num == 1:
+                    if tracks_task is not None and next_frame is not None:
+                        tracks = await tracks_task
+                        tracks_with_depth = get_object_median_depths(tracks, depth_map=next_depth_map) # Add depth map to tracking data
+                        self.update_track_ids(tracks_with_depth, frame_num) # Update tracking ID history
+                        continue
+                
+                # Annotate current frame with current tracking data (provided by previous iteration's AI processing)
+                annotated_frame, relevant_objects = self.annotate_frame(frame, tracks_with_depth, smoothing)
 
-                # Annotate -> hazard identify, to be implemented
-                annotated_frame, relevant_objects = self.annotate_frame(frame, tracks, smoothing)
-
-                # Store frame if highly relevant hazard found
+                # Store relevant objects
                 if relevant_objects:
-                    high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 5]
+                    high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 4]
                     if high_relevance_objects:
                         print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
                             f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
                         if logging:
                             try:
+                                if stored_path_task != None:
+                                    await stored_path_task # Pick up the previous logging task thread.
                                 img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                                stored_path = store.tag_and_store(img_pil)
-                                print(f"Stored frame with high relevance objects at: {stored_path}")
+                                stored_path_task = await begin_task(store.tag_and_store(img_pil))
+                                print(f"Stored frame with high relevance objects.")
                             except Exception as e:
                                 print(f"Warning: Failed to store frame {frame_num}: {e}")
 
@@ -373,6 +382,15 @@ class VideoProcessor:
                 # Yield frame
                 yield annotated_frame, relevant_objects
                 
+                # Finish up AI processing for this iteration
+                if tracks_task is not None and next_frame is not None:
+                    tracks = await tracks_task
+                    tracks_with_depth = get_object_median_depths(tracks, depth_map=next_depth_map)
+                    self.update_track_ids(tracks_with_depth, frame_num)
+                    
+                if next_frame is None:
+                    break
+                
                 # Display frames
                 if display:
                     cv2.imshow("Hazard detection", annotated_frame)
@@ -380,9 +398,13 @@ class VideoProcessor:
                     if key == ord('q') or key == 27:
                         print("Quitting")
                         break
+                
         finally:
-            camera_feed.shutdown_cam()
-            if out:
+            if cap is not None:
+                cap.release()
+            if out is not None:
                 out.release()
             if display:
                 cv2.destroyAllWindows()
+            if use_realsense:
+                camera_feed.shutdown_cam()

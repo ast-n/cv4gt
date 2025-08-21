@@ -86,4 +86,6 @@ def get_camera_gps():
 
 def shutdown_cam():
     global realsense_cam
-    realsense_cam.shutdown()
+    if realsense_cam is not None:
+        realsense_cam.shutdown()
+        realsense_cam = None
