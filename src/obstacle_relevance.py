@@ -177,19 +177,16 @@ def get_object_median_depths(objects:list, depth_map: np.ndarray | None) -> list
     """
         Takes in a list of objects then returns the same list with depths calculated and attached to them.
     """
-    for obj in objects:
-        #  Estimation first 
-        estimated_d = estimate_depth(obj['class'], obj['bbox'])
-        
-        # Real Depth second
+    for obj in objects:    
+        # Real Depth first
         if depth_map is not None:
             real_d = real_depth(obj['bbox'], depth_map)
             
             if real_d < MAX_DEPTH:
                 obj['depth'] = real_d
             else:
-                obj['depth'] = estimated_d
+                obj['depth'] = MAX_DEPTH
         else:
-            obj['depth'] = estimated_d
+            obj['depth'] = estimate_depth(obj['class'], obj['bbox'])
             
     return objects

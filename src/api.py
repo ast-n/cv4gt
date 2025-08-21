@@ -6,25 +6,24 @@ import uvicorn
 import asyncio
 import cv2
 import json
-import os
+import time
 
 from video_processing import VideoProcessor
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Config
-INPUT_VIDEO = os.path.join(BASE_DIR, "data", "ground_truth.mp4")
-# INPUT_VIDEO = None
+INPUT_VIDEO = "data/ground_truth.mp4"
 USE_REALSENSE = False
-# USE_REALSENSE = True
-OUTPUT_VIDEO = os.path.join(BASE_DIR, "data", "output.avi")
+#OUTPUT_VIDEO = "data/output.avi"
+OUTPUT_VIDEO = None
 ENABLE_DISPLAY = False
 ENABLE_LOGGING = False
 COLOUR_CORRECTION = False
 SMOOTHING_FACTOR = 0.0
+FPS_CAP = 30 # Set to 0 to turn off.
 
-
-MODEL_PATH = os.path.join(BASE_DIR, "models", "YOLOv8s-10-06-193e.pt")
+MODEL_PATH = "models/YOLOv8s-10-06-193e.pt"
 
 processor = VideoProcessor(MODEL_PATH)
 
@@ -37,24 +36,34 @@ def index(request: Request):
 
 @app.websocket("/ws")
 async def get_stream(websocket: WebSocket):
+    if FPS_CAP == 0:
+        frametime = 0
+    else:
+        frametime = 1/FPS_CAP
+        
     await websocket.accept()
+    
     try:
-        for frame, objects in processor.process_video(
+        async for frame, objects in processor.process_video(
             input_video_path=INPUT_VIDEO,
             use_realsense=USE_REALSENSE,
             output_video_path=OUTPUT_VIDEO,
             display=ENABLE_DISPLAY,
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
-            enable_colour_correction=COLOUR_CORRECTION
             ):
+            starttime = time.monotonic()
             
             ret, buffer = cv2.imencode('.jpg', frame)
             
             await websocket.send_text(json.dumps(objects))
             await websocket.send_bytes(buffer.tobytes())
             
-            await asyncio.sleep(0.001)
+            elapsedtime = time.monotonic() - starttime
+            if elapsedtime < frametime:
+                await asyncio.sleep(frametime - elapsedtime) # Return control to main loop with asyncio while pausing to ensure framerate.
+            else:
+                await asyncio.sleep(0)
     except (WebSocketDisconnect, ConnectionClosed):
         print("Client disconnected")
 
