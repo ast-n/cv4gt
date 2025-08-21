@@ -10,6 +10,8 @@ import time
 
 from video_processing import VideoProcessor
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Config
 INPUT_VIDEO = "data/ground_truth.mp4"
 USE_REALSENSE = False
@@ -26,7 +28,7 @@ MODEL_PATH = "models/YOLOv8s-10-06-193e.pt"
 processor = VideoProcessor(MODEL_PATH)
 
 app = FastAPI()
-templates = Jinja2Templates(directory="src/templates")
+templates = Jinja2Templates(directory="templates")
 
 @app.get('/')
 def index(request: Request):
