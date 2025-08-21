@@ -4,8 +4,8 @@
       <h2 class="text-lg font-bold">Real-time Detection</h2>
       <span class="text-sm text-gray-400">{{ currentTime }}</span>
     </div>
-    <div class="flex-1 flex justify-center items-center">
-      <img ref="videoFrame" alt="Live Feed" class="max-w-full max-h-full rounded-lg"/>
+    <div class="flex-1 flex justify-center items-center overflow-hidden">
+      <img ref="videoFrame" alt="Live Feed" class="max-w-full max-h-full object-contain rounded-lg"/>
     </div>
   </div>
 </template>

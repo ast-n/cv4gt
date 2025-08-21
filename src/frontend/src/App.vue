@@ -8,10 +8,9 @@
     </div>
 
     <!-- Bottom Section: Object List -->
-    <div class="flex-shrink-0">
+    <div class="flex-[0.4] min-h-[150px] overflow-auto">
       <ObjectList class="w-full" />
     </div>
-
   </div>
 </template>
 
