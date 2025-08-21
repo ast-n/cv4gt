@@ -61,6 +61,5 @@ python src/api.py
 
 #### Frontend
 ```bash
-cd src/frontend
-npm run dev
+npm --prefix src/frontend run dev
 ```
