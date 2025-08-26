@@ -14,3 +14,4 @@ pydantic>=2.11.7
 fastapi[standard]
 loguru==0.7.3
 cython_bbox==0.1.5
+simpleaudio>=1.0.4

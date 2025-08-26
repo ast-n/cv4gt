@@ -183,7 +183,8 @@ class VideoProcessor:
         bin_id=current_bin_id
         )
 
-        if not self.audio_handler.is_target_picked_up() and gripper_state != GripperState.NONE:
+        #if not self.audio_handler.is_target_picked_up() and gripper_state != GripperState.NONE:
+        if gripper_state != GripperState.NONE:
             # Draw bin alignment indicator
             if gripper_state != GripperState.NONE:
                 match gripper_state:
