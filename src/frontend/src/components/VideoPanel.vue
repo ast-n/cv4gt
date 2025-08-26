@@ -5,7 +5,7 @@
       <span class="text-sm text-gray-400">{{ currentTime }}</span>
     </div>
     <div class="flex-1 flex justify-center items-center overflow-hidden">
-      <img ref="videoFrame" alt="Live Feed" class="max-w-full max-h-full object-contain rounded-lg"/>
+      <img id="frame" ref="videoFrame" alt="Live Feed" class="max-w-full max-h-full object-contain rounded-lg"/>
     </div>
   </div>
 </template>
@@ -25,6 +25,10 @@ onMounted(() => {
   updateTime();
   const interval = setInterval(updateTime, 1000);
 
+  const image = document.getElementById("frame");
+  image.onload = function(){
+    URL.revokeObjectURL(this.src)
+  }
   const ws = new WebSocket("ws://localhost:8000/ws");
   ws.onmessage = (event) => {
     if (!(typeof event.data === "string")) {
