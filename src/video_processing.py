@@ -12,7 +12,7 @@ import asyncio
 from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
 import camera_feed
 import store
-from enum import Enum
+from audio_alerts import AudioHandler, GripperState
 
 RELEVANCE_COLORS = {
     5: (0, 0, 255),    # Red - Highest relevance
@@ -22,15 +22,10 @@ RELEVANCE_COLORS = {
     1: (255, 255, 0)   # Cyan - Lowest relevance
 }
 
-class GripperState(Enum):
-    NEUTRAL = 0
-    GOOD = 1
-    BAD = 2
-    NONE = 3
-
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
 CLASS_IGNORE_LIST = ["sideloader_arm"]
+BIN_AUDIO_CUTOFF_HEIGHT = 0.2
 
 async def begin_task(coro):
     """Awaitable function that adds a coroutine to the event loop and sets it running."""
@@ -39,12 +34,14 @@ async def begin_task(coro):
     return task
 
 class VideoProcessor:
-    def __init__(self, model_path=None, zed_object_detect=False):
+    def __init__(self, model_path=None):
         """
         Initialises VideoProcessor and loads object detection model
         """
         self.model_ready = False
         self.model_path = model_path
+
+        self.audio_handler = AudioHandler()
 
         if ai_handler.load_object_detection_model(model_path):
             self.model_ready = True
@@ -61,12 +58,17 @@ class VideoProcessor:
         annotated_frame = frame.copy()
         H, W, _ = frame.shape # Mask scaling
         relevant_objects_found = []
+
         gripper_state = GripperState.NONE
+        bin_detected_this_frame = False
+        current_bin_id = None
+        current_bin_y = H
         
         indicator_x_line1 = int(W * 0.45)
         indicator_x_line2 = int(W * 0.65)
         indicator_y1 = int(H * 0.1)
         indicator_y2 = int(H * 0.9)
+        audio_cutoff_y = int(H * BIN_AUDIO_CUTOFF_HEIGHT)
 
         for det in detections:
             if det['track_id'] is None:
@@ -117,15 +119,31 @@ class VideoProcessor:
             if relevance == 0:
                 continue
             
-            if object_class == "bin" and gripper_state != GripperState.BAD: # Bad gripper state overrides all
-                if gripper_state == GripperState.NONE:
-                    gripper_state = GripperState.NEUTRAL
-                    
-                bin_inside = [indicator_x_line1 <= x1 <= indicator_x_line2 and indicator_y1 <= y1 <= indicator_y2, indicator_x_line1 <= x2 <= indicator_x_line2 and indicator_y1 <= y2 <= indicator_y2]
+            if object_class == "bin":
+                bin_detected_this_frame = True
+                current_bin_id = track_id
+                current_bin_y = y1
+
+                local_bin_state = GripperState.NEUTRAL
+
+                bin_inside = [
+                    (indicator_x_line1 <= x1 <= indicator_x_line2 and indicator_y1 <= y1 <= indicator_y2),
+                    (indicator_x_line1 <= x2 <= indicator_x_line2 and indicator_y1 <= y2 <= indicator_y2)
+                ]
+
                 if all(bin_inside):
-                    gripper_state = GripperState.GOOD
+                    local_bin_state = GripperState.GOOD
                 elif any(bin_inside):
+                    local_bin_state = GripperState.BAD
+
+                # Now, update the overall frame's state, giving BAD priority.
+                if local_bin_state == GripperState.BAD:
                     gripper_state = GripperState.BAD
+                elif local_bin_state == GripperState.GOOD and gripper_state != GripperState.BAD:
+                    gripper_state = GripperState.GOOD
+                elif gripper_state == GripperState.NONE:
+                    gripper_state = GripperState.NEUTRAL
+            
 
             # Handle mask drawing
             if det.get('mask_polygon_norm') is not None:
@@ -156,25 +174,34 @@ class VideoProcessor:
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
             cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)
             """
-            
-        # Draw bin alignment indicator
-        if gripper_state != GripperState.NONE:
-            match gripper_state:
-                case GripperState.GOOD:
-                    gripper_colour = (0,255,0)
-                    gripper_icon = store.get_grabber_indicator("check")
-                case GripperState.BAD:
-                    gripper_colour = (0,0,255)
-                    gripper_icon = store.get_grabber_indicator("cross")
-                case _:
-                    gripper_colour = (255,255,255)
-                    gripper_icon = None
-            
-            cv2.line(annotated_frame, (indicator_x_line1, indicator_y1), (indicator_x_line1, indicator_y2), gripper_colour, thickness=4)
-            cv2.line(annotated_frame, (indicator_x_line2, indicator_y1), (indicator_x_line2, indicator_y2), gripper_colour, thickness=4)
-            
-            if gripper_icon is not None:
-                self.overlay_transparent(annotated_frame, gripper_icon, (indicator_x_line1+indicator_x_line2)//2-32, indicator_y1)
+
+        # Since loop is done, tell handler what happened in this frame
+        self.audio_handler.update(
+        current_state=gripper_state,
+        bin_in_frame=bin_detected_this_frame,
+        bin_is_above_cutoff=(current_bin_y < audio_cutoff_y),
+        bin_id=current_bin_id
+        )
+
+        if not self.audio_handler.is_target_picked_up() and gripper_state != GripperState.NONE:
+            # Draw bin alignment indicator
+            if gripper_state != GripperState.NONE:
+                match gripper_state:
+                    case GripperState.GOOD:
+                        gripper_colour = (0,255,0)
+                        gripper_icon = store.get_grabber_indicator("check")
+                    case GripperState.BAD:
+                        gripper_colour = (0,0,255)
+                        gripper_icon = store.get_grabber_indicator("cross")
+                    case _:
+                        gripper_colour = (255,255,255)
+                        gripper_icon = None
+                
+                cv2.line(annotated_frame, (indicator_x_line1, indicator_y1), (indicator_x_line1, indicator_y2), gripper_colour, thickness=4)
+                cv2.line(annotated_frame, (indicator_x_line2, indicator_y1), (indicator_x_line2, indicator_y2), gripper_colour, thickness=4)
+                
+                if gripper_icon is not None:
+                    self.overlay_transparent(annotated_frame, gripper_icon, (indicator_x_line1+indicator_x_line2)//2-32, indicator_y1)
 
         return annotated_frame, relevant_objects_found
     
