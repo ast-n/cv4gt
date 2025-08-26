@@ -65,8 +65,6 @@ async def get_stream(websocket: WebSocket):
     except (WebSocketDisconnect, ConnectionClosed):
         print("Client disconnected")
 
-#I think the plan here is to make the streaming response return a JSON or something with the frame and other info attached,
-# then the frontend just extracts the relevant elements?
 
 if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=8000)
