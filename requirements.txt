@@ -6,3 +6,11 @@ pyexiv2>=2.15.0
 roboflow>=1.1.60
 exif>=1.6.1
 onnx
+pyrealsense2==2.56.5.9235
+starlette>=0.47.2
+uvicorn>=0.35.0
+anyio>=4.9.0
+pydantic>=2.11.7
+fastapi[standard]
+loguru==0.7.3
+cython_bbox==0.1.5

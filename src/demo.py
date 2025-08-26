@@ -6,8 +6,8 @@ import os
 
 def main():
     # Config
-    INPUT_VIDEO = "data\\recordings\\HD720_test.svo2"
-    USING_ZED = True
+    INPUT_VIDEO = "data\\ground_truth.mp4"
+    USING_ZED = False
     OUTPUT_VIDEO = "data/output.avi"
     ENABLE_DISPLAY = True
     ENABLE_LOGGING = False
@@ -25,7 +25,7 @@ def main():
     try:
         processor = VideoProcessor(MODEL_PATH, ZED_OBJECT_DETECT)
 
-        processor.process_video(
+        vid = [frame for frame in processor.process_video(
             input_video_path=INPUT_VIDEO,
             using_zed=USING_ZED,
             output_video_path=OUTPUT_VIDEO,
@@ -33,7 +33,7 @@ def main():
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
             enable_colour_correction=COLOUR_CORRECTION
-        )
+        )]
 
     except Exception as e:
         print("Error, see traceback")
