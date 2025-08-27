@@ -5,16 +5,23 @@
       <span class="text-sm text-gray-400">{{ currentTime }}</span>
     </div>
     <div class="flex-1 flex justify-center items-center overflow-hidden">
-      <img ref="videoFrame" alt="Live Feed" class="max-w-full max-h-full object-contain rounded-lg"/>
+      <img id="frame" ref="videoFrame" alt="Live Feed" class="max-w-full max-h-full object-contain rounded-lg"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
+
+const props = defineProps(['currentFrameData'])
 
 const currentTime = ref("");
 const videoFrame = ref(null);
+
+watch(() => props.currentFrameData, async (newValue) => {
+  const blob = new Blob([newValue], {type: "image/jpeg"});
+  videoFrame.value.src = URL.createObjectURL(blob)
+})
 
 function updateTime() {
   const now = new Date();
@@ -25,17 +32,13 @@ onMounted(() => {
   updateTime();
   const interval = setInterval(updateTime, 1000);
 
-  const ws = new WebSocket("ws://localhost:8000/ws");
-  ws.onmessage = (event) => {
-    if (!(typeof event.data === "string")) {
-      const blob = new Blob([event.data], { type: "image/jpeg" });
-      videoFrame.value.src = URL.createObjectURL(blob);
-    }
-  };
+  const image = document.getElementById("frame");
+  image.onload = function(){
+    URL.revokeObjectURL(this.src)
+  }
 
   onUnmounted(() => {
     clearInterval(interval);
-    ws.close();
   });
 });
 </script>
