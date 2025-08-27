@@ -11,10 +11,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
+
+const props = defineProps(['currentFrameData'])
 
 const currentTime = ref("");
 const videoFrame = ref(null);
+
+watch(() => props.currentFrameData, async (newValue) => {
+  const blob = new Blob([newValue], {type: "image/jpeg"});
+  videoFrame.value.src = URL.createObjectURL(blob)
+})
 
 function updateTime() {
   const now = new Date();
@@ -29,17 +36,9 @@ onMounted(() => {
   image.onload = function(){
     URL.revokeObjectURL(this.src)
   }
-  const ws = new WebSocket("ws://localhost:8000/ws");
-  ws.onmessage = (event) => {
-    if (!(typeof event.data === "string")) {
-      const blob = new Blob([event.data], { type: "image/jpeg" });
-      videoFrame.value.src = URL.createObjectURL(blob);
-    }
-  };
 
   onUnmounted(() => {
     clearInterval(interval);
-    ws.close();
   });
 });
 </script>

@@ -16,7 +16,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch } from 'vue';
+
+const props = defineProps(['objectArray'])
 
 const objects = ref([]);
 
@@ -37,23 +39,8 @@ const sortedObjects = computed(() =>
   [...objects.value].sort((a, b) => b.relevance - a.relevance)
 );
 
-onMounted(() => {
-  ws = new WebSocket("ws://127.0.0.1:8000/ws");
+watch(() => props.objectArray, async (newArray) => {
+  objects.value = newArray
+})
 
-  ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (Array.isArray(data)) objects.value = data;
-    } catch (err) {
-      console.error("Error parsing WS data:", err);
-    }
-  };
-
-  ws.onclose = () => console.log("WebSocket closed");
-  ws.onerror = (err) => console.error("WebSocket error:", err);
-});
-
-onBeforeUnmount(() => {
-  if (ws) ws.close();
-});
 </script>
