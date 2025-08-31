@@ -78,7 +78,7 @@ def generate_log():
     current_log = open(filename, 'w', encoding='utf-8')
     print("Log file created")
 
-async def add_to_log(new_frame_date, frame_num):
+def add_to_log(new_frame_date, frame_num):
     data = new_frame_date
     det_num = 0
     for item in data:
