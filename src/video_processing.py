@@ -417,6 +417,7 @@ class VideoProcessor:
                     self.update_track_ids(tracks_with_depth, frame_num)
                     
                 if next_frame is None:
+                    await stored_path_task
                     break
                 
                 # Display frames
