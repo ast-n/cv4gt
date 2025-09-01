@@ -11,7 +11,7 @@ import time
 from video_processing import VideoProcessor
 
 # Config
-INPUT_VIDEO = "data/ground_truth.mp4"
+INPUT_VIDEO = "data/input.mp4"
 USE_REALSENSE = False
 #OUTPUT_VIDEO = "data/output.avi"
 OUTPUT_VIDEO = None
