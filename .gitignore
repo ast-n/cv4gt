@@ -4,6 +4,7 @@ data/tagged/
 data/autodistill_inputs
 data/autodistill_outputs
 data/*.avi
+data/logs/
 
 
 models/*.pt
