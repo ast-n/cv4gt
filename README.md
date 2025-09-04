@@ -50,9 +50,7 @@ Our project relies on the Realsense SDK. This is available on Windows, Linux, an
 
 ---
 ### 3. Run the solution
-Still need to couple together the starting of frontend and backend, but without having linked these together, I'll assume these instructions work. Commands issued in the main directory of the project for now. 
-
-THIS DOESN'T WORK YET BECAUSE THEY DON'T TALK!!!!!
+Frontend and backend need to be ran separately currently. We will make a proper all-in-one application at some point. Listed below are the commands to run the two halves. Run them from the base folder of the repo.
 
 #### Backend
 ```bash
