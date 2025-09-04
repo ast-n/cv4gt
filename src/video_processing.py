@@ -340,7 +340,7 @@ class VideoProcessor:
 
         # Main video processing loop
         self.track_history = defaultdict(lambda: defaultdict(lambda: []))
-        
+                
         frame_num = 0
         stored_path_task = None
         tracks_task = None
@@ -391,8 +391,8 @@ class VideoProcessor:
                 if relevant_objects:
                     high_relevance_objects = [obj for obj in relevant_objects if obj['relevance'] >= 4]
                     if high_relevance_objects:
-                        print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
-                            f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
+                        #print(f"High relevance object(s) (R>=4) detected in frame {frame_num}: "
+                        #    f"{[(obj['class'], obj['relevance']) for obj in high_relevance_objects]}")
                         if logging:
                             try:
                                 if stored_path_task != None:
@@ -402,6 +402,8 @@ class VideoProcessor:
                                 print(f"Stored frame with high relevance objects.")
                             except Exception as e:
                                 print(f"Warning: Failed to store frame {frame_num}: {e}")
+                    # Log to textlog
+                    store.add_to_log(relevant_objects, frame_num-1)
 
                 # Write frames as output
                 if out:
@@ -417,6 +419,8 @@ class VideoProcessor:
                     self.update_track_ids(tracks_with_depth, frame_num)
                     
                 if next_frame is None:
+                    await stored_path_task
+                    store.save_and_close_log()
                     break
                 
                 # Display frames
@@ -425,6 +429,8 @@ class VideoProcessor:
                     key = cv2.waitKey(1) & 0xFF
                     if key == ord('q') or key == 27:
                         print("Quitting")
+                        await stored_path_task
+                        store.save_and_close_log()
                         break
                 
         finally:

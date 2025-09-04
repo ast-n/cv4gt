@@ -7,8 +7,10 @@ import asyncio
 import cv2
 import json
 import time
+import sys, os
 
 from video_processing import VideoProcessor
+import store
 
 # Config
 INPUT_VIDEO = "data/ground_truth.mp4"
@@ -54,6 +56,7 @@ async def get_stream(websocket: WebSocket):
             
             ret, buffer = cv2.imencode('.jpg', frame)
             
+            
             await websocket.send_text(json.dumps(objects))
             await websocket.send_bytes(buffer.tobytes())
             
@@ -62,8 +65,12 @@ async def get_stream(websocket: WebSocket):
                 await asyncio.sleep(frametime - elapsedtime) # Return control to main loop with asyncio while pausing to ensure framerate.
             else:
                 await asyncio.sleep(0)
-    except (WebSocketDisconnect, ConnectionClosed):
+    except (WebSocketDisconnect):
         print("Client disconnected")
+    except (ConnectionClosed):
+        print("Connection closed")
+    finally:
+        store.save_and_close_log() 
 
 
 if __name__ == '__main__':

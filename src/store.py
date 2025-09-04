@@ -10,6 +10,7 @@ import camera_feed
 import datetime
 import numpy as np
 import cv2
+import json
 
 tagged_folder_path = "/data/tagged"
 
@@ -66,6 +67,37 @@ async def store_image(image: Image.Image, img_exif: dict) -> str:
     filename = f"data/tagged/{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}.jpg"
     image.save(filename, exif=img_exif)
     return filename
+
+stored_json = []
+
+def add_to_log(new_frame_date, frame_num):
+    data = new_frame_date
+    det_num = 0
+    for item in data:
+        if "class_id" in item:
+            del item["class_id"]
+        if "centre" in item:
+            del item["centre"]
+        if "mask_polygon_norm" in item:
+            del item["mask_polygon_norm"]
+        item['detection_num'] = det_num
+        det_num += 1
+        
+    now = datetime.datetime.now()
+    total_data = {"frame_num": frame_num, "timestamp": f"{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}", "detections": data}
+    global stored_json
+    stored_json.append(total_data)
+
+def save_and_close_log():
+    global stored_json
+    now = datetime.datetime.now()
+    filename = f"data/logs/saved_log_{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}.json"
+    current_log = open(filename, 'w', encoding='utf-8')
+    
+    json.dump(stored_json, current_log, ensure_ascii=False, indent=4)
+    
+    current_log.close()
+    print("Log file successfully saved")
 
 def get_image(path:str) -> np.ndarray:
     image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
