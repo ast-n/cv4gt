@@ -17,7 +17,6 @@ export default {
     return {
       map: null,
       ws: null,
-      markers: [],
       location: [-37.82308, 145.03972], // base location
     };
   },
@@ -36,36 +35,22 @@ export default {
   methods: {
     connectWebSocket() {
       this.ws = new WebSocket("ws://127.0.0.1:8000/ws");
+
       this.ws.onmessage = (event) => {
         if (typeof event.data === "string") {
           try {
             const msg = JSON.parse(event.data);
-            if (msg.type === "objects") {
-              this.updateMarkers(msg.data);
-            }
+            console.log("Received data from backend:", msg);
           } catch (e) {
             console.error("JSON parse error:", e);
           }
         }
       };
+
       this.ws.onclose = () => {
         console.warn("WebSocket closed, retrying in 2s...");
         setTimeout(this.connectWebSocket, 2000);
       };
-    },
-    updateMarkers(objects) {
-      // Remove old markers
-      this.markers.forEach((m) => this.map.removeLayer(m));
-      this.markers = [];
-
-      // Add new markers
-      objects.forEach((obj) => {
-        if (obj.lat && obj.lng) {
-          const marker = L.marker([obj.lat, obj.lng]).bindPopup(obj.label);
-          marker.addTo(this.map);
-          this.markers.push(marker);
-        }
-      });
     },
   },
 };
