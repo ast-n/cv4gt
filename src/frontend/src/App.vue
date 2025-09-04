@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen bg-gray-900 text-white p-4 gap-4">
+  <div class="flex flex-col h-screen bg-gray-900 text-white p-4 gap-3">
 
     <!-- Top Section: Video + Map -->
     <div class="flex flex-1 gap-4 flex-col md:flex-row">
