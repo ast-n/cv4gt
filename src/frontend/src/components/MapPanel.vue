@@ -1,6 +1,6 @@
 <template>
   <div class="bg-gray-800 rounded-xl p-4 flex flex-col h-full">
-    <span class="text-sm mb-2 text-gray-400">37.8124° S, 144.9623° E</span>
+    <span class="text-sm md:text-lg mb-2 text-gray-400">37.8124° S, 144.9623° E</span>
     <div class="bg-gray-700 flex-1 rounded-lg flex items-center justify-center min-h-[150px]">
       <div id="mapContainer" class="w-full h-full"></div>
     </div>
@@ -15,16 +15,65 @@ export default {
   name: "MapPanel",
   data() {
     return {
-      location: [-37.82308, 145.03972],
+      map: null,
+      ws: null,
+      markers: [],
+      location: [-37.82308, 145.03972], // base location
     };
   },
   mounted() {
-    const map = L.map("mapContainer").setView(this.location, 17);
+    this.map = L.map("mapContainer").setView(this.location, 17);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
       minZoom: 15,
-    }).addTo(map);
-    L.marker(this.location).addTo(map);
+    }).addTo(this.map);
+
+    const baseMarker = L.marker(this.location).bindPopup("Base Location");
+    baseMarker.addTo(this.map);
+
+    this.connectWebSocket();
+  },
+  methods: {
+    connectWebSocket() {
+      this.ws = new WebSocket("ws://127.0.0.1:8000/ws");
+      this.ws.onmessage = (event) => {
+        if (typeof event.data === "string") {
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.type === "objects") {
+              this.updateMarkers(msg.data);
+            }
+          } catch (e) {
+            console.error("JSON parse error:", e);
+          }
+        }
+      };
+      this.ws.onclose = () => {
+        console.warn("WebSocket closed, retrying in 2s...");
+        setTimeout(this.connectWebSocket, 2000);
+      };
+    },
+    updateMarkers(objects) {
+      // Remove old markers
+      this.markers.forEach((m) => this.map.removeLayer(m));
+      this.markers = [];
+
+      // Add new markers
+      objects.forEach((obj) => {
+        if (obj.lat && obj.lng) {
+          const marker = L.marker([obj.lat, obj.lng]).bindPopup(obj.label);
+          marker.addTo(this.map);
+          this.markers.push(marker);
+        }
+      });
+    },
   },
 };
 </script>
+
+<style>
+#mapContainer {
+  width: 100%;
+  height: 100%;
+}
+</style>

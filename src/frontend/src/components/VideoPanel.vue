@@ -1,8 +1,8 @@
 <template>
   <div class="bg-gray-800 rounded-xl p-4 flex flex-col h-full relative">
     <div class="flex justify-between items-center mb-2">
-      <h2 class="text-lg font-bold">Real-time Detection</h2>
-      <span class="text-sm text-gray-400">{{ currentTime }}</span>
+      <h2 class="text-lg md:text-2xl font-bold">Real-time Detection</h2>
+      <span class="text-sm md:text-lg text-gray-400">{{ currentTime }}</span>
     </div>
     <div class="flex-1 flex justify-center items-center overflow-hidden relative">
       <img 
@@ -11,7 +11,7 @@
         alt="Live Feed" 
         class="max-w-full max-h-full object-contain rounded-lg"
       />
-      <div class="absolute bottom-2 right-2 p-3 rounded-lg text-sm text-white bg-gray-900/40 backdrop-blur-md shadow-lg">
+      <div class="absolute bottom-2 right-2 p-2 md:p-3 rounded-lg text-xs md:text-sm text-white bg-gray-900/40 backdrop-blur-md shadow-lg">
         <p class="font-semibold mb-1">Color Represent</p>
         <div class="flex items-center space-x-2">
           <span class="w-3 h-3 rounded-full bg-red-600"></span>
