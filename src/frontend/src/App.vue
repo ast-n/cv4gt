@@ -1,14 +1,15 @@
 <template>
-  <div class="flex flex-col h-screen bg-gray-900 text-white p-2 md:p-4 gap-3 text-base md:text-lg">
+  <div class="flex flex-col h-screen bg-gray-600 text-white p-2 md:p-4 gap-3 text-base md:text-lg">
 
     <!-- Top Section: Video + Map -->
     <div class="flex flex-1 gap-4 flex-col md:flex-row">
-      <VideoPanel class="flex-[4] min-h-[180px] md:min-h-[400px]" :current-frame-data="frameData" />
-      <MapPanel class="flex-[2] min-h-[180px] md:min-h-[400px]" />
+      <VideoPanel class="flex-[3] min-h-[80px] md:min-h-[300px]" :current-frame-data="frameData" />
+      <MapPanel class="flex-[2] min-h-[80px] md:min-h-[250px]" />
     </div>
 
+
     <!-- Bottom Section: Object List -->
-    <div class="flex-[0.5] min-h-[180px] md:min-h-[200px] overflow-auto">
+    <div class="flex-[0.5] min-h-[200px] md:min-h-[200px] overflow-auto">
       <ObjectList class="w-full" :object-array="objects" />
     </div>
   </div>

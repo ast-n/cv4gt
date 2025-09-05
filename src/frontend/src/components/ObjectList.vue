@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-800 rounded-xl p-4 flex flex-col overflow-auto relative">
+  <div class="bg-gray-800 rounded-xl p-4 flex flex-col relative">
     <div class="flex justify-between items-center mb-2">
       <h3 class="font-bold text-white text-lg md:text-2xl">Detected Objects</h3>
 
@@ -14,28 +14,36 @@
       </select>
     </div>
 
-   <ul class="grid grid-flow-col grid-rows-3 grid-cols-5 gap-2">
+    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-2">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
-        :class="[
-          'p-2 md:p-3 rounded bg-gray-700 text-sm md:text-base flex items-center gap-2',
-          getRelevanceColor(obj.relevance)
-        ]"
+        class="p-2 md:p-3 rounded bg-gray-700 text-sm md:text-base flex flex-col gap-1 shadow-sm"
       >
-        <!-- Icon -->
-        <img
-          v-if="iconMap[obj.class.toLowerCase()]"
-          :src="iconMap[obj.class.toLowerCase()]"
-          alt=""
-          class="w-6 h-6 md:w-6 md:h-6 filter brightness-0 invert"
-        />
+        <!-- Top row: Icon + Badge -->
+        <div class="flex items-center gap-2">
+          <img
+            v-if="iconMap[obj.class.toLowerCase()]"
+            :src="iconMap[obj.class.toLowerCase()]"
+            alt=""
+            class="w-8 h-8 md:w-6 md:h-6 filter brightness-0 invert"
+          />
 
-        <!-- Text -->
-        <span>
-          {{ obj.class }} - {{ (obj.confidence * 100).toFixed(2) }}%, 
-          R:{{ obj.relevance }}, D:{{ obj.depth.toFixed(2) }}m
-        </span>
+          <!-- Category Badge -->
+          <span
+            class="px-2 py-0.3 rounded-full text-xs font-medium text-white"
+            :style="{ backgroundColor: getRelevanceBgColor(obj.relevance) }"
+          >
+            {{ formatClassName(obj.class) }}
+          </span>
+        </div>
+
+        <!-- Bottom row: Stats -->
+        <div class="text-gray-300 text-sm md:text-base">
+          {{ (obj.confidence * 100).toFixed(2) }}% |
+          <span :class="getRelevanceTextColor(obj.relevance)">R:{{ obj.relevance }}</span> |
+          D:{{ obj.depth.toFixed(2) }}m
+        </div>
       </li>
     </ul>
   </div>
@@ -50,7 +58,6 @@ import carIcon from "../assets/car.png";
 import cyclistIcon from "../assets/cyclist.png";
 import pawIcon from "../assets/paw.png";
 import userIcon from "../assets/user.png";
-
 
 const props = defineProps(["objectArray"]);
 const selectedFilter = ref("");
@@ -80,7 +87,25 @@ const iconMap = {
   cat: pawIcon,
 };
 
-function getRelevanceColor(relevance) {
+// Format class names for display
+function formatClassName(cls) {
+  return cls.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+// Relevance → badge background color
+function getRelevanceBgColor(relevance) {
+  switch (relevance) {
+    case 5: return "#dc2626"; // red-600
+    case 4: return "#f97316"; // orange-500
+    case 3: return "#eab308"; // yellow-500
+    case 2: return "#22c55e"; // green-500
+    case 1: return "#06b6d4"; // cyan-500
+    default: return "#6b7280"; // gray-500
+  }
+}
+
+// Text color (for stats row)
+function getRelevanceTextColor(relevance) {
   switch (relevance) {
     case 5: return "text-red-600";
     case 4: return "text-orange-400";
@@ -91,15 +116,19 @@ function getRelevanceColor(relevance) {
   }
 }
 
+// Sort objects by relevance descending
 const sortedObjects = computed(() =>
   [...props.objectArray].sort((a, b) => b.relevance - a.relevance)
 );
 
-// Apply filtering
+// Filter + limit to 15 items (3 rows x 5 columns)
 const filteredObjects = computed(() => {
-  if (!selectedFilter.value) return sortedObjects.value;
-  return sortedObjects.value.filter(
-    (obj) => obj.class.toLowerCase().includes(selectedFilter.value.toLowerCase())
-  );
+  let objs = selectedFilter.value
+    ? sortedObjects.value.filter((obj) =>
+        obj.class.toLowerCase().includes(selectedFilter.value.toLowerCase())
+      )
+    : sortedObjects.value;
+
+  return objs.slice(0, 15); // max 15 items
 });
 </script>
