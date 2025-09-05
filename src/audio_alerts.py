@@ -32,56 +32,45 @@ class AudioHandler:
         self.pickup_timeout = pickup_timeout
         self.suppress_after_handle = suppress_after_handle
         self.bin_coming_down = False
-        self.global_suppress_until_next_pickup = False  # New global suppression
+        self.global_suppress_until_next_pickup = False
 
     def update(self, current_state: GripperState, bin_in_frame: bool, bin_is_above_cutoff: bool, bin_id=None):
         now = time.time()
 
         # --- Global suppression check ---
         if self.global_suppress_until_next_pickup:
-            # Stop any current audio
             if self.current_play_obj and self.current_play_obj.is_playing():
                 self.current_play_obj.stop()
 
-            # Detect new bin pickup → lift suppression immediately
             if current_state == GripperState.GOOD and bin_id is not None:
-                self.reset_state()  # Reset previous bin state
+                self.reset_state()
                 self.target_picked_up = True
                 self.target_bin_id = bin_id
                 self.pickup_time = now
                 self.global_suppress_until_next_pickup = False
-                print(f"[DEBUG] New bin {bin_id} picked up. Global suppression lifted.")
-
-            # Continue to check beep for new bin immediately
-            # No return here, we want to allow beep logic below
 
         # Stop audio if bin is coming down
         if self.bin_coming_down:
             if self.current_play_obj and self.current_play_obj.is_playing():
                 self.current_play_obj.stop()
-                print(f"[DEBUG] Beep force-stopped (bin coming down, bin {self.target_bin_id}).")
             if not bin_in_frame:
                 if self.target_bin_id is not None:
                     self.handled_bins.add(self.target_bin_id)
-                    print(f"[DEBUG] Bin {self.target_bin_id} fully out of frame. Marked as handled.")
                 self.reset_state()
-                self.global_suppress_until_next_pickup = True  # Activate global suppression
-                print("[DEBUG] Global suppression activated until next pickup.")
-            return  # Exit early
+                self.global_suppress_until_next_pickup = True
+            return
 
         # Pickup timeout handling
         if self.target_picked_up and self.pickup_time and now - self.pickup_time > self.pickup_timeout:
-            print(f"[WARN] Pickup timeout exceeded for bin {self.target_bin_id}. Resetting state.")
             self.reset_state()
             self.global_suppress_until_next_pickup = True
             return
 
-        # Detect new pickup (if not in global suppression)
+        # Detect new pickup
         if current_state == GripperState.GOOD and bin_id is not None and not self.target_picked_up:
             self.target_picked_up = True
             self.target_bin_id = bin_id
             self.pickup_time = now
-            print(f"[DEBUG] Bin {bin_id} picked up. Tracking as target.")
             return
 
         # If picked up but gripper no longer GOOD → bin coming down
@@ -89,7 +78,6 @@ class AudioHandler:
             self.bin_coming_down = True
             if self.current_play_obj and self.current_play_obj.is_playing():
                 self.current_play_obj.stop()
-            print(f"[DEBUG] Bin {self.target_bin_id} released. Beeps stopped, bin coming down.")
             return
 
         # Suppress beeps for already handled bins
@@ -108,11 +96,9 @@ class AudioHandler:
                 (self.current_play_obj is None or not self.current_play_obj.is_playing())):
                 self.last_beep_time = now
                 self.current_play_obj = self.beep_wave_obj.play()
-                print(f"[DEBUG] Beep played for bin {bin_id}.")
         else:
             if self.current_play_obj and self.current_play_obj.is_playing():
                 self.current_play_obj.stop()
-
 
     def is_target_picked_up(self):
         return self.target_picked_up
