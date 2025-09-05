@@ -9,7 +9,7 @@ import json
 import time
 import sys, os
 
-from video_processing import VideoProcessor
+from video_processing import VideoProcessor, begin_task
 import store
 
 # Config
@@ -52,13 +52,21 @@ async def get_stream(websocket: WebSocket):
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
             ):
+            # Begin grabbing GPS early so it can run while websocket data is sending since it seems kinda slow
+            gps_loc = await begin_task(store.get_gps())
+            
             starttime = time.monotonic()
             
             ret, buffer = cv2.imencode('.jpg', frame)
             
+            wrapped_objects = {"event": "objects", "content": objects}
             
-            await websocket.send_text(json.dumps(objects))
+            
+            await websocket.send_text(json.dumps(wrapped_objects))
             await websocket.send_bytes(buffer.tobytes())
+            
+            wrapped_gps = {"event": "location", "content": await gps_loc}
+            await websocket.send_text(json.dumps(wrapped_gps))
             
             elapsedtime = time.monotonic() - starttime
             if elapsedtime < frametime:
@@ -70,7 +78,8 @@ async def get_stream(websocket: WebSocket):
     except (ConnectionClosed):
         print("Connection closed")
     finally:
-        store.save_and_close_log() 
+        if ENABLE_LOGGING:
+            store.save_and_close_log() 
 
 
 if __name__ == '__main__':

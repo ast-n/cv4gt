@@ -402,8 +402,8 @@ class VideoProcessor:
                                 print(f"Stored frame with high relevance objects.")
                             except Exception as e:
                                 print(f"Warning: Failed to store frame {frame_num}: {e}")
-                    # Log to textlog
-                    store.add_to_log(relevant_objects, frame_num-1)
+                            # Log to textlog
+                            store.add_to_log(relevant_objects, frame_num-1)
 
                 # Write frames as output
                 if out:
@@ -420,7 +420,8 @@ class VideoProcessor:
                     
                 if next_frame is None:
                     await stored_path_task
-                    store.save_and_close_log()
+                    if logging:
+                        store.save_and_close_log()
                     break
                 
                 # Display frames
