@@ -14,35 +14,49 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-2">
+    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-4.5">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
-        class="p-2 md:p-3 rounded bg-gray-700 text-sm md:text-base flex flex-col gap-1 shadow-sm"
+        class="p-1.5 md:p-2 rounded bg-gray-700 text-xs md:text-sm flex flex-col gap-1 shadow-sm"
       >
         <!-- Top row: Icon + Badge -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5">
           <img
             v-if="iconMap[obj.class.toLowerCase()]"
             :src="iconMap[obj.class.toLowerCase()]"
             alt=""
-            class="w-8 h-8 md:w-6 md:h-6 filter brightness-0 invert"
+            class="w-6 h-6 md:w-5 md:h-5 filter brightness-0 invert"
           />
 
           <!-- Category Badge -->
           <span
-            class="px-2 py-0.3 rounded-full text-xs font-medium text-white"
+            class="px-1.5 py-0.5 rounded-full text-[10px] md:text-xs font-medium text-white"
             :style="{ backgroundColor: getRelevanceBgColor(obj.relevance) }"
           >
             {{ formatClassName(obj.class) }}
           </span>
         </div>
 
-        <!-- Bottom row: Stats -->
-        <div class="text-gray-300 text-sm md:text-base">
-          {{ (obj.confidence * 100).toFixed(2) }}% |
-          <span :class="getRelevanceTextColor(obj.relevance)">R:{{ obj.relevance }}</span> |
-          D:{{ obj.depth.toFixed(2) }}m
+        <!-- Bottom row: Confidence Bar + Stats -->
+        <div class="flex flex-col gap-0.5 w-full">
+          <!-- Confidence Progress Bar -->
+          <div class="w-full bg-gray-600 rounded-full h-1.5 overflow-hidden">
+            <div
+              class="h-1.5 rounded-full transition-all duration-300"
+              :style="{
+                width: (obj.confidence * 100).toFixed(0) + '%',
+                backgroundColor: getRelevanceBgColor(obj.relevance),
+              }"
+            ></div>
+          </div>
+
+          <!-- Text row -->
+          <div class="text-gray-300 text-[11px] md:text-xs">
+            <span class="font-medium">{{ (obj.confidence * 100).toFixed(0) }}%</span> |
+            <span :class="getRelevanceTextColor(obj.relevance)">R:{{ obj.relevance }}</span> |
+            D:{{ obj.depth.toFixed(2) }}m
+          </div>
         </div>
       </li>
     </ul>
