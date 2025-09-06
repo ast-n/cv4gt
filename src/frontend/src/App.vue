@@ -9,7 +9,7 @@
 
 
     <!-- Bottom Section: Object List -->
-    <div class="flex-[0.5] min-h-[200px] md:min-h-[200px] overflow-auto">
+    <div>
       <ObjectList class="w-full" :object-array="objects" />
     </div>
   </div>
