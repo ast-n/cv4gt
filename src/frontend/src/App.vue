@@ -9,7 +9,7 @@
 
 
     <!-- Bottom Section: Object List -->
-    <div class="flex-[0.5] min-h-[200px] md:min-h-[200px] overflow-auto">
+    <div>
       <ObjectList class="w-full" :object-array="objects" />
     </div>
   </div>
@@ -24,6 +24,7 @@ import MapPanel from './components/MapPanel.vue'
 
 const frameData  = ref(null)
 const objects = ref([])
+const jsondata = ref("")
 
 onMounted(() => {
   const ws = new WebSocket("ws://localhost:8000/ws");
@@ -32,8 +33,12 @@ onMounted(() => {
       frameData.value = event.data
     } else {
       try {
-        const data = JSON.parse(event.data);
-        if (Array.isArray(data)) objects.value = data;
+        jsondata.value = JSON.parse(event.data);
+        if (jsondata.value.event === 'objects') {
+          if (Array.isArray(jsondata.value.content)) objects.value = jsondata.value.content;
+        } else if (jsondata.value.event === 'location') {
+          //Whatever code needed to pass to map
+        }
       } catch (err) {
         console.error("Error parsing WS data:", err);
       }

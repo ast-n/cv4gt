@@ -7,8 +7,10 @@ import asyncio
 import cv2
 import json
 import time
+import sys, os
 
-from video_processing import VideoProcessor
+from video_processing import VideoProcessor, begin_task
+import store
 
 # Config
 INPUT_VIDEO = "data/ground_truth.mp4"
@@ -50,20 +52,34 @@ async def get_stream(websocket: WebSocket):
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
             ):
+            # Begin grabbing GPS early so it can run while websocket data is sending since it seems kinda slow
+            gps_loc = await begin_task(store.get_gps())
+            
             starttime = time.monotonic()
             
             ret, buffer = cv2.imencode('.jpg', frame)
             
-            await websocket.send_text(json.dumps(objects))
+            wrapped_objects = {"event": "objects", "content": objects}
+            
+            
+            await websocket.send_text(json.dumps(wrapped_objects))
             await websocket.send_bytes(buffer.tobytes())
+            
+            wrapped_gps = {"event": "location", "content": await gps_loc}
+            await websocket.send_text(json.dumps(wrapped_gps))
             
             elapsedtime = time.monotonic() - starttime
             if elapsedtime < frametime:
                 await asyncio.sleep(frametime - elapsedtime) # Return control to main loop with asyncio while pausing to ensure framerate.
             else:
                 await asyncio.sleep(0)
-    except (WebSocketDisconnect, ConnectionClosed):
+    except (WebSocketDisconnect):
         print("Client disconnected")
+    except (ConnectionClosed):
+        print("Connection closed")
+    finally:
+        if ENABLE_LOGGING:
+            store.save_and_close_log() 
 
 
 if __name__ == '__main__':
