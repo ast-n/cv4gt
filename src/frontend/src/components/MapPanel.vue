@@ -1,8 +1,8 @@
 <template>
   <div class="bg-gray-800 rounded-xl p-4 flex flex-col h-full">
     <span class="text-sm md:text-lg mb-2 text-gray-400">
-      {{ location && location.lat != null && location.lng != null
-          ? `${location.lat}°, ${location.lng}°`
+      {{ state.firstLocationReceived
+          ? `${state.lastLocation.lat}°, ${state.lastLocation.lng}°`
           : "Waiting for GPS..." }}
     </span>
     <div class="bg-gray-700 flex-1 rounded-lg flex items-center justify-center min-h-[150px]">
@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { watch, onMounted } from "vue";
+import { watch, onMounted, reactive } from "vue";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -26,6 +26,11 @@ const props = defineProps({
 let map;
 let marker = null; // marker only created when backend passes location
 const baseLocation = [-37.82308, 145.03972]; // fallback center, no marker
+
+const state = reactive({
+  firstLocationReceived: false,
+  lastLocation: { lat: null, lng: null },
+});
 
 onMounted(() => {
   // initialize map at base location
@@ -44,6 +49,9 @@ watch(
     if (loc && loc.lat != null && loc.lng != null) {
       const lat = parseFloat(loc.lat);
       const lng = parseFloat(loc.lng);
+
+      state.firstLocationReceived = true;
+      state.lastLocation = { lat, lng };
 
       if (!marker) {
         marker = L.marker([lat, lng]).addTo(map);
