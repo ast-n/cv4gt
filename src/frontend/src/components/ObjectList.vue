@@ -1,30 +1,125 @@
 <template>
-  <div class="bg-gray-800 rounded-xl p-4 flex flex-col h-full overflow-auto">
-    <h3 class="font-bold text-white text-lg">Detected Objects</h3>
-    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 text-sm">
-      <li
-        v-for="(obj, index) in sortedObjects"
-        :key="index"
-        :class="getRelevanceColor(obj.relevance)"
-        class="p-1 rounded"
+  <div class="bg-gray-800 rounded-xl p-4 flex flex-col relative">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="font-bold text-white text-lg md:text-2xl">Detected Objects</h3>
+
+      <select
+        v-model="selectedFilter"
+        class="bg-gray-700 text-white text-sm md:text-base rounded px-2 py-1 focus:outline-none"
       >
-        {{ obj.class }} - {{ (obj.confidence * 100).toFixed(2) }}%, 
-        R:{{ obj.relevance }}, D:{{ obj.depth.toFixed(2) }}m
+        <option value="">All</option>
+        <option v-for="item in filterOptions" :key="item" :value="item">
+          {{ item }}
+        </option>
+      </select>
+    </div>
+
+    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-4.5">
+      <li
+        v-for="(obj, index) in filteredObjects"
+        :key="index"
+        class="p-1.5 md:p-2 rounded bg-gray-700 text-xs md:text-sm flex flex-col gap-1 shadow-sm"
+      >
+        <!-- Top row: Icon + Badge -->
+        <div class="flex items-center gap-1.5">
+          <img
+            v-if="iconMap[obj.class.toLowerCase()]"
+            :src="iconMap[obj.class.toLowerCase()]"
+            alt=""
+            class="w-6 h-6 md:w-5 md:h-5 filter brightness-0 invert"
+          />
+
+          <!-- Category Badge -->
+          <span
+            class="px-1.5 py-0.5 rounded-full text-[10px] md:text-xs font-medium text-white"
+            :style="{ backgroundColor: getRelevanceBgColor(obj.relevance) }"
+          >
+            {{ formatClassName(obj.class) }}
+          </span>
+        </div>
+
+        <!-- Bottom row: Confidence Bar + Stats -->
+        <div class="flex flex-col gap-0.5 w-full">
+          <!-- Confidence Progress Bar -->
+          <div class="w-full bg-gray-600 rounded-full h-1.5 overflow-hidden">
+            <div
+              class="h-1.5 rounded-full transition-all duration-300"
+              :style="{
+                width: (obj.confidence * 100).toFixed(0) + '%',
+                backgroundColor: getRelevanceBgColor(obj.relevance),
+              }"
+            ></div>
+          </div>
+
+          <!-- Text row -->
+          <div class="text-gray-300 text-[11px] md:text-xs">
+            <span class="font-medium">{{ (obj.confidence * 100).toFixed(0) }}%</span> |
+            <span :class="getRelevanceTextColor(obj.relevance)">R:{{ obj.relevance }}</span> |
+            D:{{ obj.depth.toFixed(2) }}m
+          </div>
+        </div>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from "vue";
 
-const props = defineProps(['objectArray'])
+// Import icons
+import binIcon from "../assets/bin.png";
+import carIcon from "../assets/car.png";
+import cyclistIcon from "../assets/cyclist.png";
+import pawIcon from "../assets/paw.png";
+import userIcon from "../assets/user.png";
 
-const objects = ref([]);
+const props = defineProps(["objectArray"]);
+const selectedFilter = ref("");
 
-let ws = null;
+// Dropdown options
+const filterOptions = [
+  "Bin",
+  "Fallen bin",
+  "Person",
+  "Vehicle",
+  "Animal",
+  "Cyclist",
+  "Fixed obstacle",
+  "Ground hazards",
+];
 
-function getRelevanceColor(relevance) {
+// Icon mapping
+const iconMap = {
+  bin: binIcon,
+  fallen_bin: binIcon,
+  car: carIcon,
+  vehicle: carIcon,
+  cyclist: cyclistIcon,
+  person: userIcon,
+  animal: pawIcon,
+  dog: pawIcon,
+  cat: pawIcon,
+};
+
+// Format class names for display
+function formatClassName(cls) {
+  return cls.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+// Relevance → badge background color
+function getRelevanceBgColor(relevance) {
+  switch (relevance) {
+    case 5: return "#dc2626"; // red-600
+    case 4: return "#f97316"; // orange-500
+    case 3: return "#eab308"; // yellow-500
+    case 2: return "#22c55e"; // green-500
+    case 1: return "#06b6d4"; // cyan-500
+    default: return "#6b7280"; // gray-500
+  }
+}
+
+// Text color (for stats row)
+function getRelevanceTextColor(relevance) {
   switch (relevance) {
     case 5: return "text-red-600";
     case 4: return "text-orange-400";
@@ -35,12 +130,19 @@ function getRelevanceColor(relevance) {
   }
 }
 
+// Sort objects by relevance descending
 const sortedObjects = computed(() =>
-  [...objects.value].sort((a, b) => b.relevance - a.relevance)
+  [...props.objectArray].sort((a, b) => b.relevance - a.relevance)
 );
 
-watch(() => props.objectArray, async (newArray) => {
-  objects.value = newArray
-})
+// Filter + limit to 15 items (3 rows x 5 columns)
+const filteredObjects = computed(() => {
+  let objs = selectedFilter.value
+    ? sortedObjects.value.filter((obj) =>
+        obj.class.toLowerCase().includes(selectedFilter.value.toLowerCase())
+      )
+    : sortedObjects.value;
 
+  return objs.slice(0, 15); // max 15 items
+});
 </script>
