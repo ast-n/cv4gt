@@ -14,7 +14,7 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-4.5">
+    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-4.5 h-[300px]">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
@@ -58,6 +58,14 @@
             D:{{ obj.depth.toFixed(2) }}m
           </div>
         </div>
+      </li>
+
+      <!-- Placeholder if empty -->
+      <li
+        v-if="filteredObjects.length === 0"
+        class="col-span-5 row-span-3 flex items-center justify-center text-white text-sm md:text-base"
+      >
+        No objects detected
       </li>
     </ul>
   </div>

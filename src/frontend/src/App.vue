@@ -3,13 +3,13 @@
 
     <!-- Top Section: Video + Map -->
     <div class="flex flex-1 gap-4 flex-col md:flex-row">
-      <VideoPanel class="flex-[3] min-h-[80px] md:min-h-[300px]" :current-frame-data="frameData" />
-      <MapPanel class="flex-[2] min-h-[80px] md:min-h-[250px]" :location="location" />
+      <VideoPanel class="md:basis-2/3 flex-grow min-h-[80px] md:min-h-[300px]" :current-frame-data="frameData" />
+      <MapPanel class="md:basis-1/3 flex-grow min-h-[80px] md:min-h-[250px]" :location="location" />
     </div>
 
     <!-- Bottom Section: Object List -->
     <div>
-      <ObjectList class="w-full" :object-array="objects" />
+      <ObjectList class="w-full h-[300px] mb-2" :object-array="objects" />
     </div>
   </div>
 </template>
