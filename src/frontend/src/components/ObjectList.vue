@@ -14,7 +14,7 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-4.5 h-[300px]">
+    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-4.5 h-[350px]">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
@@ -31,7 +31,7 @@
 
           <!-- Category Badge -->
           <span
-            class="px-1.5 py-0.5 rounded-full text-[10px] md:text-xs font-medium text-white"
+            class="px-3 py-1 rounded-full text-[30px] md:text-xs font-medium text-white"
             :style="{ backgroundColor: getRelevanceBgColor(obj.relevance) }"
           >
             {{ formatClassName(obj.class) }}
