@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-gray-800 rounded-xl p-4 flex flex-col relative">
+  <div class="bg-gray-900 rounded-xl p-4 flex flex-col relative">
     <div class="flex justify-between items-center mb-2">
       <h3 class="font-bold text-white text-lg md:text-2xl">Detected Objects</h3>
 
       <select
         v-model="selectedFilter"
-        class="bg-gray-700 text-white text-sm md:text-base rounded px-2 py-1 focus:outline-none"
+        class="bg-gray-700 text-white text-sm md:text-base rounded-lg px-2 py-1 focus:outline-none"
       >
         <option value="">All</option>
         <option v-for="item in filterOptions" :key="item" :value="item">
@@ -14,7 +14,7 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-4.5 h-[350px]">
+    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-2.5 h-[390px] pb-6">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
@@ -80,6 +80,7 @@ import carIcon from "../assets/car.png";
 import cyclistIcon from "../assets/cyclist.png";
 import pawIcon from "../assets/paw.png";
 import userIcon from "../assets/user.png";
+import mailboxIcon from "../assets/mailbox.png";
 
 const props = defineProps(["objectArray"]);
 const selectedFilter = ref("");
@@ -107,6 +108,8 @@ const iconMap = {
   animal: pawIcon,
   dog: pawIcon,
   cat: pawIcon,
+  mailbox: mailboxIcon,
+
 };
 
 // Format class names for display
@@ -114,7 +117,7 @@ function formatClassName(cls) {
   return cls.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-// Relevance → badge background color
+// Relevance = badge background color
 function getRelevanceBgColor(relevance) {
   switch (relevance) {
     case 5: return "#dc2626"; // red-600
@@ -122,7 +125,7 @@ function getRelevanceBgColor(relevance) {
     case 3: return "#eab308"; // yellow-500
     case 2: return "#22c55e"; // green-500
     case 1: return "#06b6d4"; // cyan-500
-    default: return "#6b7280"; // gray-500
+    default: return "#778da9"; // gray-500
   }
 }
 
