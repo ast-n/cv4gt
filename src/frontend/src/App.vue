@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col h-screen w-screen bg-gray-600 text-white p-2 md:p-4 gap-3 text-base md:text-lg overflow-hidden">
 
-    <!-- Main Section: Left (Video + Map) | Right (Object List) -->
-    <div class="flex flex-1 gap-4 overflow-hidden">
+    <!-- Main Section: Stack on small, side-by-side on medium+ -->
+    <div class="flex flex-col lg:flex-row flex-1 gap-4 overflow-hidden">
       
       <!-- Left column: Video + Map -->
       <div class="flex flex-col flex-1 gap-3 overflow-hidden">
@@ -10,15 +10,16 @@
         <MapPanel class="flex-[3] min-h-0 overflow-hidden" :location="location" />
       </div>
 
-      <!-- Right column: Object List (fixed width but full height) -->
+      <!-- Right column: Object List -->
       <ObjectList 
-        class="w-[300px] sm:w-[300px] md:w-[300px] lg:w-[400px] xl:w-[550px] flex-shrink-0 h-full overflow-hidden"
+        class="w-full lg:w-[400px] xl:w-[550px] flex-shrink-0 h-64 lg:h-full overflow-auto"
         :object-array="objects" 
       />
     </div>
 
   </div>
 </template>
+
 
 <script setup>
 import { onMounted, onUnmounted, onBeforeUnmount, ref } from "vue";
