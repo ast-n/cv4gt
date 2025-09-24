@@ -1,6 +1,6 @@
 <template>
   <div class="bg-gray-900 rounded-xl p-4 flex flex-col h-full">
-    <span class="text-sm md:text-lg mb-2 text-gray-400 flex items-center gap-2">
+    <span class="md:text-sm lg:text-lg mb-2 text-gray-400 flex items-center gap-2">
       <template v-if="state.firstLocationReceived">
         {{ state.lastLocation.lat }}°, {{ state.lastLocation.lng }}°
       </template>
@@ -33,7 +33,7 @@
     </span>
 
     <div
-      class="bg-gray-700 flex-1 rounded-lg flex items-center justify-center min-h-[150px]"
+      class="bg-gray-700 flex-1 rounded-lg flex items-center justify-center h-full"
     >
       <div id="mapContainer" class="w-full h-full"></div>
     </div>

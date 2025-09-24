@@ -1,16 +1,22 @@
 <template>
-  <div class="flex flex-col h-screen bg-gray-600 text-white p-2 md:p-4 gap-3 text-base md:text-lg">
+  <div class="flex flex-col h-screen w-screen bg-gray-600 text-white p-2 md:p-4 gap-3 text-base md:text-lg overflow-hidden">
 
-    <!-- Top Section: Video + Map -->
-    <div class="flex flex-1 gap-4 flex-col md:flex-row">
-      <VideoPanel class="md:basis-2/3 flex-grow min-h-[80px] md:min-h-[300px]" :current-frame-data="frameData" />
-      <MapPanel class="md:basis-1/3 flex-grow min-h-[80px] md:min-h-[250px]" :location="location" />
+    <!-- Main Section: Left (Video + Map) | Right (Object List) -->
+    <div class="flex flex-1 gap-4 overflow-hidden">
+      
+      <!-- Left column: Video + Map -->
+      <div class="flex flex-col flex-1 gap-3 overflow-hidden">
+        <VideoPanel class="flex-[7] min-h-0 overflow-hidden" :current-frame-data="frameData" />
+        <MapPanel class="flex-[3] min-h-0 overflow-hidden" :location="location" />
+      </div>
+
+      <!-- Right column: Object List (fixed width but full height) -->
+      <ObjectList 
+        class="w-[300px] sm:w-[300px] md:w-[300px] lg:w-[400px] xl:w-[550px] flex-shrink-0 h-full overflow-hidden"
+        :object-array="objects" 
+      />
     </div>
 
-    <!-- Bottom Section: Object List -->
-    <div>
-      <ObjectList class="w-full h-[300px] mb-2" :object-array="objects" />
-    </div>
   </div>
 </template>
 

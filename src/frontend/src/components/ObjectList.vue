@@ -1,11 +1,11 @@
 <template>
   <div class="bg-gray-900 rounded-xl p-4 flex flex-col relative">
     <div class="flex justify-between items-center mb-2">
-      <h3 class="font-bold text-white text-lg md:text-2xl">Detected Objects</h3>
+      <h3 class="font-bold text-white md:text-md lg:text-xl">Detected Objects</h3>
 
       <select
         v-model="selectedFilter"
-        class="bg-gray-700 text-white text-sm md:text-base rounded-lg px-2 py-1 focus:outline-none"
+        class="bg-gray-700 text-white text-xs lg:text-sm rounded-lg px-2 py-1 focus:outline-none"
       >
         <option value="">All</option>
         <option v-for="item in filterOptions" :key="item" :value="item">
@@ -14,11 +14,11 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-3 grid-flow-col grid-cols-5 gap-2.5 h-[390px] pb-6">
+    <ul class="grid grid-rows-10 grid-flow-rows grid-cols-1 lg:grid-cols-2 gap-2.5 pb-6">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
-        class="p-1.5 md:p-2 rounded bg-gray-700 text-xs md:text-sm flex flex-col gap-1 shadow-sm"
+        class="p-1.5 md:p-2 rounded bg-gray-700 text-xs lg:text-sm flex flex-col gap-1 shadow-sm"
       >
         <!-- Top row: Icon + Badge -->
         <div class="flex items-center gap-1.5">
@@ -31,7 +31,7 @@
 
           <!-- Category Badge -->
           <span
-            class="px-3 py-1 rounded-full text-[30px] md:text-xs font-medium text-white"
+            class="px-3 py-1 rounded-full text-xs font-medium text-white"
             :style="{ backgroundColor: getRelevanceBgColor(obj.relevance) }"
           >
             {{ formatClassName(obj.class) }}
@@ -52,7 +52,7 @@
           </div>
 
           <!-- Text row -->
-          <div class="text-gray-300 text-[11px] md:text-xs">
+          <div class="text-gray-300 text-base md:text-xs">
             <span class="font-medium">{{ (obj.confidence * 100).toFixed(0) }}%</span> |
             <span :class="getRelevanceTextColor(obj.relevance)">R:{{ obj.relevance }}</span> |
             D:{{ obj.depth.toFixed(2) }}m
@@ -63,7 +63,7 @@
       <!-- Placeholder if empty -->
       <li
         v-if="filteredObjects.length === 0"
-        class="col-span-5 row-span-3 flex items-center justify-center text-white text-sm md:text-base"
+        class="col-span-2 row-span-10 flex items-center justify-center text-white text-sm md:text-base"
       >
         No objects detected
       </li>
