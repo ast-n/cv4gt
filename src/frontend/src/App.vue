@@ -1,25 +1,24 @@
 <template>
-  <div class="flex flex-col h-screen w-screen bg-gray-600 text-white p-2 md:p-4 gap-3 text-base md:text-lg overflow-hidden">
-
-    <!-- Main Section: Stack on small, side-by-side on medium+ -->
-    <div class="flex flex-col lg:flex-row flex-1 gap-4 overflow-hidden">
+  <div
+    class="flex flex-col w-screen bg-gray-600 text-white p-2 md:p-4 gap-3 text-base md:text-lg h-auto sm:h-screen overflow-y-auto sm:overflow-hidden overflow-x-hidden">
+    <!-- Main Section -->
+    <div class="flex flex-1 flex-col sm:flex-row gap-4 sm:overflow-hidden">
       
-      <!-- Left column: Video + Map -->
-      <div class="flex flex-col flex-1 gap-3 overflow-hidden">
-        <VideoPanel class="flex-[7] min-h-0 overflow-hidden" :current-frame-data="frameData" />
-        <MapPanel class="flex-[3] min-h-0 overflow-hidden" :location="location" />
+      <!-- Left column: Video + New Component (wider) -->
+      <div class="flex flex-col flex-[3] gap-3 sm:overflow-hidden">
+        <VideoPanel class="min-h-[200px] sm:min-h-0 flex-[7]" :current-frame-data="frameData" />
+        <NewComponent class="min-h-[150px] sm:min-h-0 flex-[3]"/>
       </div>
 
-      <!-- Right column: Object List -->
-      <ObjectList 
-        class="w-full lg:w-[400px] xl:w-[550px] flex-shrink-0 h-64 lg:h-full overflow-auto"
-        :object-array="objects" 
-      />
-    </div>
+      <!-- Right column: Map + Object List -->
+      <div class="flex flex-col flex-[2] gap-3 h-[400px] sm:h-full">
+        <MapPanel class="flex-1 min-h-[200px]" :location="location"/>
+        <ObjectList class="flex-[2] w-full sm:w-full overflow-auto" :object-array="objects"/>
+      </div>
 
+    </div>
   </div>
 </template>
-
 
 <script setup>
 import { onMounted, onUnmounted, onBeforeUnmount, ref } from "vue";
@@ -27,6 +26,7 @@ import { onMounted, onUnmounted, onBeforeUnmount, ref } from "vue";
 import VideoPanel from './components/VideoPanel.vue'
 import ObjectList from './components/ObjectList.vue'
 import MapPanel from './components/MapPanel.vue'
+import NewComponent from './components/New.vue'
 
 const frameData  = ref(null)
 const objects = ref([])

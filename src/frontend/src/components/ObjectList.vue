@@ -14,7 +14,7 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-10 grid-flow-rows grid-cols-1 lg:grid-cols-2 gap-2.5 pb-6">
+    <ul class="grid grid-rows-10 lg:grid-rows-5 grid-flow-rows grid-cols-2 sm:grid-cols-1 lg:grid-cols-2 gap-2.5 pb-6">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"

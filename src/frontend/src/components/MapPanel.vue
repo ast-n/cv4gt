@@ -33,7 +33,7 @@
     </span>
 
     <div
-      class="bg-gray-700 flex-1 rounded-lg flex items-center justify-center h-full"
+      class="bg-gray-700 rounded-lg flex items-center justify-center h-[150px] sm:h-0 sm:flex-1 w-full"
     >
       <div id="mapContainer" class="w-full h-full"></div>
     </div>
