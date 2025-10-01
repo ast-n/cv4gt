@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from websockets.exceptions import ConnectionClosed
-from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
 import uvicorn
 import asyncio
@@ -8,6 +7,7 @@ import cv2
 import json
 import time
 import sys, os
+import psutil
 
 from video_processing import VideoProcessor, begin_task
 import store
@@ -42,6 +42,8 @@ async def get_stream(websocket: WebSocket):
         frametime = 1/FPS_CAP
         
     await websocket.accept()
+
+    last_sys_update = 0  
     
     try:
         async for frame, objects in processor.process_video(
@@ -60,13 +62,27 @@ async def get_stream(websocket: WebSocket):
             ret, buffer = cv2.imencode('.jpg', frame)
             
             wrapped_objects = {"event": "objects", "content": objects}
-            
-            
             await websocket.send_text(json.dumps(wrapped_objects))
             await websocket.send_bytes(buffer.tobytes())
             
             wrapped_gps = {"event": "location", "content": await gps_loc}
             await websocket.send_text(json.dumps(wrapped_gps))
+
+            
+            now = time.monotonic()
+            if now - last_sys_update >= 1:
+                cpu = psutil.cpu_percent(interval=None)
+                mem = psutil.virtual_memory()
+                wrapped_sys = {
+                    "event": "system",
+                    "content": {
+                        "cpu": cpu,
+                        "usedMB": round(mem.used / (1024 * 1024)),
+                        "totalMB": round(mem.total / (1024 * 1024)),
+                    },
+                }
+                await websocket.send_text(json.dumps(wrapped_sys))
+                last_sys_update = now
             
             elapsedtime = time.monotonic() - starttime
             if elapsedtime < frametime:

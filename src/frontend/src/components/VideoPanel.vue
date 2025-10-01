@@ -2,7 +2,6 @@
   <div class="bg-gray-900 rounded-xl p-4 flex flex-col h-full relative">
     <div class="flex justify-between items-center mb-2">
       <h2 class="md:text-md lg:text-xl font-bold">Real-time Detection</h2>
-      <span class="md:text-sm lg:text-lg text-gray-400">{{ currentTime }}</span>
     </div>
     <div class="flex-1 flex justify-center items-center overflow-hidden relative">
       <img 
@@ -57,16 +56,9 @@ function updateTime() {
 }
 
 onMounted(() => {
-  updateTime();
-  const interval = setInterval(updateTime, 1000);
-
   const image = document.getElementById("frame");
   image.onload = function(){
     URL.revokeObjectURL(this.src)
   }
-
-  onUnmounted(() => {
-    clearInterval(interval);
-  });
 });
 </script>

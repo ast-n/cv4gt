@@ -14,11 +14,11 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-10 lg:grid-rows-5 grid-flow-rows grid-cols-2 sm:grid-cols-1 lg:grid-cols-2 gap-2.5 pb-6">
+    <ul class="grid grid-rows-2 grid-flow-cols grid-cols-4 gap-2.5 pb-6">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
-        class="p-1.5 md:p-2 rounded bg-gray-700 text-xs lg:text-sm flex flex-col gap-1 shadow-sm"
+        class="p-1.5 rounded bg-gray-700 text-xs lg:text-sm flex flex-col gap-1 shadow-sm"
       >
         <!-- Top row: Icon + Badge -->
         <div class="flex items-center gap-1.5">
@@ -52,7 +52,7 @@
           </div>
 
           <!-- Text row -->
-          <div class="text-gray-300 text-base md:text-xs">
+          <div class="text-gray-300 text-xs md:text-sm">
             <span class="font-medium">{{ (obj.confidence * 100).toFixed(0) }}%</span> |
             <span :class="getRelevanceTextColor(obj.relevance)">R:{{ obj.relevance }}</span> |
             D:{{ obj.depth.toFixed(2) }}m
