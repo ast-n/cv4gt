@@ -12,25 +12,25 @@
       />
       <div class="absolute bottom-2 right-2 p-2 rounded-lg text-xs text-white bg-gray-900/40 backdrop-blur-md shadow-lg">
         <p class="font-semibold mb-1">Color Represent</p>
-        <div class="flex items-center space-x-2">
-          <span class="w-3 h-3 rounded-full bg-red-600"></span>
-          <span>Rating 5</span>
+        <div class="flex items-center space-x-2 mb-1">
+          <span class="w-4 h-4 rounded-full bg-red-600"></span>
+          <span class="text-sm">Rating 5</span>
+        </div>
+        <div class="flex items-center space-x-2 mb-1">
+          <span class="w-4 h-4 rounded-full bg-orange-400"></span>
+          <span class="text-sm">Rating 4</span>
+        </div>
+        <div class="flex items-center space-x-2 mb-1">
+          <span class="w-4 h-4 rounded-full bg-yellow-400"></span>
+          <span class="text-sm">Rating 3</span>
+        </div>
+        <div class="flex items-center space-x-2 mb-1">
+          <span class="w-4 h-4 rounded-full bg-green-400"></span>
+          <span class="text-sm">Rating 2</span>
         </div>
         <div class="flex items-center space-x-2">
-          <span class="w-3 h-3 rounded-full bg-orange-400"></span>
-          <span>Rating 4</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
-          <span>Rating 3</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="w-3 h-3 rounded-full bg-green-400"></span>
-          <span>Rating 2</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="w-3 h-3 rounded-full bg-cyan-400"></span>
-          <span>Rating 1</span>
+          <span class="w-4 h-4 rounded-full bg-cyan-400"></span>
+          <span class="text-sm">Rating 1</span>
         </div>
       </div>
     </div>
