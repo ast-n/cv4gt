@@ -4,16 +4,16 @@
     <!-- Main Section -->
     <div class="flex flex-1 flex-col sm:flex-row gap-4 sm:overflow-hidden">
       
-      <!-- Left column: Video + New Component (wider) -->
+      <!-- Left column: Video + Detected objects -->
       <div class="flex flex-col flex-[3] gap-3 sm:overflow-hidden">
         <VideoPanel class="min-h-[200px] sm:min-h-0 flex-[8]" :current-frame-data="frameData" />
         <ObjectList class="min-h-[150px] sm:min-h-0 flex-[4]" :object-array="objects"/>
       </div>
 
-      <!-- Right column: Map + Object List -->
+      <!-- Right column: Map + system information -->
       <div class="flex flex-col flex-[2] gap-3 h-[400px] sm:h-full">
         <MapPanel class="flex-3 min-h-[200px]" :location="location"/>
-        <NewComponent class="flex-2 w-full sm:w-full overflow-auto" :cpu-usage="cpuUsage" :used-m-b="usedMB" :total-m-b="totalMB"/>
+        <NewComponent class="flex-1 w-full sm:w-full overflow-auto" :cpu-usage="cpuUsage" :used-m-b="usedMB" :total-m-b="totalMB"/>
       </div>
 
     </div>
