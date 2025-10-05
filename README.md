@@ -60,10 +60,10 @@ No installer or one-click launcher has been set up for these platforms, so requi
 1. Create a new python venv with Python 3.11 with your preferred method.
 2. Find out your CUDA Toolkit version and install the appropriate version of torch.
 ```bash
-pip install pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu<your-cuda-version>
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu<your-cuda-version>
 
 # Example for CUDA Toolkit version 12.1:
-pip install pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
 ```
 3. Install the remaining python requirements.
 ```bash
