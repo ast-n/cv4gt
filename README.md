@@ -21,7 +21,7 @@ Requires `Python 3.11`
 
 Get the latest from [here](https://www.python.org/downloads/release/python-3119/).
 
-If you want GPU-accelerated performance (you probably do), you will also need CUDA Toolkit. Supported versions include `12.1`, `12.4`, `12.6`, `12.8`, and `12.9`. Download one from [here](https://developer.nvidia.com/cuda-toolkit-archive)
+If you want GPU-accelerated performance (you probably do), you will also need CUDA Toolkit. Supported versions include `12.1`, `12.4`, `12.6`, `12.8`, and `12.9`. Download one from [here](https://developer.nvidia.com/cuda-toolkit-archive).
 
 #### Frontend
 Requires `Node.js >= 20.19.0` and `npm`
@@ -34,7 +34,6 @@ Our project relies on the Realsense SDK. This is available on Windows, Linux, an
 **Realsense SDK Install instructions**
 ##### Windows 
 1. Go to the [latest stable release](https://github.com/IntelRealSense/librealsense/releases/latest), navigate to the Assets section, download and run Intel.RealSense.SDK.exe
-
 2. Click through several simple steps of the installer
 
 ##### Linux
@@ -59,18 +58,18 @@ If you encounter any issues with python dependencies, you can delete the .venv f
 No installer or one-click launcher has been set up for these platforms, so requirements will have to be manually installed.
 
 1. Create a new python venv with Python 3.11 with your preferred method.
-2. Find out your CUDA Toolkit version and install the appropriate version of torch
+2. Find out your CUDA Toolkit version and install the appropriate version of torch.
 ```bash
-pip install pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu<your-cuda-version>
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu<your-cuda-version>
 
 # Example for CUDA Toolkit version 12.1:
-pip install pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
 ```
-3. Install the remaining python requirements
+3. Install the remaining python requirements.
 ```bash
 pip install -r "requirements.txt"
 ```
-4. Install frontend requirements
+4. Install frontend requirements.
 ```bash
 npm --prefix src/frontend install
 ```
