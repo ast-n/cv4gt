@@ -23,6 +23,8 @@ Get the latest from [here](https://www.python.org/downloads/release/python-3119/
 
 If you want GPU-accelerated performance (you probably do), you will also need CUDA Toolkit. Supported versions include `12.1`, `12.4`, `12.6`, `12.8`, and `12.9`. Download one from [here](https://developer.nvidia.com/cuda-toolkit-archive).
 
+You may also need to install the Visual Studio C++ Build Tools, including the Win10/11 SDK. Some of the python libraries used might need to be manually built, which requires this.
+
 #### Frontend
 Requires `Node.js >= 20.19.0` and `npm`
 
