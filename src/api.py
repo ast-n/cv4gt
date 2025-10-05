@@ -7,25 +7,28 @@ import asyncio
 import cv2
 import json
 import time
-import sys, os
+from configparser import ConfigParser
 
 from video_processing import VideoProcessor, begin_task
 import store
 
-# Config
-INPUT_VIDEO = "data/trim.mp4"
-#INPUT_VIDEO = "data/ground_truth.mp4"
-USE_REALSENSE = False
-#OUTPUT_VIDEO = "data/output.avi"
-OUTPUT_VIDEO = None
-ENABLE_DISPLAY = False
-ENABLE_LOGGING = False
-COLOUR_CORRECTION = False
-SMOOTHING_FACTOR = 0.0
-FPS_CAP = 30 # Set to 0 to turn off.
+config = ConfigParser(inline_comment_prefixes=';')
+config.read("config.ini")
 
-MODEL_PATH = "models/YOLOv11m-02-09-129e.pt"
-#MODEL_PATH = "models/YOLOv8m-02-09-116e.pt"
+
+video_config = config['VIDEO']
+# Video Config
+INPUT_VIDEO = video_config['input_video']
+USE_REALSENSE = video_config.getboolean('use_realsense')
+OUTPUT_VIDEO = video_config['output_video']
+ENABLE_DISPLAY = video_config.getboolean('enable_auxiliary_display')
+SMOOTHING_FACTOR = float(video_config['smoothing_factor'])
+FPS_CAP = int(video_config['max_fps'])
+
+system_config = config['SYSTEM']
+# System config
+MODEL_PATH = system_config['model_path']
+ENABLE_LOGGING = system_config.getboolean('enable_logging')
 
 processor = VideoProcessor(MODEL_PATH)
 
@@ -81,7 +84,7 @@ async def get_stream(websocket: WebSocket):
         print("Connection closed")
     finally:
         if ENABLE_LOGGING:
-            store.save_and_close_log() 
+            store.save_and_close_log()
 
 
 if __name__ == '__main__':
