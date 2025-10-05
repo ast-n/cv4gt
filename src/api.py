@@ -13,7 +13,8 @@ from video_processing import VideoProcessor, begin_task
 import store
 
 # Config
-INPUT_VIDEO = "data/input.mp4"
+INPUT_VIDEO = "data/trim.mp4"
+#INPUT_VIDEO = "data/ground_truth.mp4"
 USE_REALSENSE = False
 #OUTPUT_VIDEO = "data/output.avi"
 OUTPUT_VIDEO = None
@@ -23,7 +24,8 @@ COLOUR_CORRECTION = False
 SMOOTHING_FACTOR = 0.0
 FPS_CAP = 30 # Set to 0 to turn off.
 
-MODEL_PATH = "models/YOLOv8s-10-06-193e.pt"
+MODEL_PATH = "models/YOLOv11m-02-09-129e.pt"
+#MODEL_PATH = "models/YOLOv8m-02-09-116e.pt"
 
 processor = VideoProcessor(MODEL_PATH)
 

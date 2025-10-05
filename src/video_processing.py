@@ -442,7 +442,7 @@ class VideoProcessor:
                             except Exception as e:
                                 print(f"Warning: Failed to store frame {frame_num}: {e}")
                             # Log to textlog
-                            store.add_to_log(relevant_objects, frame_num-1)
+                            store.update_log(relevant_objects, frame_num-1)
 
                 # Write frames as output
                 if out:
