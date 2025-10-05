@@ -34,7 +34,6 @@ Our project relies on the Realsense SDK. This is available on Windows, Linux, an
 **Realsense SDK Install instructions**
 ##### Windows 
 1. Go to the [latest stable release](https://github.com/IntelRealSense/librealsense/releases/latest), navigate to the Assets section, download and run Intel.RealSense.SDK.exe
-
 2. Click through several simple steps of the installer
 
 ##### Linux
