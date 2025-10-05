@@ -47,14 +47,14 @@ Our project relies on the Realsense SDK. This is available on Windows, Linux, an
 ---
 ### 3. Run the solution
 
-##### Windows
+#### Windows
 If you are on Windows, just run `run_application.bat` in the project's top level directory. It will automatically download and install any remaining requirements, then launch the application.
 
 Once requirements have been installed from the first time you run it, it should take ~10s to start up.
 
 If you encounter any issues with python dependencies, you can delete the .venv file then run the launcher again to reinstall them all.
 
-##### Linux/Mac
+#### Linux/Mac
 No installer or one-click launcher has been set up for these platforms, so requirements will have to be manually installed.
 
 1. Create a new python venv with Python 3.11 with your preferred method.
@@ -76,12 +76,12 @@ npm --prefix src/frontend install
 
 Frontend and backend need to launched separately on Linux/Mac currently. We will make a proper all-in-one application for them like Windows at some point. Listed below are the commands to run the two halves. Run them from the base folder of the repo.
 
-#### Backend
+##### Backend
 ```bash
 python src/api.py
 ```
 
-#### Frontend
+##### Frontend
 ```bash
 npm --prefix src/frontend start
 ```
