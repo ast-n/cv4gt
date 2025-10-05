@@ -12,52 +12,76 @@ This repository contains:
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/ast-n/cv4gt.git
-cd <cv4gt>
+cd cv4gt
 ```
 ---
 ### 2. Install requirements
 #### Backend
-Requires **Python 3.11**...
+Requires `Python 3.11`
 
-```bash
-pip install -r requirements.txt
-```
+Get the latest from [here](https://www.python.org/downloads/release/python-3119/).
+
+If you want GPU-accelerated performance (you probably do), you will also need CUDA Toolkit. Supported versions include `12.1`, `12.4`, `12.6`, `12.8`, and `12.9`. Download one from [here](https://developer.nvidia.com/cuda-toolkit-archive).
+
 #### Frontend
-Requires **Node.js >= 20.19.0** and **npm**
- <br>
-```bash
-cd src/frontend
-npm install
-```
+Requires `Node.js >= 20.19.0` and `npm`
+
+Get them from [here](https://nodejs.org/en/download).
 
 #### Realsense SDK
 Our project relies on the Realsense SDK. This is available on Windows, Linux, and some versions of Mac. We are using Realsense SDK versions >= 2.0.0, and the respective Python library - pyrealsense 2.<br>
 
-**Install instructions**
+**Realsense SDK Install instructions**
 ##### Windows 
 1. Go to the [latest stable release](https://github.com/IntelRealSense/librealsense/releases/latest), navigate to the Assets section, download and run Intel.RealSense.SDK.exe
-
 2. Click through several simple steps of the installer
 
 ##### Linux
 1. Attempt to use the pre-built instructions to install. Find [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
-2. Have it fail and build from source using these instructions [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
+2. It will probably fail, in which case you should build from source using these instructions [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 
 ##### Mac
 1. Good luck
 2. Ensure you have the required **XCode 6.0+** , then follow the instructions [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation_osx.md)
 
-
 ---
 ### 3. Run the solution
-Frontend and backend need to be ran separately currently. We will make a proper all-in-one application at some point. Listed below are the commands to run the two halves. Run them from the base folder of the repo.
 
-#### Backend
+#### Windows
+If you are on Windows, just run `run_application.bat` in the project's top level directory. It will automatically download and install any remaining requirements, then launch the application.
+
+Once requirements have been installed from the first time you run it, it should take ~10s to start up.
+
+If you encounter any issues with python dependencies, you can delete the .venv file then run the launcher again to reinstall them all.
+
+#### Linux/Mac
+No installer or one-click launcher has been set up for these platforms, so requirements will have to be manually installed.
+
+1. Create a new python venv with Python 3.11 with your preferred method.
+2. Find out your CUDA Toolkit version and install the appropriate version of torch.
 ```bash
-python src/api.py 
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu<your-cuda-version>
+
+# Example for CUDA Toolkit version 12.1:
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+```
+3. Install the remaining python requirements.
+```bash
+pip install -r "requirements.txt"
+```
+4. Install frontend requirements.
+```bash
+npm --prefix src/frontend install
 ```
 
-#### Frontend
+Frontend and backend need to launched separately on Linux/Mac currently. We will make a proper all-in-one application for them like Windows at some point. Listed below are the commands to run the two halves. Run them from the base folder of the repo.
+
+##### Backend
 ```bash
-npm --prefix src/frontend run dev
+python src/api.py
+```
+
+##### Frontend
+```bash
+npm --prefix src/frontend start
 ```
