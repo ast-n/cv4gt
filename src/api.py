@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from websockets.exceptions import ConnectionClosed
-from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import asyncio
 import cv2
@@ -34,6 +34,16 @@ processor = VideoProcessor(MODEL_PATH)
 
 app = FastAPI()
 templates = Jinja2Templates(directory="src/templates")
+
+origins = ["https://localhost:5173"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/')
 def index(request: Request):
