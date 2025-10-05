@@ -4,7 +4,7 @@ Computer Vision for garbage truck driver safety
 ## Overview
 This repository contains:
 - A **Python YOLO backend**,
-- A **Vue 3 + Vite frontend**.
+- A **Vue 3 + Vite + Electron frontend**.
 
 ## Getting started
 
