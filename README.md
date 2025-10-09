@@ -59,7 +59,14 @@ If you encounter any issues with python dependencies, you can delete the .venv f
 #### Linux/Mac
 No installer or one-click launcher has been set up for these platforms, so requirements will have to be manually installed.
 
-1. Create a new python venv with Python 3.11 with your preferred method.
+1. Create a new python venv with Python 3.11 and save it in a `.venv` folder in the base folder of this repository.
+```bash
+python3.11 -m venv .venv
+```
+Activate the venv.
+```bash
+source .venv/bin/activate
+```
 2. Find out your CUDA Toolkit version and install the appropriate version of torch.
 ```bash
 pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu<your-cuda-version>
@@ -76,14 +83,8 @@ pip install -r "requirements.txt"
 npm --prefix src/frontend install
 ```
 
-Frontend and backend need to launched separately on Linux/Mac currently. We will make a proper all-in-one application for them like Windows at some point. Listed below are the commands to run the two halves. Run them from the base folder of the repo.
+5. Launch the application
 
-##### Backend
-```bash
-python src/api.py
-```
-
-##### Frontend
 ```bash
 npm --prefix src/frontend start
 ```
