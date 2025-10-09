@@ -9,10 +9,10 @@
   "scripts": {
     "dev": "vite",
     "vite": "vite",
-    "electron": "electron-forge start",
+    "electron": "electron-forge start --enable-logging",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "concurrently -k -r \"npm run vite\" \"wait-on http://localhost:5173 && npm run electron\"",
+    "start": "concurrently -k \"npm run vite\" \"wait-on http://localhost:5173 && npm run electron\"",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },

@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
+import { callWithAsyncErrorHandling, onMounted, onUnmounted, ref } from "vue";
 
 import VideoPanel from './components/VideoPanel.vue'
 import ObjectList from './components/ObjectList.vue'
@@ -40,9 +40,12 @@ const usedMB = ref(0);
 const totalMB = ref(0);
 
 let ws;
+let reconnectDelay = 1000;
+let reconnectInterval;
 
-onMounted(() => {
+function connectWebSocket() {
   ws = new WebSocket("ws://localhost:8000/ws");
+  console.log("Opening WebSocket...")
 
   ws.onmessage = (event) => {
     if (!(typeof event.data === "string")) {
@@ -72,11 +75,41 @@ onMounted(() => {
     }
   };
 
-  ws.onclose = () => console.log("WebSocket closed");
-  ws.onerror = (err) => console.error("WebSocket error:", err);
+  ws.onclose = () => {
+    console.log("Not connected to WebSocket. Attempting reconnection...");
+    startReconnection();
+  }
+
+  ws.onerror = (err) => {
+    console.error("WebSocket error:", err);
+    ws.close()
+  }
+};
+
+function startReconnection() {
+  if (!reconnectInterval) {
+    reconnectInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.CLOSED) {
+        console.log('Reconnecting WebSocket...');
+        connectWebSocket();
+        reconnectDelay = Math.min(reconnectDelay * 2, 30000); // Exponential backoff
+      }
+    }, reconnectDelay);
+  }
+}
+
+function closeWebSocket() {
+  if (ws) {
+    ws.close()
+    clearInterval(reconnectInterval)
+  }
+}
+
+onMounted(() => {
+  connectWebSocket();
 });
 
 onUnmounted(() => {
-  if (ws) ws.close();
+  closeWebSocket();
 });
 </script>

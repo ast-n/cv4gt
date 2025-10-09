@@ -1,5 +1,6 @@
 @echo off
 SETLOCAL ENABLEDELAYEDEXPANSION
+
 set PROJECT_DIR=%~dp0
 set VENV_NAME=.venv
 
@@ -55,8 +56,36 @@ echo Requirements up-to-date.
 echo Installing frontend requirements...
 call npm --prefix src/frontend install --silent
 
-echo Launching frontend...
-start "Frontend" cmd /c "npm --prefix src/frontend start"
+echo Launching application...
+call npm --prefix src/frontend start & call:ignoreCtrlC
+echo Return code was %ERRORLEVEL%
+goto:countdown
 
-echo Launching backend...
-python src/api.py
+:ignoreCtrlC
+exit /b
+
+:countdown
+:: Scuffed ass way to get an ANSI escape code...
+echo 1B 5B>ESC.hex
+del ESC.bin >NUL 2>&1
+certutil -decodehex ESC.hex ESC.bin >NUL 2>&1
+set /P ESC=<ESC.bin
+set "Ansi=%ESC%1F%ESC%0J"
+del ESC.bin >NUL 2>&1
+del ESC.hex >NUL 2>&1
+
+echo.
+echo.
+echo line
+
+for /L %%i in (3,-1,1) do (
+    set "timer=%%i"
+    echo %Ansi%Closing in !timer! seconds...
+    choice /c:xn /t:1 /d:x > nul
+)
+exit /b
+::echo Launching frontend...
+::start "Frontend" cmd /c "npm --prefix src/frontend start"
+
+::echo Launching backend...
+::python src/api.py
