@@ -11,6 +11,7 @@ import datetime
 import numpy as np
 import cv2
 import json
+import io
 
 tagged_folder_path = "/data/tagged"
 
@@ -69,9 +70,18 @@ async def store_image(image: Image.Image, img_exif: dict) -> str:
     return filename
 
 stored_json = []
+log_fileobject = None
 
-def add_to_log(new_frame_date, frame_num):
-    data = new_frame_date
+def new_log(initial_data):
+    global log_fileobject
+    now = datetime.datetime.now()
+    filename = f"data/logs/saved_log_{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}.jsonl"
+    log_fileobject = open(filename, 'a', encoding='utf-8')
+    jsonl_string = json.dumps(initial_data, ensure_ascii=False)
+    log_fileobject.write(jsonl_string + "\n")
+
+def create_new_element(new_frame_data, frame_num):
+    data = new_frame_data
     det_num = 0
     for item in data:
         if "class_id" in item:
@@ -85,18 +95,22 @@ def add_to_log(new_frame_date, frame_num):
         
     now = datetime.datetime.now()
     total_data = {"frame_num": frame_num, "timestamp": f"{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}", "detections": data}
-    global stored_json
-    stored_json.append(total_data)
+    return total_data
+
+def update_log(new_frame_data, frame_num):
+    new_data_text = create_new_element(new_frame_data, frame_num)
+    global log_fileobject
+    if log_fileobject is None:
+        new_log(new_data_text)
+    else:
+        jsonl_string = json.dumps(new_data_text, ensure_ascii=False)
+        log_fileobject.write(jsonl_string + "\n")       
+    
 
 def save_and_close_log():
-    global stored_json
-    now = datetime.datetime.now()
-    filename = f"data/logs/saved_log_{str(datetime.date.today())}_{now.time().hour}-{now.time().minute}-{now.time().second}.{now.time().microsecond}.json"
-    current_log = open(filename, 'w', encoding='utf-8')
+    global log_fileobject
     
-    json.dump(stored_json, current_log, ensure_ascii=False, indent=4)
-    
-    current_log.close()
+    log_fileobject.close()
     print("Log file successfully saved")
 
 def get_image(path:str) -> np.ndarray:

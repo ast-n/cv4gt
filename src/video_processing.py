@@ -35,13 +35,15 @@ async def begin_task(coro):
 
 class VideoProcessor:
     def __init__(self, model_path=None):
-        """
-        Initialises VideoProcessor and loads object detection model
-        """
         self.model_ready = False
         self.model_path = model_path
-
         self.audio_handler = AudioHandler()
+
+        # Persistent bin IDs
+        self.persistent_bins = {}  # pid -> {'last_position': (x, y), 'frames_since_seen': 0, 'handled': False}
+        self.next_persistent_id = 1
+        self.BIN_MATCH_THRESHOLD = 50  # pixels
+        self.MAX_FRAMES_NO_SEE = 50   # Keep unseen bin IDs alive for this many frames
 
         if ai_handler.load_object_detection_model(model_path):
             self.model_ready = True
@@ -49,6 +51,43 @@ class VideoProcessor:
         else:
             print("Model load failed")
             exit()
+
+    def get_persistent_bin_id(self, current_position):
+        """
+        Return a persistent bin ID for a bin at current_position.
+        Assigns a new ID if no match is found.
+        """
+        if current_position is not None:
+            x, y = current_position
+            for pid, info in self.persistent_bins.items():
+                last_x, last_y = info['last_position']
+                distance = np.sqrt((x - last_x) ** 2 + (y - last_y) ** 2)
+                if distance < self.BIN_MATCH_THRESHOLD:
+                    # Match found, update position and reset frame counter
+                    self.persistent_bins[pid]['last_position'] = (x, y)
+                    self.persistent_bins[pid]['frames_since_seen'] = 0
+                    return pid
+
+            # No match, create new persistent ID
+            pid = self.next_persistent_id
+            self.persistent_bins[pid] = {'last_position': (x, y), 'frames_since_seen': 0, 'handled': False}
+            self.next_persistent_id += 1
+            return pid
+        else:
+            # Bin not detected in frame; try to find nearest unseen bin within threshold
+            return None
+
+    def update_persistent_bins(self):
+        """
+        Increment frames_since_seen for all bins and remove old ones.
+        """
+        remove_list = []
+        for pid, info in self.persistent_bins.items():
+            info['frames_since_seen'] += 1
+            if info['frames_since_seen'] > self.MAX_FRAMES_NO_SEE and info['handled']:
+                remove_list.append(pid)
+        for pid in remove_list:
+            del self.persistent_bins[pid]
 
     def annotate_frame(self, frame, detections, smoothing):
         """
@@ -403,7 +442,7 @@ class VideoProcessor:
                             except Exception as e:
                                 print(f"Warning: Failed to store frame {frame_num}: {e}")
                             # Log to textlog
-                            store.add_to_log(relevant_objects, frame_num-1)
+                            store.update_log(relevant_objects, frame_num-1)
 
                 # Write frames as output
                 if out:
