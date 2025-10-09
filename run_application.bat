@@ -1,5 +1,6 @@
 @echo off
 SETLOCAL ENABLEDELAYEDEXPANSION
+
 set PROJECT_DIR=%~dp0
 set VENV_NAME=.venv
 
