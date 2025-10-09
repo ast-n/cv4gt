@@ -8,6 +8,7 @@ import cv2
 import json
 import time
 from configparser import ConfigParser
+import psutil
 
 from video_processing import VideoProcessor, begin_task
 import store
