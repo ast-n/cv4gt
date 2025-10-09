@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, nativeImage } from 'electron';
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -33,15 +33,19 @@ pythonProcess.on('close', (code) => {
 let mainWindow;
 
 function createWindow() {
+  const iconPath = path.join(__dirname, '..', 'assets', 'bin.png');
+  const iconImg = nativeImage.createFromPath(iconPath);
+
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
+    icon: iconImg,
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
     },
     autoHideMenuBar: true,
-    fullscreen: false
+    fullscreen: true
   });
 
   if (isDev) {
