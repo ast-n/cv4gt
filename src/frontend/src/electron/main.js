@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -6,6 +7,28 @@ const isDev = !app.isPackaged;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const baseFolder = path.join(__dirname, '..', '..', '..', '..')
+
+const pythonExecutable = process.platform === 'win32'
+      ? path.join(baseFolder, '.venv', 'Scripts', 'python.exe')
+      : path.join(baseFolder, '.venv', 'bin', 'python');
+
+const apiScript = path.join(baseFolder, 'src', 'api.py')
+
+const pythonProcess = spawn(pythonExecutable, [apiScript], {cwd: baseFolder})
+
+pythonProcess.stdout.on('data', (data) => {
+    console.log(`Backend: ${data}`);
+});
+
+pythonProcess.stderr.on('data', (data) => {
+    console.error(`Backend: ${data}`);
+});
+
+pythonProcess.on('close', (code) => {
+    console.log(`Python process exited with code ${code}`);
+});
 
 let mainWindow;
 
@@ -18,7 +41,7 @@ function createWindow() {
       nodeIntegration: true,
     },
     autoHideMenuBar: true,
-    fullscreen: true
+    fullscreen: false
   });
 
   if (isDev) {
@@ -35,9 +58,14 @@ function createWindow() {
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+  if (process.platform !== 'darwin') {
+    pythonProcess.kill('SIGINT');
+    app.quit();
+  }
 });
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
+
+app.on('quit', () => {console.log('Closed electron app.'); app.exit(0); });
