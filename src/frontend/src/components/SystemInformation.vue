@@ -12,14 +12,14 @@
       <!-- Time -->
       <div class="flex flex-col items-center flex-1">
         <span class="text-gray-400 text-center">Current Time</span>
-        <span class="text-xl font-mono text-green-400">{{ currentTime }}</span>
+        <span class="text-sm font-mono text-green-400">{{ currentTime }}</span>
       </div>
 
       <!-- FPS Counter -->
       <div class="flex flex-col items-center flex-1">
         <span class="text-gray-400 text-center">System FPS</span>
         <span
-          class="text-xl font-mono"
+          class="text-sm font-mono"
           :class="fps < 30 ? 'text-red-400' : 'text-green-400'"
         >
           {{ fps }}
@@ -31,12 +31,12 @@
         <!-- Icon + Label centered -->
         <div class="flex items-center justify-center space-x-2 w-full">
           <img :src="cpuIcon" alt="CPU Icon" class="w-5 h-5 brightness-0 invert" />
-          <span class="text-gray-400">CPU Usage</span>
+          <span class="text-gray-400 text-sm">CPU Usage</span>
         </div>
 
         <!-- Value -->
         <span
-          class="text-xl font-mono text-center"
+          class="text-sm font-mono text-center"
           :class="cpuUsage >= 90 ? 'text-red-400' : cpuUsage >= 70 ? 'text-orange-400' : 'text-green-400'"
         >
           {{ cpuUsage }}%
@@ -57,12 +57,12 @@
         <!-- Icon + Label centered -->
         <div class="flex items-center justify-center space-x-2 w-full">
           <img :src="memoryIcon" alt="Memory Icon" class="w-5 h-5 brightness-0 invert" />
-          <span class="text-gray-400">Memory Usage</span>
+          <span class="text-gray-400 text-sm">Memory Usage</span>
         </div>
 
         <!-- Value -->
         <span
-          class="text-xl font-mono text-center"
+          class="text-sm font-mono text-center"
           :class="memoryPercent >= 90 ? 'text-red-400' : memoryPercent >= 70 ? 'text-orange-400' : 'text-green-400'"
         >
           {{ usedMB }}MB / {{ totalMB }}MB

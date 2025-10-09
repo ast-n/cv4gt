@@ -14,7 +14,7 @@
       </select>
     </div>
 
-    <ul class="grid grid-rows-2 grid-flow-cols grid-cols-4 gap-2.5 pb-6">
+    <ul class="grid grid-cols-3 lg:grid-cols-4 grid-rows-3 lg:grid-rows-2 gap-2.5 pb-6">
       <li
         v-for="(obj, index) in filteredObjects"
         :key="index"
@@ -63,7 +63,7 @@
       <!-- Placeholder if empty -->
       <li
         v-if="filteredObjects.length === 0"
-        class="col-span-2 row-span-10 flex items-center justify-center text-white text-sm md:text-base"
+        class="col-span-full flex items-center justify-center h-40 text-white text-sm md:text-base text-center"
       >
         No objects detected
       </li>

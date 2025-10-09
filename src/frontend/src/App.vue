@@ -26,7 +26,7 @@ import { onMounted, onUnmounted, ref } from "vue";
 import VideoPanel from './components/VideoPanel.vue'
 import ObjectList from './components/ObjectList.vue'
 import MapPanel from './components/MapPanel.vue'
-import NewComponent from './components/New.vue'
+import NewComponent from './components/SystemInformation.vue'
 
 /* Reactive state */
 const frameData  = ref(null);
