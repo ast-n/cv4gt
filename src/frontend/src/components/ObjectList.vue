@@ -1,28 +1,136 @@
 <template>
-  <div class="bg-gray-800 rounded-xl p-4 flex flex-col h-full overflow-auto">
-    <h3 class="font-bold text-white text-lg">Detected Objects</h3>
-    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 text-sm">
-      <li
-        v-for="(obj, index) in sortedObjects"
-        :key="index"
-        :class="getRelevanceColor(obj.relevance)"
-        class="p-1 rounded"
+  <div class="bg-gray-900 rounded-xl p-4 flex flex-col relative">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="font-bold text-white md:text-md lg:text-xl">Detected Objects</h3>
+
+      <select
+        v-model="selectedFilter"
+        class="bg-gray-700 text-white text-xs lg:text-sm rounded-lg px-2 py-1 focus:outline-none"
       >
-        {{ obj.class }} - {{ (obj.confidence * 100).toFixed(2) }}%, 
-        R:{{ obj.relevance }}, D:{{ obj.depth.toFixed(2) }}m
+        <option value="">All</option>
+        <option v-for="item in filterOptions" :key="item" :value="item">
+          {{ item }}
+        </option>
+      </select>
+    </div>
+
+    <ul class="grid grid-cols-3 lg:grid-cols-4 grid-rows-3 lg:grid-rows-2 gap-2.5 pb-6">
+      <li
+        v-for="(obj, index) in filteredObjects"
+        :key="index"
+        class="p-1.5 rounded bg-gray-700 text-xs lg:text-sm flex flex-col gap-1 shadow-sm"
+      >
+        <!-- Top row: Icon + Badge -->
+        <div class="flex items-center gap-1.5">
+          <img
+            v-if="iconMap[obj.class.toLowerCase()]"
+            :src="iconMap[obj.class.toLowerCase()]"
+            alt=""
+            class="w-6 h-6 md:w-5 md:h-5 filter brightness-0 invert"
+          />
+
+          <!-- Category Badge -->
+          <span
+            class="px-3 py-1 rounded-full text-xs font-medium text-white"
+            :style="{ backgroundColor: getRelevanceBgColor(obj.relevance) }"
+          >
+            {{ formatClassName(obj.class) }}
+          </span>
+        </div>
+
+        <!-- Bottom row: Confidence Bar + Stats -->
+        <div class="flex flex-col gap-0.5 w-full">
+          <!-- Confidence Progress Bar -->
+          <div class="w-full bg-gray-600 rounded-full h-1.5 overflow-hidden">
+            <div
+              class="h-1.5 rounded-full transition-all duration-300"
+              :style="{
+                width: (obj.confidence * 100).toFixed(0) + '%',
+                backgroundColor: getRelevanceBgColor(obj.relevance),
+              }"
+            ></div>
+          </div>
+
+          <!-- Text row -->
+          <div class="text-gray-300 text-xs md:text-sm">
+            <span class="font-medium">{{ (obj.confidence * 100).toFixed(0) }}%</span> |
+            <span :class="getRelevanceTextColor(obj.relevance)">R:{{ obj.relevance }}</span> |
+            D:{{ obj.depth.toFixed(2) }}m
+          </div>
+        </div>
+      </li>
+
+      <!-- Placeholder if empty -->
+      <li
+        v-if="filteredObjects.length === 0"
+        class="col-span-full flex items-center justify-center h-40 text-white text-sm md:text-base text-center"
+      >
+        No objects detected
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed } from "vue";
 
-const objects = ref([]);
+// Import icons
+import binIcon from "../assets/bin.png";
+import carIcon from "../assets/car.png";
+import cyclistIcon from "../assets/cyclist.png";
+import pawIcon from "../assets/paw.png";
+import userIcon from "../assets/user.png";
+import mailboxIcon from "../assets/mailbox.png";
 
-let ws = null;
+const props = defineProps(["objectArray"]);
+const selectedFilter = ref("");
 
-function getRelevanceColor(relevance) {
+// Dropdown options
+const filterOptions = [
+  "Bin",
+  "Fallen bin",
+  "Person",
+  "Vehicle",
+  "Animal",
+  "Cyclist",
+  "Fixed obstacle",
+  "Ground hazards",
+];
+
+// Icon mapping
+const iconMap = {
+  bin: binIcon,
+  fallen_bin: binIcon,
+  car: carIcon,
+  vehicle: carIcon,
+  cyclist: cyclistIcon,
+  person: userIcon,
+  animal: pawIcon,
+  dog: pawIcon,
+  cat: pawIcon,
+  mailbox: mailboxIcon,
+
+};
+
+// Format class names for display
+function formatClassName(cls) {
+  return cls.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+// Relevance = badge background color
+function getRelevanceBgColor(relevance) {
+  switch (relevance) {
+    case 5: return "#dc2626"; // red-600
+    case 4: return "#f97316"; // orange-500
+    case 3: return "#eab308"; // yellow-500
+    case 2: return "#22c55e"; // green-500
+    case 1: return "#06b6d4"; // cyan-500
+    default: return "#778da9"; // gray-500
+  }
+}
+
+// Text color (for stats row)
+function getRelevanceTextColor(relevance) {
   switch (relevance) {
     case 5: return "text-red-600";
     case 4: return "text-orange-400";
@@ -33,27 +141,19 @@ function getRelevanceColor(relevance) {
   }
 }
 
+// Sort objects by relevance descending
 const sortedObjects = computed(() =>
-  [...objects.value].sort((a, b) => b.relevance - a.relevance)
+  [...props.objectArray].sort((a, b) => b.relevance - a.relevance)
 );
 
-onMounted(() => {
-  ws = new WebSocket("ws://127.0.0.1:8000/ws");
+// Filter + limit to 15 items (3 rows x 5 columns)
+const filteredObjects = computed(() => {
+  let objs = selectedFilter.value
+    ? sortedObjects.value.filter((obj) =>
+        obj.class.toLowerCase().includes(selectedFilter.value.toLowerCase())
+      )
+    : sortedObjects.value;
 
-  ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (Array.isArray(data)) objects.value = data;
-    } catch (err) {
-      console.error("Error parsing WS data:", err);
-    }
-  };
-
-  ws.onclose = () => console.log("WebSocket closed");
-  ws.onerror = (err) => console.error("WebSocket error:", err);
-});
-
-onBeforeUnmount(() => {
-  if (ws) ws.close();
+  return objs.slice(0, 15); // max 15 items
 });
 </script>

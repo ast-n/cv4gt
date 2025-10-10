@@ -1,32 +1,50 @@
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from websockets.exceptions import ConnectionClosed
-from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import asyncio
 import cv2
 import json
 import time
+from configparser import ConfigParser
+import psutil
 
-from video_processing import VideoProcessor
+from video_processing import VideoProcessor, begin_task
+import store
 
-# Config
-INPUT_VIDEO = "data/ground_truth.mp4"
-USE_REALSENSE = False
-#OUTPUT_VIDEO = "data/output.avi"
-OUTPUT_VIDEO = None
-ENABLE_DISPLAY = False
-ENABLE_LOGGING = False
-COLOUR_CORRECTION = False
-SMOOTHING_FACTOR = 0.0
-FPS_CAP = 30 # Set to 0 to turn off.
+config = ConfigParser(inline_comment_prefixes=';')
+config.read("config.ini")
 
-MODEL_PATH = "models/YOLOv8s-10-06-193e.pt"
+
+video_config = config['VIDEO']
+# Video Config
+INPUT_VIDEO = video_config['input_video']
+USE_REALSENSE = video_config.getboolean('use_realsense')
+OUTPUT_VIDEO = video_config['output_video']
+ENABLE_DISPLAY = video_config.getboolean('enable_auxiliary_display')
+SMOOTHING_FACTOR = float(video_config['smoothing_factor'])
+FPS_CAP = int(video_config['max_fps'])
+
+system_config = config['SYSTEM']
+# System config
+MODEL_PATH = system_config['model_path']
+ENABLE_LOGGING = system_config.getboolean('enable_logging')
 
 processor = VideoProcessor(MODEL_PATH)
 
 app = FastAPI()
 templates = Jinja2Templates(directory="src/templates")
+
+origins = ["https://localhost:5173"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/')
 def index(request: Request):
@@ -40,6 +58,8 @@ async def get_stream(websocket: WebSocket):
         frametime = 1/FPS_CAP
         
     await websocket.accept()
+
+    last_sys_update = 0  
     
     try:
         async for frame, objects in processor.process_video(
@@ -50,23 +70,49 @@ async def get_stream(websocket: WebSocket):
             logging=ENABLE_LOGGING,
             smoothing=SMOOTHING_FACTOR,
             ):
+            # Begin grabbing GPS early so it can run while websocket data is sending since it seems kinda slow
+            gps_loc = await begin_task(store.get_gps())
+            
             starttime = time.monotonic()
             
             ret, buffer = cv2.imencode('.jpg', frame)
             
-            await websocket.send_text(json.dumps(objects))
+            wrapped_objects = {"event": "objects", "content": objects}
+            await websocket.send_text(json.dumps(wrapped_objects))
             await websocket.send_bytes(buffer.tobytes())
+            
+            wrapped_gps = {"event": "location", "content": await gps_loc}
+            await websocket.send_text(json.dumps(wrapped_gps))
+
+            
+            now = time.monotonic()
+            if now - last_sys_update >= 1:
+                cpu = psutil.cpu_percent(interval=None)
+                mem = psutil.virtual_memory()
+                wrapped_sys = {
+                    "event": "system",
+                    "content": {
+                        "cpu": cpu,
+                        "usedMB": round(mem.used / (1024 * 1024)),
+                        "totalMB": round(mem.total / (1024 * 1024)),
+                    },
+                }
+                await websocket.send_text(json.dumps(wrapped_sys))
+                last_sys_update = now
             
             elapsedtime = time.monotonic() - starttime
             if elapsedtime < frametime:
                 await asyncio.sleep(frametime - elapsedtime) # Return control to main loop with asyncio while pausing to ensure framerate.
             else:
                 await asyncio.sleep(0)
-    except (WebSocketDisconnect, ConnectionClosed):
+    except (WebSocketDisconnect):
         print("Client disconnected")
+    except (ConnectionClosed):
+        print("Connection closed")
+    finally:
+        if ENABLE_LOGGING:
+            store.save_and_close_log()
 
-#I think the plan here is to make the streaming response return a JSON or something with the frame and other info attached,
-# then the frontend just extracts the relevant elements?
 
 if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=8000)
