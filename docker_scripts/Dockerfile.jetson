@@ -1,0 +1,127 @@
+# Dockerfile used to create the image for our solution 4 deployment on Jetson. 
+# Assumed that if using Jetpack 6.0, this should work on any Jetson Device. 
+
+# Pull base image
+FROM dustynv/l4t-pytorch:r36.2.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 1. Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    cmake \
+    build-essential \
+    libssl-dev \
+    libusb-1.0-0-dev \
+    libudev-dev \
+    pkg-config \
+    libgtk-3-dev \
+    wget \
+    gnupg2 \
+    software-properties-common \
+    sudo \
+    curl \
+    python3-pip \
+    tmux \
+    libasound2-dev \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+# 2. Clone librealsense sources
+WORKDIR /opt
+RUN git clone https://github.com/IntelRealSense/librealsense.git
+
+WORKDIR /opt/librealsense
+
+# Apply kernel patch for V4L native backend
+RUN ./scripts/patch-realsense-ubuntu-L4T.sh || true
+
+# Setup udev rules for RealSense devices
+RUN mkdir -p /etc/udev/rules.d && \
+    cp config/99-realsense-libusb.rules /etc/udev/rules.d/
+
+# Build librealsense SDK with CUDA + native backend
+RUN mkdir build && cd build && \
+    cmake .. \
+        -DBUILD_PYTHON_BINDINGS:bool=true \
+        -DPYTHON_EXECUTABLE=/usr/bin/python3 \
+        -DBUILD_EXAMPLES=true \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DFORCE_RSUSB_BACKEND=ON && \
+    make -j$(nproc) && \
+    make install && \
+    cd /opt/librealsense && rm -rf build
+
+RUN pip install --no-cache-dir coloredlogs flatbuffers --index-url https://pypi.org/simple
+
+#3.  Install onnxruntime-gpu and Setup project repo, installing dependencies
+# Copy local wheel into image
+COPY onnxruntime_gpu-1.19.0-cp310-cp310-linux_aarch64.whl /tmp/
+# Move to root
+WORKDIR /
+# Clone repo, switch branch
+RUN git clone https://github.com/ast-n/cv4gt.git
+WORKDIR /cv4gt
+RUN git fetch origin dev && git reset --hard origin/dev
+# Switch to dir
+WORKDIR /cv4gt/
+# Install py requirements
+RUN pip install --no-cache-dir \
+    /tmp/onnxruntime_gpu-1.19.0-cp310-cp310-linux_aarch64.whl \
+    coloredlogs flatbuffers \
+    -r requirements.txt \
+    --index-url https://pypi.org/simple \
+ && rm /tmp/onnxruntime_gpu-1.19.0-cp310-cp310-linux_aarch64.whl
+
+# 4. Remove old Node / npm / libnode-dev (if they exist - for some reason they dont !!!!)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    node -v && npm -v
+
+# 5. Tha missing libs :0    
+RUN apt-get update && apt-get install -y \
+    libnspr4 \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libdbus-1-3 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install npm dependencies
+RUN npm --prefix src/frontend install
+
+# 6. Install TurboJPEG 
+RUN pip install --no-cache-dir \
+    TurboJPEG
+
+# 6. Install TurboJPEG system library (for CPU encoding fallback)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libturbojpeg0-dev \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir PyTurboJPEG
+
+# 7. Install nvImageCodec from NVIDIA repository (for hardware-accelerated JPEG encoding)
+WORKDIR /tmp
+RUN wget https://developer.download.nvidia.com/compute/nvimgcodec/0.6.0/local_installers/nvimgcodec-local-tegra-repo-ubuntu2204-0.6.0_1.0-1_arm64.deb && \
+    dpkg -i nvimgcodec-local-tegra-repo-ubuntu2204-0.6.0_1.0-1_arm64.deb && \
+    cp /var/nvimgcodec-local-repo-ubuntu2204-0.6.0/nvimgcodec-*-keyring.gpg /usr/share/keyrings/ && \
+    apt-get update && \
+    apt-get install -y nvimgcodec && \
+    rm nvimgcodec-local-tegra-repo-ubuntu2204-0.6.0_1.0-1_arm64.deb && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set default workdir to cv4gt
+WORKDIR /cv4gt/
+
+# Start command can be overridden
+CMD ["bash"]

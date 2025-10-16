@@ -25,6 +25,7 @@ If you want GPU-accelerated performance (you probably do), you will also need CU
 
 You may also need to install the Visual Studio C++ Build Tools, including the Win10/11 SDK. Some of the python libraries used might need to be manually built, which requires this.
 
+
 #### Frontend
 Requires `Node.js >= 20.19.0` and `npm`
 
@@ -45,6 +46,16 @@ Our project relies on the Realsense SDK. This is available on Windows, Linux, an
 ##### Mac
 1. Good luck
 2. Ensure you have the required **XCode 6.0+** , then follow the instructions [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation_osx.md)
+
+
+#### TurboJPEG
+Needs to be installed for faster encoding before shipment to websockets. Installation method varies on OS. Easiest to just find from [releases](https://github.com/libjpeg-turbo/libjpeg-turbo/releases) or from package manager if using UNIX-based system.
+
+Ensure that the installation is on system PATH.
+
+Follow up by installing python bindings if not automatically installed.
+
+`pip install PyTurboJPEG`
 
 ---
 ### 3. Run the solution

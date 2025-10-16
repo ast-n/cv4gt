@@ -12,6 +12,7 @@ import psutil
 
 from video_processing import VideoProcessor, begin_task
 import store
+from turbojpeg import TurboJPEG
 
 config = ConfigParser(inline_comment_prefixes=';')
 config.read("config.ini")
@@ -32,6 +33,9 @@ MODEL_PATH = system_config['model_path']
 ENABLE_LOGGING = system_config.getboolean('enable_logging')
 
 processor = VideoProcessor(MODEL_PATH)
+
+# Init JPEG encoder
+jpeg_encoder = TurboJPEG()
 
 app = FastAPI()
 templates = Jinja2Templates(directory="src/templates")
@@ -76,10 +80,14 @@ async def get_stream(websocket: WebSocket):
             starttime = time.monotonic()
             
             ret, buffer = cv2.imencode('.jpg', frame)
+
+            # New JPEG encoding
+            jpeg_bytes = jpeg_encoder.encode(frame, quality=85)
+
             
             wrapped_objects = {"event": "objects", "content": objects}
             await websocket.send_text(json.dumps(wrapped_objects))
-            await websocket.send_bytes(buffer.tobytes())
+            await websocket.send_bytes(jpeg_bytes)
             
             wrapped_gps = {"event": "location", "content": await gps_loc}
             await websocket.send_text(json.dumps(wrapped_gps))
@@ -115,4 +123,11 @@ async def get_stream(websocket: WebSocket):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='127.0.0.1', port=8000)
+    # Disable WebSocket compression (ws_max_size default, but no per-message-deflate)
+    uvicorn.run(
+        app,
+        host='127.0.0.1',
+        port=8000,
+        ws='websockets',  # Use websockets library (default)
+        ws_per_message_deflate=False  # Disable compression to avoid zlib overhead
+    )

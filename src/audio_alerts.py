@@ -14,6 +14,8 @@ class GripperState(Enum):
 class AudioHandler:
     def __init__(self, frequency=880, duration_ms=75, pickup_timeout=10, suppress_after_handle=2.0):
         # Sound generation
+        self._audio_disabled = False
+
         sample_rate = 44100
         duration_s = duration_ms / 1000.0
         t = np.linspace(0, duration_s, int(sample_rate * duration_s), False)
@@ -95,7 +97,14 @@ class AudioHandler:
             if (now - self.last_beep_time > self.beep_interval and
                 (self.current_play_obj is None or not self.current_play_obj.is_playing())):
                 self.last_beep_time = now
-                self.current_play_obj = self.beep_wave_obj.play()
+                # Conditional for Jetson, when headless no audio
+                if not self._audio_disabled:
+                    try:
+                        self.current_play_obj = self.beep_wave_obj.play()
+                    except Exception as e:
+                        print(f"[AudioHandler] audio play failed: {e}; disabling audio.")
+                        self._audio_disabled = True
+                        self.current_play_obj = None 
         else:
             if self.current_play_obj and self.current_play_obj.is_playing():
                 self.current_play_obj.stop()

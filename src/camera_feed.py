@@ -14,7 +14,7 @@ class RealSenseCam:
         self.config = rs.config()
 
         if recording_path:
-            self.config.enable_device_from_file(recording_path, repeat_playback=False)
+            self.config.enable_device_from_file(recording_path, repeat_playback=True)
         else:
             # Add streams to configuration
             self.config.enable_stream(rs.stream.depth, resolution[0], resolution[1], rs.format.z16, fps)
