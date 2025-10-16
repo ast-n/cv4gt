@@ -322,7 +322,7 @@ class VideoProcessor:
             
             track.append((centre_x, centre_y))
             
-            if object_class in CLASS_IGNORE_LIST and len(track) > 1:
+            if object_class and len(track) > 1:
                 track.pop(0)
             elif len(track) > 20:
                 track.pop(0)
