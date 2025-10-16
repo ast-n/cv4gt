@@ -24,7 +24,6 @@ RELEVANCE_COLORS = {
 
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
-CLASS_IGNORE_LIST = ["sideloader_arm"]
 BIN_AUDIO_CUTOFF_HEIGHT = 0.2
 
 async def begin_task(coro):

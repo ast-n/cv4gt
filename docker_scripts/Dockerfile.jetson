@@ -110,16 +110,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN pip install --no-cache-dir PyTurboJPEG
 
-# 7. Install nvImageCodec from NVIDIA repository (for hardware-accelerated JPEG encoding)
-WORKDIR /tmp
-RUN wget https://developer.download.nvidia.com/compute/nvimgcodec/0.6.0/local_installers/nvimgcodec-local-tegra-repo-ubuntu2204-0.6.0_1.0-1_arm64.deb && \
-    dpkg -i nvimgcodec-local-tegra-repo-ubuntu2204-0.6.0_1.0-1_arm64.deb && \
-    cp /var/nvimgcodec-local-repo-ubuntu2204-0.6.0/nvimgcodec-*-keyring.gpg /usr/share/keyrings/ && \
-    apt-get update && \
-    apt-get install -y nvimgcodec && \
-    rm nvimgcodec-local-tegra-repo-ubuntu2204-0.6.0_1.0-1_arm64.deb && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Set default workdir to cv4gt
 WORKDIR /cv4gt/
 
