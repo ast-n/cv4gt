@@ -17,4 +17,4 @@ docker run -it --rm \
     -v ~/data:/cv4gt/data/recordings \
     -e DISPLAY=$DISPLAY \
     l4t-pytorch-realsense:latest \
-    /bin/bash -c "npm install && npm --prefix src/frontend install && npm start"
+    /bin/bash -c "npm --prefix src/frontend install && npm --prefix src/frontend start"
