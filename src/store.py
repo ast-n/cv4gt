@@ -106,7 +106,6 @@ def update_log(new_frame_data, frame_num):
         jsonl_string = json.dumps(new_data_text, ensure_ascii=False)
         log_fileobject.write(jsonl_string + "\n")       
     
-
 def save_and_close_log():
     global log_fileobject
     
