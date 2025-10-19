@@ -81,7 +81,7 @@ const props = defineProps({
   cpuUsage: { type: Number, default: 0 },
   usedMB: { type: Number, default: 0 },
   totalMB: { type: Number, default: 0 },
-  videoFps: { type: Number, default: 0 }, // ✅ added
+  videoFps: { type: Number, default: 0 },
 });
 
 /* Local reactive state */
