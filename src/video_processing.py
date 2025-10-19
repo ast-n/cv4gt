@@ -24,7 +24,6 @@ RELEVANCE_COLORS = {
 
 DEFAULT_COLOUR = (255, 0, 0) # Blue
 DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
-CLASS_IGNORE_LIST = ["sideloader_arm"]
 BIN_AUDIO_CUTOFF_HEIGHT = 0.2
 
 async def begin_task(coro):
@@ -323,7 +322,7 @@ class VideoProcessor:
             
             track.append((centre_x, centre_y))
             
-            if object_class in CLASS_IGNORE_LIST and len(track) > 1:
+            if object_class and len(track) > 1:
                 track.pop(0)
             elif len(track) > 20:
                 track.pop(0)
@@ -341,6 +340,9 @@ class VideoProcessor:
         """
         Reads video, processes frames, saves and displays
         """
+
+        cap = None
+
         if not self.model_ready:
             print("Model not loaded. Cannot process frame")
             return
@@ -392,7 +394,7 @@ class VideoProcessor:
                     aligned_frames, success = camera_feed.get_frames()
                     if not success:
                         break
-                    next_frame = camera_feed.get_image(aligned_frames)
+                    next_frame = cv2.cvtColor(camera_feed.get_image(aligned_frames), cv2.COLOR_RGB2BGR)                    
                     next_depth_map = camera_feed.get_depth_map(aligned_frames)
                 else: # Using standard video 
                     ret, next_frame = cap.read()

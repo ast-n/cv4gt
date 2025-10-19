@@ -4,100 +4,28 @@ import numpy as np
 # Mapping each obstacle class to its relevance rating
 RELEVANCE_RATING = {
     "person": 5,
-    "adult": 5,
-    "child": 5,
-    "dog": 4,
-    "cat": 4,
-    "car": 4,
-    "van": 4,
-    "truck": 4,
-    "motorbike": 5,
-    "bicycle": 5,
-    "person": 5,
-    "cyclist_back": 5,
-    "cyclist_front": 5, 
-    "cyclist_side": 5,
-    "head": 4,
-    "helmet": 3,
-    "sideloader_arm": 0,
+    "cyclist": 5,
     "fallen_bin": 4,
-    "junk": 3,
-    "bench": 2,
+    "animal": 4,
+    "vehicle": 4,
+    "ground_hazard": 3,
     "bin": 3,
-    "shopping_cart": 2,
-    "street_furniture": 3,
-    "mailbox": 2,
-    "bollard": 3,
-    "pole": 3,
-    "signpost": 2,
-    "sign": 2,
-    "power_box": 2,
-    "power_pole": 3,
-    "bus_shelter": 3,
-    "tree": 3,
-    "bird": 1,
-    "boat": 1,
-    "bottle": 1,
-    "bus": 4,
-    "chair": 1,
-    "diningtable": 1,
-    "horse": 4,
-    "pottedplant": 1,
-    "sheep": 3,
-    "sofa": 1,
-    "train": 4,
-    "tvmonitor": 1,
-    "aeroplane": 1
+    "fixed_obstacle": 3
 }
 
-#the numbers are the average pixel sizes of the objects in the dataset
+# The numbers are the average pixel sizes of the objects in the dataset
+# Used for depth estimation when RealSense depth map is unavailable
 OBJECT_SCALE_MAP = {
-    "person": 350,
-    "adult": 350,
-    "child": 250,
-    "dog": 200,
-    "cat": 150,
-    "car": 1000,
-    "van": 1500,
-    "truck": 2000,
-    "motorbike": 750,
-    "bicycle": 600,
-    "person": 350,
-    "cyclist_back": 500,
-    "cyclist_front": 500,
-    "cyclist_side": 500,
-    "head": 100,
-    "helmet": 75,
-    "sideloader_arm": 100,
+    "person": 350, 
+    "cyclist": 500,
+    "vehicle": 1500,
     "fallen_bin": 300,
-    "junk": 250,
-    "bench": 350,
     "bin": 250,
-    "shopping_cart": 400,
-    "street_furniture": 500,
-    "mailbox": 200,
-    "bollard": 200,
-    "pole": 400,
-    "signpost": 500,
-    "sign": 400,
-    "power_box": 200,
-    "power_pole": 400,
-    "bus_shelter": 2000,
-    "tree": 2500,
-    "bird": 50,
-    "boat": 2500,
-    "bottle": 40,
-    "bus": 3000,
-    "chair": 150,
-    "diningtable": 500,
-    "horse": 750,
-    "pottedplant": 150,
-    "sheep": 400,
-    "sofa": 500,
-    "train": 4000,
-    "tvmonitor": 150,
-    "aeroplane": 10000
+    "animal": 200,
+    "fixed_obstacle": 400,
+    "ground_hazard": 200
 }
+
 
 MAX_DEPTH = 15 # Maximum depth in meters for depth estimation
 
@@ -113,11 +41,8 @@ def get_obstacle_relevance_rating(object_class:str, depth:float, velocity:float)
         int: The adjusted relevance rating for the object.
     """
     base_rating = RELEVANCE_RATING.get(object_class, 1)
-
-    if object_class == "sideloader_arm":
-        return base_rating
-
     rating = base_rating
+    
     # Cull anything ≥ max depth — too far to be hazardous
     if depth >= MAX_DEPTH:
         return 0
