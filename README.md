@@ -49,7 +49,7 @@ Our project relies on the Realsense SDK. This is available on Windows, Linux, an
 
 
 #### TurboJPEG
-Needs to be installed for faster encoding before shipment to websockets. Installation method varies on OS. Easiest to just find from [releases](https://github.com/libjpeg-turbo/libjpeg-turbo/releases) or from package manager if using UNIX-based system.
+Needs to be installed for faster encoding before shipment to websockets. Installation method varies on OS. Easiest to just find from [releases](https://github.com/libjpeg-turbo/libjpeg-turbo/releases) or from package manager if using UNIX-based system. It is likely that `libjpeg-turbo-3.1.2-vc-x86.exe` is sufficient for most Windows environments.
 
 Ensure that the installation is on system PATH.
 
