@@ -1,3 +1,17 @@
+"""FastAPI Backend Server.
+
+This module implements the HTTP and WebSocket server for the CV4GT system.
+It provides a WebSocket endpoint that streams processed video frames and
+detection data to connected clients (the Electron frontend).
+
+The server:
+- Loads configuration from config.ini
+- Initialises the VideoProcessor for AI inference
+- Streams JPEG-encoded frames and JSON detection data via WebSocket
+- Sends GPS location and system metrics periodically
+- Handles graceful shutdown and logging
+"""
+
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from websockets.exceptions import ConnectionClosed
 from fastapi.templating import Jinja2Templates
@@ -15,8 +29,12 @@ import store
 from turbojpeg import TurboJPEG
 
 config = ConfigParser(inline_comment_prefixes=';')
+
+# Config for non-jetson devices
 config.read("config.ini")
 
+# Config for jetson devices
+# config.read("config_jetson.ini")
 
 video_config = config['VIDEO']
 # Video Config
@@ -52,10 +70,31 @@ app.add_middleware(
 
 @app.get('/')
 def index(request: Request):
+    """Serve the index HTML page.
+
+    Args:
+        request (Request): FastAPI request object.
+
+    Returns:
+        TemplateResponse: Rendered index.html template.
+    """
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.websocket("/ws")
 async def get_stream(websocket: WebSocket):
+    """WebSocket endpoint for streaming video frames and detection data.
+
+    Processes video frames using the VideoProcessor and streams:
+    - JPEG-encoded frames (binary data)
+    - Detection objects with relevance scores (JSON)
+    - GPS location (JSON, from stored task)
+    - System metrics: CPU, memory usage (JSON, every 1 second)
+
+    The stream continues until the client disconnects or video processing completes.
+
+    Args:
+        websocket (WebSocket): WebSocket connection to the client.
+    """
     if FPS_CAP == 0:
         frametime = 0
     else:

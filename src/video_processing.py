@@ -1,3 +1,14 @@
+"""Video Processing Module.
+
+This module contains the core video processing pipeline for the CV4GT solution.
+It orchestrates frame acquisition (from camera or video file), AI inference, depth
+integration, relevance scoring, frame annotation, and logging.
+
+The VideoProcessor class orchestrates the entire pipeline using async/await
+patterns to maximize performance by overlapping frame acquisition, AI processing,
+and annotation/display operations.
+"""
+
 from collections import defaultdict
 import ai_handler
 import store
@@ -5,8 +16,6 @@ import cv2
 import numpy as np
 from PIL import Image
 import os
-import onnx
-import ast
 import asyncio
 
 from obstacle_relevance import get_obstacle_relevance_rating, get_object_median_depths, MAX_DEPTH, RELEVANCE_RATING
@@ -27,13 +36,45 @@ DEFAULT_TEXT_COLOUR = (255, 255, 255) # White
 BIN_AUDIO_CUTOFF_HEIGHT = 0.2
 
 async def begin_task(coro):
-    """Awaitable function that adds a coroutine to the event loop and sets it running."""
+    """Create and start an async task without blocking.
+
+    Schedules a coroutine to run in the event loop and immediately yields
+    control back, allowing the task to execute in the background.
+
+    Args:
+        coro: Coroutine to execute as a task.
+
+    Returns:
+        asyncio.Task: The created task object.
+    """
     task = asyncio.create_task(coro)
     await asyncio.sleep(0)
     return task
 
 class VideoProcessor:
+    """Main video processing pipeline coordinator.
+
+    This class manages the complete video processing workflow including frame
+    acquisition, AI inference, depth integration, relevance scoring, annotation,
+    audio feedback, and logging. Uses async processing for optimal performance.
+
+    Attributes:
+        model_ready (bool): Whether the AI model is loaded and ready.
+        model_path (str): Path to the YOLO model file.
+        audio_handler (AudioHandler): Audio feedback manager.
+        persistent_bins (dict): Tracking data for persistent bin IDs.
+        next_persistent_id (int): Counter for assigning new bin IDs.
+        BIN_MATCH_THRESHOLD (int): Pixel distance for bin ID matching.
+        MAX_FRAMES_NO_SEE (int): Frames to keep unseen bins alive.
+        track_history (dict): History of tracked object positions.
+    """
     def __init__(self, model_path=None):
+        """Initialise video processor and load AI model.
+
+        Args:
+            model_path (str, optional): Path to YOLO model file. If None,
+                loads the most recent model from models/ directory.
+        """
         self.model_ready = False
         self.model_path = model_path
         self.audio_handler = AudioHandler()
@@ -52,9 +93,17 @@ class VideoProcessor:
             exit()
 
     def get_persistent_bin_id(self, current_position):
-        """
-        Return a persistent bin ID for a bin at current_position.
-        Assigns a new ID if no match is found.
+        """Get or create a persistent ID for a bin at the given position.
+
+        Matches bins across frames using distance-based matching. If the bin
+        position matches a previously seen bin (within threshold), returns the
+        existing ID. Otherwise, creates a new ID.
+
+        Args:
+            current_position (tuple[float, float] or None): Bin center as (x, y).
+
+        Returns:
+            int or None: Persistent bin ID, or None if position is None.
         """
         if current_position is not None:
             x, y = current_position
@@ -77,8 +126,10 @@ class VideoProcessor:
             return None
 
     def update_persistent_bins(self):
-        """
-        Increment frames_since_seen for all bins and remove old ones.
+        """Update bin tracking and remove stale bins.
+
+        Increments the frames_since_seen counter for all bins and removes bins
+        that have been handled and haven't been seen for MAX_FRAMES_NO_SEE frames.
         """
         remove_list = []
         for pid, info in self.persistent_bins.items():
@@ -89,8 +140,20 @@ class VideoProcessor:
             del self.persistent_bins[pid]
 
     def annotate_frame(self, frame, detections, smoothing):
-        """
-        Helper function to draw bounding boxes and labels on a frame.
+        """Draw bounding boxes, labels, and UI elements on a frame.
+
+        Processes all detections and draws color-coded bounding boxes, labels with
+        metadata, bin gripper alignment guides, and manages audio feedback.
+
+        Args:
+            frame (numpy.ndarray): Input frame to annotate.
+            detections (list[dict]): List of detected objects with metadata.
+            smoothing (float): Smoothing factor (0-1) for box position interpolation.
+
+        Returns:
+            tuple: (annotated_frame, relevant_objects) where:
+                - annotated_frame (numpy.ndarray): Frame with annotations
+                - relevant_objects (list[dict]): Detections with relevance > 0
         """
         
         annotated_frame = frame.copy()
@@ -244,9 +307,15 @@ class VideoProcessor:
 
         return annotated_frame, relevant_objects_found
     
-    # Used for overlaying the bin gripper warning/checkmark icon
     def overlay_transparent(self, background, overlay, x, y):
+        """Overlay a transparent image (with alpha channel) onto a background.
 
+        Args:
+            background (numpy.ndarray): Background image to draw on (modified in-place).
+            overlay (numpy.ndarray): Overlay image with alpha channel.
+            x (int): X coordinate for top-left corner of overlay.
+            y (int): Y coordinate for top-left corner of overlay.
+        """
         background_width = background.shape[1]
         background_height = background.shape[0]
 
@@ -278,8 +347,16 @@ class VideoProcessor:
         background[y:y+h, x:x+w] = (1.0 - mask) * background[y:y+h, x:x+w] + mask * overlay_image
 
     def get_smoothed_box_pos(self, tracking_history):
-        """
-        Gets the offset to the new position for the bounding box after object tracking movement smoothing.
+        """Calculate smoothed position offset using polynomial interpolation.
+
+        Uses the last 6 positions to fit a linear polynomial and predict the
+        next position, then returns the offset from the actual position.
+
+        Args:
+            tracking_history (list[tuple[float, float]]): List of (x, y) positions.
+
+        Returns:
+            tuple[float, float]: Offset as (dx, dy) to apply to bounding box.
         """
         # Can't smooth if there isn't enough history
         if len(tracking_history) < 6:
@@ -308,8 +385,11 @@ class VideoProcessor:
         return np.round(offset)
 
     def update_track_ids(self, detections, frame_num):
-        """
-        Updates tracking history with new frame and cuts any old IDs from the dictionary.
+        """Update tracking history and prune stale tracks.
+
+        Args:
+            detections (list[dict]): List of detections with track_id and centre.
+            frame_num (int): Current frame number.
         """
         # Update tracking data
         for det in detections:
@@ -337,8 +417,24 @@ class VideoProcessor:
             self.track_history.pop(cut_id)
 
     async def process_video(self, input_video_path=None, use_realsense=True, output_video_path=None, display=True, logging=True, smoothing=1.0):
-        """
-        Reads video, processes frames, saves and displays
+        """Process video stream with object detection, tracking, and annotation.
+
+        Main async generator that yields processed frames. Implements a pipelined
+        architecture where AI runs on frame N+1 while frame N is being annotated.
+
+        Args:
+            input_video_path (str, optional): Path to video file or .bag recording.
+            use_realsense (bool, optional): Use RealSense camera if True. Defaults to True.
+            output_video_path (str, optional): Path to save annotated video.
+            display (bool, optional): Show annotated frames in cv2 window. Defaults to True.
+            logging (bool, optional): Log high-relevance detections. Defaults to True.
+            smoothing (float, optional): Smoothing factor (0-1). Defaults to 1.0.
+
+        Yields:
+            tuple: (annotated_frame, relevant_objects) for each frame.
+
+        Raises:
+            ValueError: If input_video_path is None when not using RealSense.
         """
 
         cap = None
