@@ -1,0 +1,378 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; CV4GT 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Server" href="api_server.html" />
+    <link rel="prev" title="Usage Guide" href="../usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CV4GT
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#software-requirements">Software Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-1-clone-the-repository">Step 1: Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-2-install-system-dependencies">Step 2: Install System Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id2">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-3-install-python-dependencies">Step 3: Install Python Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-4-install-frontend-dependencies">Step 4: Install Frontend Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-5-download-models">Step 5: Download Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#running-the-application">Running the Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#full-stack">Full Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#backend-only">Backend Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#frontend-only">Frontend Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#python-dependency-issues">Python Dependency Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#cuda-gpu-not-detected">CUDA/GPU Not Detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#realsense-camera-not-found">RealSense Camera Not Found</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#turbojpeg-import-error">TurboJPEG Import Error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#config-ini-structure">config.ini Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#video-section">VIDEO Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#input-video">input_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#use-realsense">use_realsense</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#output-video">output_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-auxiliary-display">enable_auxiliary_display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#smoothing-factor">smoothing_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#max-fps">max_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#system-section">SYSTEM Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#model-path">model_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-logging">enable_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#platform-specific-configs">Platform-Specific Configs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#jetson-configuration">Jetson Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#production-jetson">Production (Jetson)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#testing-with-video-files">Testing with Video Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-video-file">Running with Video File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-realsense-camera">Running with RealSense Camera</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#understanding-the-interface">Understanding the Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#video-panel">Video Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../usage.html#color-coding">Color Coding</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#object-list">Object List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#map-panel">Map Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#system-info">System Info</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#working-with-detection-data">Working with Detection Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#enabling-logging">Enabling Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#logged-data">Logged Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#reading-log-files">Reading Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#audio-feedback">Audio Feedback</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#bin-alignment-audio">Bin Alignment Audio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#custom-models">Custom Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#backend-only-mode">Backend-Only Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#recording-realsense-data">Recording RealSense Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#fps-optimization">FPS Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#smoothing">Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#no-detections">No Detections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#high-cpu-memory-usage">High CPU/Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#audio-not-working">Audio Not Working</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#websocket-connection-issues">WebSocket Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_server.html">API Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="video_processing.html">Video Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ai_handler.html">AI Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ai_handler.html#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ai_handler.html#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ai_handler.html#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ai_handler.html#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ai_handler.html#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="store.html">Data Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#third-party-utilities">Third-Party Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bytetracker.html">ByteTrack Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bytetracker.html#module-utils.bytetracker.tracker.byte_tracker">Main Tracker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#javascript-vue">JavaScript/Vue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-process">Pull Request Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#areas-for-contribution">Areas for Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#high-priority">High Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#medium-priority">Medium Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#id1">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CV4GT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<p>This section contains the complete API documentation for CV4GT’s Python backend.</p>
+<section id="core-modules">
+<h2>Core Modules<a class="headerlink" href="#core-modules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_server.html">API Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video_processing.html">Video Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ai_handler.html">AI Handler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ai_handler.html#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_handler.html#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_handler.html#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_handler.html#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_handler.html#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="store.html">Data Storage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="third-party-utilities">
+<h2>Third-Party Utilities<a class="headerlink" href="#third-party-utilities" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bytetracker.html">ByteTrack Integration</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../usage.html" class="btn btn-neutral float-left" title="Usage Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_server.html" class="btn btn-neutral float-right" title="API Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aston Lynch, Erica Thompson, Jerome Liao Roong Jin, Kim Yao Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

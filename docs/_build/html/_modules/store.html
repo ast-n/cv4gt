@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>store &mdash; CV4GT 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CV4GT
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#software-requirements">Software Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-1-clone-the-repository">Step 1: Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-2-install-system-dependencies">Step 2: Install System Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id2">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-3-install-python-dependencies">Step 3: Install Python Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-4-install-frontend-dependencies">Step 4: Install Frontend Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-5-download-models">Step 5: Download Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#running-the-application">Running the Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#full-stack">Full Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#backend-only">Backend Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#frontend-only">Frontend Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#python-dependency-issues">Python Dependency Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#cuda-gpu-not-detected">CUDA/GPU Not Detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#realsense-camera-not-found">RealSense Camera Not Found</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#turbojpeg-import-error">TurboJPEG Import Error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#config-ini-structure">config.ini Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#video-section">VIDEO Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#input-video">input_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#use-realsense">use_realsense</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#output-video">output_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-auxiliary-display">enable_auxiliary_display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#smoothing-factor">smoothing_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#max-fps">max_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#system-section">SYSTEM Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#model-path">model_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-logging">enable_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#platform-specific-configs">Platform-Specific Configs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#jetson-configuration">Jetson Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#production-jetson">Production (Jetson)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#testing-with-video-files">Testing with Video Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-video-file">Running with Video File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-realsense-camera">Running with RealSense Camera</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#understanding-the-interface">Understanding the Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#video-panel">Video Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../usage.html#color-coding">Color Coding</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#object-list">Object List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#map-panel">Map Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#system-info">System Info</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#working-with-detection-data">Working with Detection Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#enabling-logging">Enabling Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#logged-data">Logged Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#reading-log-files">Reading Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#audio-feedback">Audio Feedback</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#bin-alignment-audio">Bin Alignment Audio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#custom-models">Custom Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#backend-only-mode">Backend-Only Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#recording-realsense-data">Recording RealSense Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#fps-optimization">FPS Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#smoothing">Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#no-detections">No Detections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#high-cpu-memory-usage">High CPU/Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#audio-not-working">Audio Not Working</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#websocket-connection-issues">WebSocket Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/modules.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/video_processing.html">Video Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/ai_handler.html">AI Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/store.html">Data Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/modules.html#third-party-utilities">Third-Party Utilities</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#javascript-vue">JavaScript/Vue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-process">Pull Request Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#areas-for-contribution">Areas for Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#high-priority">High Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#medium-priority">Medium Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#id1">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CV4GT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">store</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for store</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Data Storage Module.</span>
+
+<span class="sd">This module handles persistent storage of detection data, including:</span>
+<span class="sd">- Saving frames with high-relevance objects (tagged with GPS and timestamp)</span>
+<span class="sd">- Logging detection events to JSONL files</span>
+<span class="sd">- Loading and caching UI assets (icons, images)</span>
+
+<span class="sd">GPS coordinates are embedded in image EXIF data, and detection logs are</span>
+<span class="sd">stored in line-delimited JSON format for efficient streaming and analysis.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">camera_feed</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">tagged_folder_path</span> <span class="o">=</span> <span class="s2">&quot;/data/tagged&quot;</span>
+
+<div class="viewcode-block" id="to_deg">
+<a class="viewcode-back" href="../api/store.html#store.to_deg">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_deg</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert decimal GPS coordinates to degrees/minutes/seconds format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value (float): GPS coordinate in decimal degrees.</span>
+<span class="sd">        loc (list[str]): Two-element list of hemisphere indicators</span>
+<span class="sd">            (e.g., [&quot;S&quot;, &quot;N&quot;] for latitude or [&quot;W&quot;, &quot;E&quot;] for longitude).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: (degrees, minutes, seconds, hemisphere) where:</span>
+<span class="sd">            - degrees (int): Whole degrees</span>
+<span class="sd">            - minutes (int): Whole minutes</span>
+<span class="sd">            - seconds (float): Decimal seconds</span>
+<span class="sd">            - hemisphere (str): Hemisphere indicator from loc parameter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">loc_value</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">loc_value</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">loc_value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">abs_value</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">deg</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">abs_value</span><span class="p">)</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="p">(</span><span class="n">abs_value</span><span class="o">-</span><span class="n">deg</span><span class="p">)</span><span class="o">*</span><span class="mi">60</span>
+    <span class="nb">min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+    <span class="n">sec</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">t1</span> <span class="o">-</span> <span class="nb">min</span><span class="p">)</span><span class="o">*</span> <span class="mi">60</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">deg</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="n">sec</span><span class="p">,</span> <span class="n">loc_value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="tag_and_store">
+<a class="viewcode-back" href="../api/store.html#store.tag_and_store">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">tag_and_store</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tag image with GPS/timestamp and save to storage.</span>
+
+<span class="sd">    Embeds GPS coordinates and timestamp in image EXIF data, then saves</span>
+<span class="sd">    the image to the tagged folder with a timestamped filename.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image (PIL.Image.Image): Image to tag and store.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Path to the saved image file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">GPS_INFO_TAG</span> <span class="o">=</span> <span class="mi">34853</span>
+    
+    <span class="n">current_gps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_gps</span><span class="p">()</span>
+    
+    <span class="n">lat_deg</span> <span class="o">=</span> <span class="n">to_deg</span><span class="p">(</span><span class="n">current_gps</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">])</span>
+    <span class="n">lng_deg</span> <span class="o">=</span> <span class="n">to_deg</span><span class="p">(</span><span class="n">current_gps</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">])</span>
+    
+    <span class="n">exiv_lat</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat_deg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">lat_deg</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">lat_deg</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">exiv_lng</span> <span class="o">=</span> <span class="p">(</span><span class="n">lng_deg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">lng_deg</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">lng_deg</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    
+    <span class="n">image_exif</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">getexif</span><span class="p">()</span>
+    
+    <span class="n">gps_tags</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># latRef, Lat, LongRef, Long</span>
+    
+    <span class="n">exif_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">GPS_INFO_TAG</span> <span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">gps_tags</span><span class="p">,</span> <span class="p">[</span><span class="n">lat_deg</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">exiv_lat</span><span class="p">,</span> <span class="n">lng_deg</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">exiv_lng</span><span class="p">]))}</span>
+    
+    <span class="n">image_exif</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">exif_dict</span><span class="p">)</span>
+    
+    <span class="n">filename</span> <span class="o">=</span> <span class="k">await</span> <span class="n">store_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">image_exif</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">filename</span></div>
+
+
+<div class="viewcode-block" id="get_gps">
+<a class="viewcode-back" href="../api/store.html#store.get_gps">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_gps</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get current GPS coordinates.</span>
+
+<span class="sd">    Retrieves GPS location from the camera module.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[float, float]: GPS coordinates as (latitude, longitude).</span>
+<span class="sd">            Falls back to (0, 0) if unavailable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get current GPS location, probably from the camera.</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">camera_feed</span><span class="o">.</span><span class="n">get_camera_gps</span><span class="p">()</span>
+    <span class="c1"># Code to turn it into a tuple if thats not the format its given in.</span>
+    <span class="k">if</span> <span class="n">location</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">location</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Decide on some fallback return.</span></div>
+
+
+<div class="viewcode-block" id="store_image">
+<a class="viewcode-back" href="../api/store.html#store.store_image">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">store_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">img_exif</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save image with EXIF metadata to disk.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image (PIL.Image.Image): Image to save.</span>
+<span class="sd">        img_exif (dict): EXIF metadata dictionary.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Path to the saved image file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;data/tagged/</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">hour</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">minute</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">second</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">microsecond</span><span class="si">}</span><span class="s2">.jpg&quot;</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">exif</span><span class="o">=</span><span class="n">img_exif</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">filename</span></div>
+
+
+<span class="n">stored_json</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">log_fileobject</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="new_log">
+<a class="viewcode-back" href="../api/store.html#store.new_log">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">new_log</span><span class="p">(</span><span class="n">initial_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new JSONL log file and write initial data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        initial_data (dict): Initial log entry to write.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">log_fileobject</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;data/logs/saved_log_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">hour</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">minute</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">second</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">microsecond</span><span class="si">}</span><span class="s2">.jsonl&quot;</span>
+    <span class="n">log_fileobject</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">jsonl_string</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">initial_data</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">log_fileobject</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonl_string</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_new_element">
+<a class="viewcode-back" href="../api/store.html#store.create_new_element">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_new_element</span><span class="p">(</span><span class="n">new_frame_data</span><span class="p">,</span> <span class="n">frame_num</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a formatted log entry for a frame&#39;s detections.</span>
+
+<span class="sd">    Removes internal-only fields and adds detection numbering and timestamp.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        new_frame_data (list[dict]): List of detection dictionaries.</span>
+<span class="sd">        frame_num (int): Frame number.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Formatted log entry with frame_num, timestamp, and detections.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">new_frame_data</span>
+    <span class="n">det_num</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;class_id&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;class_id&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;centre&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;centre&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;mask_polygon_norm&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;mask_polygon_norm&quot;</span><span class="p">]</span>
+        <span class="n">item</span><span class="p">[</span><span class="s1">&#39;detection_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">det_num</span>
+        <span class="n">det_num</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">total_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;frame_num&quot;</span><span class="p">:</span> <span class="n">frame_num</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">hour</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">minute</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">second</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">microsecond</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;detections&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">total_data</span></div>
+
+
+<div class="viewcode-block" id="update_log">
+<a class="viewcode-back" href="../api/store.html#store.update_log">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_log</span><span class="p">(</span><span class="n">new_frame_data</span><span class="p">,</span> <span class="n">frame_num</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append detection data to the current log file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        new_frame_data (list[dict]): List of detection dictionaries.</span>
+<span class="sd">        frame_num (int): Frame number.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_data_text</span> <span class="o">=</span> <span class="n">create_new_element</span><span class="p">(</span><span class="n">new_frame_data</span><span class="p">,</span> <span class="n">frame_num</span><span class="p">)</span>
+    <span class="k">global</span> <span class="n">log_fileobject</span>
+    <span class="k">if</span> <span class="n">log_fileobject</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">new_log</span><span class="p">(</span><span class="n">new_data_text</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">jsonl_string</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">new_data_text</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">log_fileobject</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonl_string</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_and_close_log">
+<a class="viewcode-back" href="../api/store.html#store.save_and_close_log">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_and_close_log</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Close the current log file and save to disk.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">log_fileobject</span>
+
+    <span class="n">log_fileobject</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Log file successfully saved&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_image">
+<a class="viewcode-back" href="../api/store.html#store.get_image">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_image</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load an image from disk using OpenCV.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): Path to the image file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray: Loaded image with all channels, or None if failed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image</span></div>
+
+
+<span class="n">checkmark_image</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">cross_image</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="get_grabber_indicator">
+<a class="viewcode-back" href="../api/store.html#store.get_grabber_indicator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_grabber_indicator</span><span class="p">(</span><span class="n">indicator</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get cached UI indicator icon.</span>
+
+<span class="sd">    Loads and caches checkmark/cross icons for bin gripper alignment display.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        indicator (str): Indicator type - &quot;check&quot; or &quot;cross&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray or None: Icon image with alpha channel, or None if invalid type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">match</span> <span class="n">indicator</span><span class="p">:</span>
+        <span class="k">case</span> <span class="s2">&quot;check&quot;</span><span class="p">:</span>
+            <span class="k">global</span> <span class="n">checkmark_image</span>
+            <span class="k">if</span> <span class="n">checkmark_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">checkmark_image</span> <span class="o">=</span> <span class="n">get_image</span><span class="p">(</span><span class="s2">&quot;data/UI/check.png&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">checkmark_image</span>
+        <span class="k">case</span> <span class="s2">&quot;cross&quot;</span><span class="p">:</span>
+            <span class="k">global</span> <span class="n">cross_image</span>
+            <span class="k">if</span> <span class="n">cross_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cross_image</span> <span class="o">=</span> <span class="n">get_image</span><span class="p">(</span><span class="s2">&quot;data/UI/cancel.png&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">cross_image</span>
+        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+            
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aston Lynch, Erica Thompson, Jerome Liao Roong Jin, Kim Yao Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

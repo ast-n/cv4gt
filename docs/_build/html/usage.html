@@ -1,0 +1,558 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage Guide &mdash; CV4GT 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api/modules.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CV4GT
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#software-requirements">Software Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#step-1-clone-the-repository">Step 1: Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#step-2-install-system-dependencies">Step 2: Install System Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="getting_started.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="getting_started.html#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="getting_started.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="getting_started.html#id2">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#step-3-install-python-dependencies">Step 3: Install Python Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#step-4-install-frontend-dependencies">Step 4: Install Frontend Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#step-5-download-models">Step 5: Download Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#running-the-application">Running the Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#full-stack">Full Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#backend-only">Backend Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#frontend-only">Frontend Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#python-dependency-issues">Python Dependency Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#cuda-gpu-not-detected">CUDA/GPU Not Detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#realsense-camera-not-found">RealSense Camera Not Found</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html#turbojpeg-import-error">TurboJPEG Import Error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#config-ini-structure">config.ini Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#video-section">VIDEO Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#input-video">input_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#use-realsense">use_realsense</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#output-video">output_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#enable-auxiliary-display">enable_auxiliary_display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#smoothing-factor">smoothing_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#max-fps">max_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#system-section">SYSTEM Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#model-path">model_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#enable-logging">enable_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#platform-specific-configs">Platform-Specific Configs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#jetson-configuration">Jetson Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#production-jetson">Production (Jetson)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#testing-with-video-files">Testing with Video Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-with-video-file">Running with Video File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-with-realsense-camera">Running with RealSense Camera</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-interface">Understanding the Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#video-panel">Video Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#color-coding">Color Coding</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#object-list">Object List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#map-panel">Map Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#system-info">System Info</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-detection-data">Working with Detection Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-logging">Enabling Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logged-data">Logged Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reading-log-files">Reading Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#audio-feedback">Audio Feedback</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bin-alignment-audio">Bin Alignment Audio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#custom-models">Custom Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-only-mode">Backend-Only Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recording-realsense-data">Recording RealSense Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fps-optimization">FPS Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#smoothing">Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#no-detections">No Detections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#high-cpu-memory-usage">High CPU/Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#audio-not-working">Audio Not Working</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#websocket-connection-issues">WebSocket Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/modules.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/api_server.html">API Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/video_processing.html">Video Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/ai_handler.html">AI Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/ai_handler.html#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ai_handler.html#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ai_handler.html#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ai_handler.html#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ai_handler.html#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/store.html">Data Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/modules.html#third-party-utilities">Third-Party Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/bytetracker.html">ByteTrack Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/bytetracker.html#module-utils.bytetracker.tracker.byte_tracker">Main Tracker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#javascript-vue">JavaScript/Vue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#pull-request-process">Pull Request Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#areas-for-contribution">Areas for Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#high-priority">High Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#medium-priority">Medium Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributing.html#id1">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#reporting-issues">Reporting Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CV4GT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Usage Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usage-guide">
+<h1>Usage Guide<a class="headerlink" href="#usage-guide" title="Link to this heading"></a></h1>
+<p>This guide covers common usage scenarios for CV4GT.</p>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="running-with-video-file">
+<h3>Running with Video File<a class="headerlink" href="#running-with-video-file" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Configure</strong> <code class="docutils literal notranslate"><span class="pre">config.ini</span></code>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[VIDEO]</span>
+<span class="na">input_video</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">data/my_video.mp4</span>
+<span class="na">use_realsense</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run</strong> the application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>--prefix<span class="w"> </span>src/frontend<span class="w"> </span>start
+</pre></div>
+</div>
+</li>
+<li><p><strong>View</strong> the output in the Electron window.</p></li>
+</ol>
+</section>
+<section id="running-with-realsense-camera">
+<h3>Running with RealSense Camera<a class="headerlink" href="#running-with-realsense-camera" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Connect</strong> your Intel RealSense camera</p></li>
+<li><p><strong>Configure</strong> <code class="docutils literal notranslate"><span class="pre">config.ini</span></code>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[VIDEO]</span>
+<span class="na">input_video</span><span class="w"> </span><span class="o">=</span>
+<span class="na">use_realsense</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run</strong> the application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>--prefix<span class="w"> </span>src/frontend<span class="w"> </span>start
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="understanding-the-interface">
+<h2>Understanding the Interface<a class="headerlink" href="#understanding-the-interface" title="Link to this heading"></a></h2>
+<section id="video-panel">
+<h3>Video Panel<a class="headerlink" href="#video-panel" title="Link to this heading"></a></h3>
+<p>The main video panel shows:</p>
+<ul class="simple">
+<li><p><strong>Bounding boxes</strong>: Color-coded by relevance (red = highest priority)</p></li>
+<li><p><strong>Labels</strong>: Show class, confidence, relevance score, and depth</p></li>
+<li><p><strong>Bin gripper guides</strong>: Green/red alignment indicators for bin pickup</p></li>
+</ul>
+<section id="color-coding">
+<h4>Color Coding<a class="headerlink" href="#color-coding" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Red</strong>: Relevance 5 (immediate danger - person, cyclist)</p></li>
+<li><p><strong>Orange</strong>: Relevance 4 (high priority)</p></li>
+<li><p><strong>Yellow</strong>: Relevance 3 (medium priority)</p></li>
+<li><p><strong>Green</strong>: Relevance 2 (low priority)</p></li>
+<li><p><strong>Cyan</strong>: Relevance 1 (very low priority)</p></li>
+</ul>
+</section>
+</section>
+<section id="object-list">
+<h3>Object List<a class="headerlink" href="#object-list" title="Link to this heading"></a></h3>
+<p>Shows detected objects sorted by relevance with:</p>
+<ul class="simple">
+<li><p>Object class</p></li>
+<li><p>Confidence score</p></li>
+<li><p>Relevance rating</p></li>
+<li><p>Distance (depth) in meters</p></li>
+<li><p>Track ID</p></li>
+</ul>
+</section>
+<section id="map-panel">
+<h3>Map Panel<a class="headerlink" href="#map-panel" title="Link to this heading"></a></h3>
+<p>Displays current GPS location (currently placeholder at Swinburne University).</p>
+</section>
+<section id="system-info">
+<h3>System Info<a class="headerlink" href="#system-info" title="Link to this heading"></a></h3>
+<p>Shows:</p>
+<ul class="simple">
+<li><p>CPU usage percentage</p></li>
+<li><p>Memory usage (used / total MB)</p></li>
+</ul>
+</section>
+</section>
+<section id="working-with-detection-data">
+<h2>Working with Detection Data<a class="headerlink" href="#working-with-detection-data" title="Link to this heading"></a></h2>
+<section id="enabling-logging">
+<h3>Enabling Logging<a class="headerlink" href="#enabling-logging" title="Link to this heading"></a></h3>
+<p>To save frames and detection logs:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[SYSTEM]</span>
+<span class="na">enable_logging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+</pre></div>
+</div>
+</section>
+<section id="logged-data">
+<h3>Logged Data<a class="headerlink" href="#logged-data" title="Link to this heading"></a></h3>
+<p><strong>Tagged Images</strong> (<code class="docutils literal notranslate"><span class="pre">data/tagged/</span></code>):</p>
+<ul class="simple">
+<li><p>Frames with high-relevance objects (relevance ≥ 4)</p></li>
+<li><p>GPS coordinates embedded in EXIF</p></li>
+<li><p>Filename: <code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD_HH-MM-SS.microsecond.jpg</span></code></p></li>
+</ul>
+<p><strong>Detection Logs</strong> (<code class="docutils literal notranslate"><span class="pre">data/logs/</span></code>):</p>
+<ul class="simple">
+<li><p>JSONL format (one JSON object per line)</p></li>
+<li><p>Contains frame number, timestamp, and all detections</p></li>
+<li><p>Filename: <code class="docutils literal notranslate"><span class="pre">saved_log_YYYY-MM-DD_HH-MM-SS.microsecond.jsonl</span></code></p></li>
+</ul>
+</section>
+<section id="reading-log-files">
+<h3>Reading Log Files<a class="headerlink" href="#reading-log-files" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;data/logs/saved_log_2025-01-20_14-30-45.123456.jsonl&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">detection_event</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frame </span><span class="si">{</span><span class="n">detection_event</span><span class="p">[</span><span class="s1">&#39;frame_num&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">detection_event</span><span class="p">[</span><span class="s1">&#39;detections&#39;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> (R:</span><span class="si">{</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;relevance&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, D:</span><span class="si">{</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;depth&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">m)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="audio-feedback">
+<h2>Audio Feedback<a class="headerlink" href="#audio-feedback" title="Link to this heading"></a></h2>
+<section id="bin-alignment-audio">
+<h3>Bin Alignment Audio<a class="headerlink" href="#bin-alignment-audio" title="Link to this heading"></a></h3>
+<p>When a bin is detected:</p>
+<ul class="simple">
+<li><p><strong>No sound</strong>: Bin is aligned (green indicators)</p></li>
+<li><p><strong>Beeping</strong>: Bin is misaligned (red indicators)</p></li>
+<li><p><strong>Suppressed</strong>: After successful pickup or timeout</p></li>
+</ul>
+<p>The system tracks individual bins to avoid repetitive alerts.</p>
+</section>
+</section>
+<section id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
+<section id="custom-models">
+<h3>Custom Models<a class="headerlink" href="#custom-models" title="Link to this heading"></a></h3>
+<p>To use a custom YOLO model:</p>
+<ol class="arabic">
+<li><p>Train your model using Ultralytics YOLO</p></li>
+<li><p>Save as <code class="docutils literal notranslate"><span class="pre">.pt</span></code> format</p></li>
+<li><p>Place in <code class="docutils literal notranslate"><span class="pre">models/</span></code> directory</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">config.ini</span></code>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[SYSTEM]</span>
+<span class="na">model_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">models/my_custom_model.pt</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="backend-only-mode">
+<h3>Backend-Only Mode<a class="headerlink" href="#backend-only-mode" title="Link to this heading"></a></h3>
+<p>For testing or headless deployment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start backend</span>
+python<span class="w"> </span>src/api.py
+
+<span class="c1"># Connect custom client to ws://localhost:8000/ws</span>
+</pre></div>
+</div>
+</section>
+<section id="recording-realsense-data">
+<h3>Recording RealSense Data<a class="headerlink" href="#recording-realsense-data" title="Link to this heading"></a></h3>
+<p>To record a RealSense session for playback:</p>
+<ol class="arabic">
+<li><p>Use Intel RealSense Viewer</p></li>
+<li><p>Click “Record” button</p></li>
+<li><p>Save as <code class="docutils literal notranslate"><span class="pre">.bag</span></code> file</p></li>
+<li><p>Use in <code class="docutils literal notranslate"><span class="pre">config.ini</span></code>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[VIDEO]</span>
+<span class="na">input_video</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">data/recordings/session1.bag</span>
+<span class="na">use_realsense</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="performance-tuning">
+<h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>
+<section id="fps-optimization">
+<h3>FPS Optimization<a class="headerlink" href="#fps-optimization" title="Link to this heading"></a></h3>
+<p>Adjust FPS based on your needs:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[VIDEO]</span>
+<span class="c1"># Maximum throughput (may overwhelm frontend)</span>
+<span class="na">max_fps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0</span>
+
+<span class="c1"># Balanced (recommended)</span>
+<span class="na">max_fps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">30</span>
+
+<span class="c1"># Reduced load</span>
+<span class="na">max_fps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">15</span>
+</pre></div>
+</div>
+</section>
+<section id="smoothing">
+<h3>Smoothing<a class="headerlink" href="#smoothing" title="Link to this heading"></a></h3>
+<p>Adjust bounding box smoothing:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[VIDEO]</span>
+<span class="c1"># No smoothing (responsive but jumpy)</span>
+<span class="na">smoothing_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0.0</span>
+
+<span class="c1"># Light smoothing (recommended)</span>
+<span class="na">smoothing_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0.2</span>
+
+<span class="c1"># Heavy smoothing (smooth but laggy)</span>
+<span class="na">smoothing_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0.8</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="no-detections">
+<h3>No Detections<a class="headerlink" href="#no-detections" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Check model is loaded: Look for “Model successfully loaded” in console</p></li>
+<li><p>Verify video feed: Check frames are being processed</p></li>
+<li><p>Lower confidence threshold if using custom model</p></li>
+</ol>
+</section>
+<section id="high-cpu-memory-usage">
+<h3>High CPU/Memory Usage<a class="headerlink" href="#high-cpu-memory-usage" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Reduce <code class="docutils literal notranslate"><span class="pre">max_fps</span></code></p></li>
+<li><p>Disable <code class="docutils literal notranslate"><span class="pre">enable_auxiliary_display</span></code> if not needed</p></li>
+<li><p>Use smaller YOLO model (YOLOv11s instead of YOLOv11m)</p></li>
+</ol>
+</section>
+<section id="audio-not-working">
+<h3>Audio Not Working<a class="headerlink" href="#audio-not-working" title="Link to this heading"></a></h3>
+<p>Audio automatically disables on headless systems (Jetson). This is expected behavior.</p>
+</section>
+<section id="websocket-connection-issues">
+<h3>WebSocket Connection Issues<a class="headerlink" href="#websocket-connection-issues" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Ensure backend is running: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">src/api.py</span></code></p></li>
+<li><p>Check port 8000 is not in use</p></li>
+<li><p>Verify CORS settings in <code class="docutils literal notranslate"><span class="pre">api.py</span></code> if using custom frontend</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/modules.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aston Lynch, Erica Thompson, Jerome Liao Roong Jin, Kim Yao Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

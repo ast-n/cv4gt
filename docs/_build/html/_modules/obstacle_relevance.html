@@ -1,0 +1,494 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>obstacle_relevance &mdash; CV4GT 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CV4GT
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#software-requirements">Software Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-1-clone-the-repository">Step 1: Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-2-install-system-dependencies">Step 2: Install System Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id2">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-3-install-python-dependencies">Step 3: Install Python Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-4-install-frontend-dependencies">Step 4: Install Frontend Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-5-download-models">Step 5: Download Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#running-the-application">Running the Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#full-stack">Full Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#backend-only">Backend Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#frontend-only">Frontend Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#python-dependency-issues">Python Dependency Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#cuda-gpu-not-detected">CUDA/GPU Not Detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#realsense-camera-not-found">RealSense Camera Not Found</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#turbojpeg-import-error">TurboJPEG Import Error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#config-ini-structure">config.ini Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#video-section">VIDEO Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#input-video">input_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#use-realsense">use_realsense</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#output-video">output_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-auxiliary-display">enable_auxiliary_display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#smoothing-factor">smoothing_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#max-fps">max_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#system-section">SYSTEM Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#model-path">model_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-logging">enable_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#platform-specific-configs">Platform-Specific Configs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#jetson-configuration">Jetson Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#production-jetson">Production (Jetson)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#testing-with-video-files">Testing with Video Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-video-file">Running with Video File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-realsense-camera">Running with RealSense Camera</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#understanding-the-interface">Understanding the Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#video-panel">Video Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../usage.html#color-coding">Color Coding</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#object-list">Object List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#map-panel">Map Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#system-info">System Info</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#working-with-detection-data">Working with Detection Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#enabling-logging">Enabling Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#logged-data">Logged Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#reading-log-files">Reading Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#audio-feedback">Audio Feedback</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#bin-alignment-audio">Bin Alignment Audio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#custom-models">Custom Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#backend-only-mode">Backend-Only Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#recording-realsense-data">Recording RealSense Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#fps-optimization">FPS Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#smoothing">Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#no-detections">No Detections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#high-cpu-memory-usage">High CPU/Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#audio-not-working">Audio Not Working</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#websocket-connection-issues">WebSocket Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/modules.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/video_processing.html">Video Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/ai_handler.html">AI Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/store.html">Data Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/modules.html#third-party-utilities">Third-Party Utilities</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#javascript-vue">JavaScript/Vue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-process">Pull Request Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#areas-for-contribution">Areas for Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#high-priority">High Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#medium-priority">Medium Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#id1">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CV4GT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">obstacle_relevance</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for obstacle_relevance</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Obstacle Relevance Scoring Module.</span>
+
+<span class="sd">This module provides functionality for assessing the relevance/danger level of</span>
+<span class="sd">detected obstacles based on their class, distance (depth), and velocity.</span>
+<span class="sd">Calculates both real depth from RealSense depth maps and estimated depth from</span>
+<span class="sd">bounding box size when depth data is unavailable.</span>
+
+<span class="sd">The relevance scoring system uses a 1-5 scale where 5 is highest priority</span>
+<span class="sd">(immediate danger) and 1 is lowest priority (distant or low-risk objects).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Mapping each obstacle class to its relevance rating</span>
+<span class="n">RELEVANCE_RATING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;person&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;cyclist&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;fallen_bin&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;animal&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;vehicle&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;ground_hazard&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;bin&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;fixed_obstacle&quot;</span><span class="p">:</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+<span class="c1"># The numbers are the average pixel sizes of the objects in the dataset</span>
+<span class="c1"># Used for depth estimation when RealSense depth map is unavailable</span>
+<span class="n">OBJECT_SCALE_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;person&quot;</span><span class="p">:</span> <span class="mi">350</span><span class="p">,</span> 
+    <span class="s2">&quot;cyclist&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="s2">&quot;vehicle&quot;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span>
+    <span class="s2">&quot;fallen_bin&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="s2">&quot;bin&quot;</span><span class="p">:</span> <span class="mi">250</span><span class="p">,</span>
+    <span class="s2">&quot;animal&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;fixed_obstacle&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+    <span class="s2">&quot;ground_hazard&quot;</span><span class="p">:</span> <span class="mi">200</span>
+<span class="p">}</span>
+
+
+<span class="n">MAX_DEPTH</span> <span class="o">=</span> <span class="mi">15</span> <span class="c1"># Maximum depth in meters for depth estimation</span>
+
+<div class="viewcode-block" id="get_obstacle_relevance_rating">
+<a class="viewcode-back" href="../api/obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_obstacle_relevance_rating</span><span class="p">(</span><span class="n">object_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">velocity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate dynamic relevance rating for a detected object.</span>
+
+<span class="sd">    Computes a relevance score (1-5) based on object class, distance, and velocity.</span>
+<span class="sd">    The base rating comes from the object class, which is then adjusted down for</span>
+<span class="sd">    greater distances and up for moving objects.</span>
+
+<span class="sd">    Distance penalties:</span>
+<span class="sd">        - ≥7m: -4 to rating</span>
+<span class="sd">        - ≥5m: -2 to rating</span>
+<span class="sd">        - ≥3m: -1 to rating</span>
+
+<span class="sd">    Velocity bonus:</span>
+<span class="sd">        - 0.6-10 m/s: +2 to rating</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        object_class (str): The class of the detected object (e.g., &quot;person&quot;, &quot;bin&quot;).</span>
+<span class="sd">        depth (float): The depth/distance to the object in meters.</span>
+<span class="sd">        velocity (float): The object&#39;s velocity in meters per second.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The adjusted relevance rating from 0-5, where:</span>
+<span class="sd">            - 5: Highest priority (immediate danger)</span>
+<span class="sd">            - 4: High priority</span>
+<span class="sd">            - 3: Medium priority</span>
+<span class="sd">            - 2: Low priority</span>
+<span class="sd">            - 1: Very low priority</span>
+<span class="sd">            - 0: Filtered out (too far or irrelevant)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base_rating</span> <span class="o">=</span> <span class="n">RELEVANCE_RATING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">object_class</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">base_rating</span>
+    
+    <span class="c1"># Cull anything ≥ max depth — too far to be hazardous</span>
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;=</span> <span class="n">MAX_DEPTH</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="n">rating</span> <span class="o">-=</span> <span class="mi">4</span>
+    <span class="k">elif</span> <span class="n">depth</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">rating</span> <span class="o">-=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">depth</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">rating</span> <span class="o">-=</span> <span class="mi">1</span>
+        
+    <span class="k">if</span> <span class="mf">0.6</span> <span class="o">&lt;</span> <span class="n">velocity</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span> <span class="c1"># Max value set because velocity is misinterpreted as some incredibly high value sometimes. 10m/s = 36km/hr.</span>
+        <span class="n">rating</span> <span class="o">+=</span> <span class="mi">2</span>
+        
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">rating</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="estimate_depth">
+<a class="viewcode-back" href="../api/obstacle_relevance.html#obstacle_relevance.estimate_depth">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">estimate_depth</span><span class="p">(</span><span class="n">object_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate object depth from bounding box size.</span>
+
+<span class="sd">    Uses an inverse square root relationship between bounding box area and</span>
+<span class="sd">    distance to estimate depth when RealSense depth data is unavailable.</span>
+<span class="sd">    Each object class has a calibrated scale factor based on average real-world</span>
+<span class="sd">    sizes from the training dataset.</span>
+
+<span class="sd">    Formula: depth = object_scale / sqrt(bbox_area)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        object_class (str): The class of the detected object.</span>
+<span class="sd">        bbox (list[float]): Bounding box as [x1, y1, x2, y2].</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Estimated depth in meters, or MAX_DEPTH if area is invalid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">bbox</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="n">height</span>
+    <span class="k">if</span> <span class="n">area</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MAX_DEPTH</span>
+
+    <span class="n">object_scale</span> <span class="o">=</span> <span class="n">OBJECT_SCALE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">object_class</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># in meters</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="n">object_scale</span> <span class="o">/</span> <span class="p">(</span><span class="n">area</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># square root inverse area</span>
+
+    <span class="k">return</span> <span class="n">depth</span></div>
+
+
+<div class="viewcode-block" id="real_depth">
+<a class="viewcode-back" href="../api/obstacle_relevance.html#obstacle_relevance.real_depth">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">real_depth</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">depth_map</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate real depth from RealSense depth map.</span>
+
+<span class="sd">    Extracts depth values from the RealSense depth map within the bounding box,</span>
+<span class="sd">    filters out invalid readings, and returns the median depth.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bbox (list[float]): Bounding box as [x1, y1, x2, y2].</span>
+<span class="sd">        depth_map (numpy.ndarray or None): RealSense depth map in millimeters,</span>
+<span class="sd">            or None if unavailable.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Median depth in meters within the bounding box, or MAX_DEPTH if</span>
+<span class="sd">            no valid depth data is available.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">x2</span> <span class="o">&lt;=</span> <span class="n">x1</span> <span class="ow">or</span> <span class="n">y2</span> <span class="o">&lt;=</span> <span class="n">y1</span> <span class="ow">or</span> <span class="n">depth_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MAX_DEPTH</span>
+    
+    <span class="c1"># Find depth in bounding</span>
+    <span class="n">bbox_depths_mm</span> <span class="o">=</span> <span class="n">depth_map</span><span class="p">[</span><span class="n">y1</span><span class="p">:</span><span class="n">y2</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]</span>
+
+    <span class="c1"># Convert to meters</span>
+    <span class="n">valid_depths_m</span> <span class="o">=</span> <span class="n">bbox_depths_mm</span><span class="p">[</span><span class="n">bbox_depths_mm</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span>
+
+    <span class="c1"># Filter</span>
+    <span class="n">valid_depths_in_range</span> <span class="o">=</span> <span class="n">valid_depths_m</span><span class="p">[</span><span class="n">valid_depths_m</span> <span class="o">&lt;</span> <span class="n">MAX_DEPTH</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">valid_depths_in_range</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MAX_DEPTH</span>
+
+    <span class="c1"># Calculate the median of the valid, in-range depth values</span>
+    <span class="n">median_depth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">valid_depths_in_range</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">median_depth</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_object_median_depths">
+<a class="viewcode-back" href="../api/obstacle_relevance.html#obstacle_relevance.get_object_median_depths">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_object_median_depths</span><span class="p">(</span><span class="n">objects</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">depth_map</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add depth information to detected objects.</span>
+
+<span class="sd">    Processes a list of detected objects and adds &#39;depth&#39; field to each using</span>
+<span class="sd">    either real depth from RealSense depth map (preferred) or estimated depth</span>
+<span class="sd">    from bounding box size (fallback).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        objects (list[dict]): List of detected objects, each with &#39;bbox&#39; and &#39;class&#39; fields.</span>
+<span class="sd">        depth_map (numpy.ndarray or None): RealSense depth map in millimeters, or None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[dict]: Same list of objects with &#39;depth&#39; (float) field added to each,</span>
+<span class="sd">            representing distance in meters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>    
+        <span class="c1"># Real Depth first</span>
+        <span class="k">if</span> <span class="n">depth_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">real_d</span> <span class="o">=</span> <span class="n">real_depth</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">],</span> <span class="n">depth_map</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">real_d</span> <span class="o">&lt;</span> <span class="n">MAX_DEPTH</span><span class="p">:</span>
+                <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;depth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">real_d</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;depth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MAX_DEPTH</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;depth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimate_depth</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">])</span>
+            
+    <span class="k">return</span> <span class="n">objects</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aston Lynch, Erica Thompson, Jerome Liao Roong Jin, Kim Yao Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
