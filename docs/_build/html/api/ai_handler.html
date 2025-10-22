@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Handler &mdash; CV4GT 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Obstacle Relevance" href="obstacle_relevance.html" />
+    <link rel="prev" title="Video Processing" href="video_processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CV4GT
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#software-requirements">Software Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-1-clone-the-repository">Step 1: Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-2-install-system-dependencies">Step 2: Install System Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id2">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-3-install-python-dependencies">Step 3: Install Python Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-4-install-frontend-dependencies">Step 4: Install Frontend Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-5-download-models">Step 5: Download Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#running-the-application">Running the Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#full-stack">Full Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#backend-only">Backend Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#frontend-only">Frontend Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#python-dependency-issues">Python Dependency Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#cuda-gpu-not-detected">CUDA/GPU Not Detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#realsense-camera-not-found">RealSense Camera Not Found</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#turbojpeg-import-error">TurboJPEG Import Error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#config-ini-structure">config.ini Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#video-section">VIDEO Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#input-video">input_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#use-realsense">use_realsense</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#output-video">output_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-auxiliary-display">enable_auxiliary_display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#smoothing-factor">smoothing_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#max-fps">max_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#system-section">SYSTEM Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#model-path">model_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-logging">enable_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#platform-specific-configs">Platform-Specific Configs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#jetson-configuration">Jetson Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#production-jetson">Production (Jetson)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#testing-with-video-files">Testing with Video Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-video-file">Running with Video File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-realsense-camera">Running with RealSense Camera</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#understanding-the-interface">Understanding the Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#video-panel">Video Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../usage.html#color-coding">Color Coding</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#object-list">Object List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#map-panel">Map Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#system-info">System Info</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#working-with-detection-data">Working with Detection Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#enabling-logging">Enabling Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#logged-data">Logged Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#reading-log-files">Reading Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#audio-feedback">Audio Feedback</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#bin-alignment-audio">Bin Alignment Audio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#custom-models">Custom Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#backend-only-mode">Backend-Only Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#recording-realsense-data">Recording RealSense Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#fps-optimization">FPS Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#smoothing">Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#no-detections">No Detections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#high-cpu-memory-usage">High CPU/Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#audio-not-working">Audio Not Working</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#websocket-connection-issues">WebSocket Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html#core-modules">Core Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="api_server.html">API Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="video_processing.html">Video Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AI Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="store.html">Data Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#third-party-utilities">Third-Party Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bytetracker.html">ByteTrack Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bytetracker.html#module-utils.bytetracker.tracker.byte_tracker">Main Tracker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#javascript-vue">JavaScript/Vue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-process">Pull Request Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#areas-for-contribution">Areas for Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#high-priority">High Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#medium-priority">Medium Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#id1">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CV4GT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">API Reference</a></li>
+      <li class="breadcrumb-item active">AI Handler</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ai_handler.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ai-handler">
+<h1>AI Handler<a class="headerlink" href="#ai-handler" title="Link to this heading"></a></h1>
+<p>AI model management and object tracking with YOLO and ByteTrack integration.</p>
+<p id="module-ai_handler">AI Handler Module.</p>
+<p>This module manages model loading, object detection, and tracking functionality with ByteTrack.
+It provides the ModelManager class that handles YOLO model operations + ByteTrack
+object tracking, with functions for common operations.</p>
+<p>The module integrates YOLO object detection with ByteTrack for persistent object
+tracking across video frames, running inference asynchronously to avoid blocking.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ai_handler.TrackerArgs">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ai_handler.</span></span><span class="sig-name descname"><span class="pre">TrackerArgs</span></span><a class="reference internal" href="../_modules/ai_handler.html#TrackerArgs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.TrackerArgs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Configuration arguments for ByteTracker.</p>
+<p>This class holds the configuration parameters for the ByteTrack object tracker.
+These arguments control tracking behavior including detection thresholds, track
+buffering, and matching sensitivity.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ai_handler.TrackerArgs.track_thresh">
+<span class="sig-name descname"><span class="pre">track_thresh</span></span><a class="headerlink" href="#ai_handler.TrackerArgs.track_thresh" title="Link to this definition"></a></dt>
+<dd><p>Minimum confidence threshold for tracking (0.25).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ai_handler.TrackerArgs.track_buffer">
+<span class="sig-name descname"><span class="pre">track_buffer</span></span><a class="headerlink" href="#ai_handler.TrackerArgs.track_buffer" title="Link to this definition"></a></dt>
+<dd><p>Number of frames to buffer lost tracks (30).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ai_handler.TrackerArgs.match_thresh">
+<span class="sig-name descname"><span class="pre">match_thresh</span></span><a class="headerlink" href="#ai_handler.TrackerArgs.match_thresh" title="Link to this definition"></a></dt>
+<dd><p>IoU threshold for track matching (0.8).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ai_handler.TrackerArgs.mot20">
+<span class="sig-name descname"><span class="pre">mot20</span></span><a class="headerlink" href="#ai_handler.TrackerArgs.mot20" title="Link to this definition"></a></dt>
+<dd><p>Whether to use MOT20 protocol (False).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.TrackerArgs.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#TrackerArgs.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.TrackerArgs.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ai_handler.ModelManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ai_handler.</span></span><span class="sig-name descname"><span class="pre">ModelManager</span></span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Manages models for object detection and tracking.</p>
+<p>This class handles loading of YOLO models, running object detection inference,
+and maintaining a ByteTrack tracker instance for persistent object IDs across frames.
+All inference operations are designed to run asynchronously via thread pool
+executors to avoid blocking the async event loop.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.object_detection_model">
+<span class="sig-name descname"><span class="pre">object_detection_model</span></span><a class="headerlink" href="#ai_handler.ModelManager.object_detection_model" title="Link to this definition"></a></dt>
+<dd><p>The loaded YOLO model instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>YOLO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.model_loaded">
+<span class="sig-name descname"><span class="pre">model_loaded</span></span><a class="headerlink" href="#ai_handler.ModelManager.model_loaded" title="Link to this definition"></a></dt>
+<dd><p>Flag indicating whether a model is loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.tracker">
+<span class="sig-name descname"><span class="pre">tracker</span></span><a class="headerlink" href="#ai_handler.ModelManager.tracker" title="Link to this definition"></a></dt>
+<dd><p>ByteTrack tracker instance for object tracking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="bytetracker.html#utils.bytetracker.tracker.byte_tracker.BYTETracker" title="utils.bytetracker.tracker.byte_tracker.BYTETracker">BYTETracker</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.get_latest_model">
+<span class="sig-name descname"><span class="pre">get_latest_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.get_latest_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.get_latest_model" title="Link to this definition"></a></dt>
+<dd><p>Find the most recently modified YOLO model file.</p>
+<p>Searches the specified directory for .pt model files and returns the
+path to the most recently modified one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>models_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Directory to search for models. Defaults to “models”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Path to the latest model file, or None if directory doesn’t exist</dt><dd><p>or no models are found.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.load_object_detection_model">
+<span class="sig-name descname"><span class="pre">load_object_detection_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.load_object_detection_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.load_object_detection_model" title="Link to this definition"></a></dt>
+<dd><p>Load a YOLO object detection model.</p>
+<p>Loads a YOLO model from the specified path or automatically finds the
+latest model if no path is provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Path to the YOLO model file (.pt). If None,
+automatically loads the latest model from the models directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if model loaded successfully, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.detect_objects">
+<span class="sig-name descname"><span class="pre">detect_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.detect_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.detect_objects" title="Link to this definition"></a></dt>
+<dd><p>Run YOLO object detection on an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – Input image as a NumPy array.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>YOLO detection results containing</dt><dd><p>boxes, confidences, and class predictions.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ultralytics.engine.results.Results</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><strong>Exception</strong></a> – If no model is loaded.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.get_objects">
+<span class="sig-name descname"><span class="pre">get_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.get_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.get_objects" title="Link to this definition"></a></dt>
+<dd><p>Get detected objects with bounding boxes and metadata.</p>
+<p>Runs object detection and formats the results into a list of dictionaries
+containing class information, confidence scores, and bounding boxes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – Input image as a NumPy array.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>List of detected objects, where each dict contains:</dt><dd><ul class="simple">
+<li><p>’class’ (str): Object class name</p></li>
+<li><p>’class_id’ (int): Numeric class ID</p></li>
+<li><p>’confidence’ (float): Detection confidence score</p></li>
+<li><p>’bbox’ (list[float]): Bounding box as [x1, y1, x2, y2]</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.proxy_bytetrack_update">
+<span class="sig-name descname"><span class="pre">proxy_bytetrack_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detections_for_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.proxy_bytetrack_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.proxy_bytetrack_update" title="Link to this definition"></a></dt>
+<dd><p>Proxy method for running ByteTrack update in a thread pool.</p>
+<p>This synchronous method wraps the tracker’s update call, allowing it to
+be executed in a background thread via asyncio’s run_in_executor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>detections_for_tracker</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – Array of detections with shape
+(N, 6) containing [x1, y1, x2, y2, score, class_id].</p></li>
+<li><p><strong>image_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>) – Image dimensions as (height, width).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of active tracks with updated positions and IDs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference internal" href="bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack" title="utils.bytetracker.tracker.byte_tracker.STrack">STrack</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.proxy_predict">
+<span class="sig-name descname"><span class="pre">proxy_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.proxy_predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.proxy_predict" title="Link to this definition"></a></dt>
+<dd><p>Proxy method for running YOLO prediction in a thread pool.</p>
+<p>This synchronous method wraps the model’s predict call, allowing it to
+be executed in a background thread via asyncio’s run_in_executor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – Input image as a NumPy array.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to print prediction information.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List containing YOLO results.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[ultralytics.engine.results.Results]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ai_handler.ModelManager.track_objects">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">track_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#ModelManager.track_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.ModelManager.track_objects" title="Link to this definition"></a></dt>
+<dd><p>Track objects across frames using YOLO detection and ByteTrack.</p>
+<p>Combines YOLO object detection with ByteTrack tracking to maintain
+persistent object IDs across video frames. Runs inference and tracking
+in background threads to avoid blocking the async event loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – Input image as a NumPy array.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>List of tracked objects, where each dict contains:</dt><dd><ul class="simple">
+<li><p>’class’ (str): Object class name</p></li>
+<li><p>’class_id’ (int): Numeric class ID</p></li>
+<li><p>’track_id’ (int): Persistent tracking ID</p></li>
+<li><p>’confidence’ (float): Detection confidence score</p></li>
+<li><p>’bbox’ (list[float]): Bounding box as [x1, y1, x2, y2]</p></li>
+<li><p>’centre’ (list[float]): Box center as [cx, cy]</p></li>
+<li><p>’mask_polygon_norm’ (None): Placeholder for future mask support</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ai_handler.load_object_detection_model">
+<span class="sig-prename descclassname"><span class="pre">ai_handler.</span></span><span class="sig-name descname"><span class="pre">load_object_detection_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#load_object_detection_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.load_object_detection_model" title="Link to this definition"></a></dt>
+<dd><p>Convenience function to load object detection model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Path to the YOLO model file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if model loaded successfully, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ai_handler.get_objects">
+<span class="sig-prename descclassname"><span class="pre">ai_handler.</span></span><span class="sig-name descname"><span class="pre">get_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#get_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.get_objects" title="Link to this definition"></a></dt>
+<dd><p>Convenience function to get detected objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – Input image.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of detected objects with metadata.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ai_handler.get_tracking">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ai_handler.</span></span><span class="sig-name descname"><span class="pre">get_tracking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ai_handler.html#get_tracking"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ai_handler.get_tracking" title="Link to this definition"></a></dt>
+<dd><p>Convenience function to get tracked objects asynchronously.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – Input image.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tracked objects with persistent IDs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="video_processing.html" class="btn btn-neutral float-left" title="Video Processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="obstacle_relevance.html" class="btn btn-neutral float-right" title="Obstacle Relevance" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aston Lynch, Erica Thompson, Jerome Liao Roong Jin, Kim Yao Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

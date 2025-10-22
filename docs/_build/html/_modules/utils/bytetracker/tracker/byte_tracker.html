@@ -1,0 +1,708 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.bytetracker.tracker.byte_tracker &mdash; CV4GT 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            CV4GT
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#software-requirements">Software Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#step-1-clone-the-repository">Step 1: Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#step-2-install-system-dependencies">Step 2: Install System Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started.html#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started.html#id2">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#step-3-install-python-dependencies">Step 3: Install Python Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#step-4-install-frontend-dependencies">Step 4: Install Frontend Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#step-5-download-models">Step 5: Download Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#running-the-application">Running the Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#full-stack">Full Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#backend-only">Backend Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#frontend-only">Frontend Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#python-dependency-issues">Python Dependency Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#cuda-gpu-not-detected">CUDA/GPU Not Detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#realsense-camera-not-found">RealSense Camera Not Found</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#turbojpeg-import-error">TurboJPEG Import Error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../configuration.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#config-ini-structure">config.ini Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../configuration.html#video-section">VIDEO Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#input-video">input_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#use-realsense">use_realsense</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#output-video">output_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#enable-auxiliary-display">enable_auxiliary_display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#smoothing-factor">smoothing_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#max-fps">max_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../configuration.html#system-section">SYSTEM Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#model-path">model_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#enable-logging">enable_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../configuration.html#platform-specific-configs">Platform-Specific Configs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#jetson-configuration">Jetson Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../configuration.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../configuration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#production-jetson">Production (Jetson)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../configuration.html#testing-with-video-files">Testing with Video Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#running-with-video-file">Running with Video File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#running-with-realsense-camera">Running with RealSense Camera</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage.html#understanding-the-interface">Understanding the Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#video-panel">Video Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../usage.html#color-coding">Color Coding</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#object-list">Object List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#map-panel">Map Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#system-info">System Info</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage.html#working-with-detection-data">Working with Detection Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#enabling-logging">Enabling Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#logged-data">Logged Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#reading-log-files">Reading Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage.html#audio-feedback">Audio Feedback</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#bin-alignment-audio">Bin Alignment Audio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#custom-models">Custom Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#backend-only-mode">Backend-Only Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#recording-realsense-data">Recording RealSense Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage.html#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#fps-optimization">FPS Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#smoothing">Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../usage.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#no-detections">No Detections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#high-cpu-memory-usage">High CPU/Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#audio-not-working">Audio Not Working</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../usage.html#websocket-connection-issues">WebSocket Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/modules.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/modules.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/api_server.html">API Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/video_processing.html">Video Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/ai_handler.html">AI Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/ai_handler.html#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/ai_handler.html#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/ai_handler.html#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/ai_handler.html#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/ai_handler.html#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/store.html">Data Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/modules.html#third-party-utilities">Third-Party Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/bytetracker.html">ByteTrack Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/bytetracker.html#module-utils.bytetracker.tracker.byte_tracker">Main Tracker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contributing.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contributing.html#javascript-vue">JavaScript/Vue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contributing.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#pull-request-process">Pull Request Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#areas-for-contribution">Areas for Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contributing.html#high-priority">High Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contributing.html#medium-priority">Medium Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contributing.html#id1">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#reporting-issues">Reporting Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contributing.html#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">CV4GT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.bytetracker.tracker.byte_tracker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.bytetracker.tracker.byte_tracker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">osp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.kalman_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">KalmanFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tracker</span><span class="w"> </span><span class="kn">import</span> <span class="n">matching</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.basetrack</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTrack</span><span class="p">,</span> <span class="n">TrackState</span>
+
+<div class="viewcode-block" id="STrack">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">STrack</span><span class="p">(</span><span class="n">BaseTrack</span><span class="p">):</span>
+    <span class="n">shared_kalman</span> <span class="o">=</span> <span class="n">KalmanFilter</span><span class="p">()</span>
+<div class="viewcode-block" id="STrack.__init__">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tlwh</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">class_id</span><span class="p">):</span>
+
+        <span class="c1"># wait activate</span>
+        <span class="c1"># Aston change: numpy old shorthand update to below line</span>
+        <span class="c1">#self._tlwh = np.asarray(tlwh, dtype=np.float)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tlwh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tlwh</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_activated</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">score</span>
+        <span class="c1"># aston change, give clas id to strack</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_id</span> <span class="o">=</span> <span class="n">class_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracklet_len</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="STrack.predict">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mean_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span><span class="p">:</span>
+            <span class="n">mean_state</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">mean_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="STrack.multi_predict">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.multi_predict">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">multi_predict</span><span class="p">(</span><span class="n">stracks</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stracks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">multi_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">st</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">stracks</span><span class="p">])</span>
+            <span class="n">multi_covariance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">st</span><span class="o">.</span><span class="n">covariance</span> <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">stracks</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">st</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stracks</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span><span class="p">:</span>
+                    <span class="n">multi_mean</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">multi_mean</span><span class="p">,</span> <span class="n">multi_covariance</span> <span class="o">=</span> <span class="n">STrack</span><span class="o">.</span><span class="n">shared_kalman</span><span class="o">.</span><span class="n">multi_predict</span><span class="p">(</span><span class="n">multi_mean</span><span class="p">,</span> <span class="n">multi_covariance</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">multi_mean</span><span class="p">,</span> <span class="n">multi_covariance</span><span class="p">)):</span>
+                <span class="n">stracks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
+                <span class="n">stracks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">cov</span></div>
+
+
+<div class="viewcode-block" id="STrack.activate">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.activate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kalman_filter</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start a new tracklet&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span> <span class="o">=</span> <span class="n">kalman_filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_id</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span><span class="o">.</span><span class="n">initiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tlwh_to_xyah</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tlwh</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracklet_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span>
+        <span class="k">if</span> <span class="n">frame_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_activated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># self.is_activated = True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_frame</span> <span class="o">=</span> <span class="n">frame_id</span></div>
+
+
+<div class="viewcode-block" id="STrack.re_activate">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.re_activate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">re_activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_track</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">,</span> <span class="n">new_id</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlwh_to_xyah</span><span class="p">(</span><span class="n">new_track</span><span class="o">.</span><span class="n">tlwh</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracklet_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_activated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="k">if</span> <span class="n">new_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">track_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_id</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">new_track</span><span class="o">.</span><span class="n">score</span></div>
+
+
+<div class="viewcode-block" id="STrack.update">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_track</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update a matched track</span>
+<span class="sd">        :type new_track: STrack</span>
+<span class="sd">        :type frame_id: int</span>
+<span class="sd">        :type update_feature: bool</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracklet_len</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">new_tlwh</span> <span class="o">=</span> <span class="n">new_track</span><span class="o">.</span><span class="n">tlwh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlwh_to_xyah</span><span class="p">(</span><span class="n">new_tlwh</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_activated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">new_track</span><span class="o">.</span><span class="n">score</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="c1"># @jit(nopython=True)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tlwh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current position in bounding box format `(top left x, top left y,</span>
+<span class="sd">                width, height)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tlwh</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">ret</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@property</span>
+    <span class="c1"># @jit(nopython=True)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tlbr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert bounding box to format `(min x, min y, max x, max y)`, i.e.,</span>
+<span class="sd">        `(top left, bottom right)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlwh</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">ret</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+<div class="viewcode-block" id="STrack.tlwh_to_xyah">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.tlwh_to_xyah">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="c1"># @jit(nopython=True)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tlwh_to_xyah</span><span class="p">(</span><span class="n">tlwh</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert bounding box to format `(center x, center y, aspect ratio,</span>
+<span class="sd">        height)`, where the aspect ratio is `width / height`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tlwh</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ret</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="STrack.to_xyah">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.to_xyah">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_xyah</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlwh_to_xyah</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tlwh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="STrack.tlbr_to_tlwh">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.tlbr_to_tlwh">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="c1"># @jit(nopython=True)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tlbr_to_tlwh</span><span class="p">(</span><span class="n">tlbr</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tlbr</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-=</span> <span class="n">ret</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="STrack.tlwh_to_tlbr">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.STrack.tlwh_to_tlbr">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="c1"># @jit(nopython=True)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tlwh_to_tlbr</span><span class="p">(</span><span class="n">tlwh</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tlwh</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">ret</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;OT_</span><span class="si">{}</span><span class="s1">_(</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">track_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_frame</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="BYTETracker">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.BYTETracker">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BYTETracker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BYTETracker.__init__">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.BYTETracker.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: list[STrack]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: list[STrack]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removed_stracks</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: list[STrack]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="c1">#self.det_thresh = args.track_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">det_thresh</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">track_thresh</span> <span class="o">+</span> <span class="mf">0.1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">frame_rate</span> <span class="o">/</span> <span class="mf">30.0</span> <span class="o">*</span> <span class="n">args</span><span class="o">.</span><span class="n">track_buffer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_time_lost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span> <span class="o">=</span> <span class="n">KalmanFilter</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BYTETracker.update">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.BYTETracker.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_results</span><span class="p">,</span> <span class="n">img_info</span><span class="p">,</span> <span class="n">img_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">activated_starcks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">refind_stracks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lost_stracks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">removed_stracks</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">output_results</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">output_results</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span>
+            <span class="n">bboxes</span> <span class="o">=</span> <span class="n">output_results</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Aston change to byte_trcker source: Removal of following line as it is already an array</span>
+            <span class="c1"># output_results = output_results.cpu().numpy()</span>
+            <span class="c1"># Our input has 6 columns: x1, y1, x2, y2, score, class_id</span>
+            <span class="c1"># The score is in column 4. We don&#39;t need to multiply anything.</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">output_results</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span>
+            <span class="n">bboxes</span> <span class="o">=</span> <span class="n">output_results</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+
+
+        <span class="n">img_h</span><span class="p">,</span> <span class="n">img_w</span> <span class="o">=</span> <span class="n">img_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">img_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">img_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">img_h</span><span class="p">),</span> <span class="n">img_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">img_w</span><span class="p">))</span>
+        <span class="n">bboxes</span> <span class="o">/=</span> <span class="n">scale</span>
+
+        <span class="n">remain_inds</span> <span class="o">=</span> <span class="n">scores</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">track_thresh</span>
+        <span class="n">inds_low</span> <span class="o">=</span> <span class="n">scores</span> <span class="o">&gt;</span> <span class="mf">0.1</span>
+        <span class="n">inds_high</span> <span class="o">=</span> <span class="n">scores</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">track_thresh</span>
+
+        <span class="n">inds_second</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">inds_low</span><span class="p">,</span> <span class="n">inds_high</span><span class="p">)</span>
+        <span class="n">dets_second</span> <span class="o">=</span> <span class="n">bboxes</span><span class="p">[</span><span class="n">inds_second</span><span class="p">]</span>
+        <span class="n">dets</span> <span class="o">=</span> <span class="n">bboxes</span><span class="p">[</span><span class="n">remain_inds</span><span class="p">]</span>
+        <span class="n">scores_keep</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">remain_inds</span><span class="p">]</span>
+        <span class="n">scores_second</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">inds_second</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;Detections&#39;&#39;&#39;</span>
+            <span class="c1"># detections = [STrack(STrack.tlbr_to_tlwh(tlbr), s) for</span>
+                          <span class="c1"># (tlbr, s) in zip(dets, scores_keep)]</span>
+            
+            <span class="c1"># Aston change for high score detections : class id is still needed </span>
+            <span class="n">classes_keep</span> <span class="o">=</span> <span class="n">output_results</span><span class="p">[</span><span class="n">remain_inds</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+            <span class="n">detections</span> <span class="o">=</span> <span class="p">[</span><span class="n">STrack</span><span class="p">(</span><span class="n">STrack</span><span class="o">.</span><span class="n">tlbr_to_tlwh</span><span class="p">(</span><span class="n">tlbr</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span>
+              <span class="p">(</span><span class="n">tlbr</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dets</span><span class="p">,</span> <span class="n">scores_keep</span><span class="p">,</span> <span class="n">classes_keep</span><span class="p">)]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">detections</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; Add newly detected tracklets to tracked_stracks&#39;&#39;&#39;</span>
+        <span class="n">unconfirmed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tracked_stracks</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: list[STrack]</span>
+        <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">track</span><span class="o">.</span><span class="n">is_activated</span><span class="p">:</span>
+                <span class="n">unconfirmed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tracked_stracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; Step 2: First association, with high score detection boxes&#39;&#39;&#39;</span>
+        <span class="n">strack_pool</span> <span class="o">=</span> <span class="n">joint_stracks</span><span class="p">(</span><span class="n">tracked_stracks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span><span class="p">)</span>
+        <span class="c1"># Predict the current location with KF</span>
+        <span class="n">STrack</span><span class="o">.</span><span class="n">multi_predict</span><span class="p">(</span><span class="n">strack_pool</span><span class="p">)</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">iou_distance</span><span class="p">(</span><span class="n">strack_pool</span><span class="p">,</span> <span class="n">detections</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">mot20</span><span class="p">:</span>
+            <span class="n">dists</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">fuse_score</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="n">detections</span><span class="p">)</span>
+        <span class="n">matches</span><span class="p">,</span> <span class="n">u_track</span><span class="p">,</span> <span class="n">u_detection</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">linear_assignment</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">match_thresh</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">itracked</span><span class="p">,</span> <span class="n">idet</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="n">strack_pool</span><span class="p">[</span><span class="n">itracked</span><span class="p">]</span>
+            <span class="n">det</span> <span class="o">=</span> <span class="n">detections</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">track</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">detections</span><span class="p">[</span><span class="n">idet</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
+                <span class="n">activated_starcks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">re_activate</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">new_id</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">refind_stracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; Step 3: Second association, with low score detection boxes&#39;&#39;&#39;</span>
+        <span class="c1"># association the untrack to the low score detections</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dets_second</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;Detections&#39;&#39;&#39;</span>
+            <span class="c1"># Aston: same as for high scores</span>
+
+            <span class="c1">#detections_second = [STrack(STrack.tlbr_to_tlwh(tlbr), s) for</span>
+                          <span class="c1">#(tlbr, s) in zip(dets_second, scores_second)]</span>
+
+            <span class="n">classes_second</span> <span class="o">=</span> <span class="n">output_results</span><span class="p">[</span><span class="n">inds_second</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+            <span class="n">detections_second</span> <span class="o">=</span> <span class="p">[</span><span class="n">STrack</span><span class="p">(</span><span class="n">STrack</span><span class="o">.</span><span class="n">tlbr_to_tlwh</span><span class="p">(</span><span class="n">tlbr</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span>
+              <span class="p">(</span><span class="n">tlbr</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dets_second</span><span class="p">,</span> <span class="n">scores_second</span><span class="p">,</span> <span class="n">classes_second</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">detections_second</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">r_tracked_stracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">strack_pool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">u_track</span> <span class="k">if</span> <span class="n">strack_pool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span><span class="p">]</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">iou_distance</span><span class="p">(</span><span class="n">r_tracked_stracks</span><span class="p">,</span> <span class="n">detections_second</span><span class="p">)</span>
+        <span class="n">matches</span><span class="p">,</span> <span class="n">u_track</span><span class="p">,</span> <span class="n">u_detection_second</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">linear_assignment</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">itracked</span><span class="p">,</span> <span class="n">idet</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="n">r_tracked_stracks</span><span class="p">[</span><span class="n">itracked</span><span class="p">]</span>
+            <span class="n">det</span> <span class="o">=</span> <span class="n">detections_second</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">track</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
+                <span class="n">activated_starcks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">re_activate</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">new_id</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">refind_stracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">u_track</span><span class="p">:</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="n">r_tracked_stracks</span><span class="p">[</span><span class="n">it</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">track</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Lost</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">mark_lost</span><span class="p">()</span>
+                <span class="n">lost_stracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;Deal with unconfirmed tracks, usually tracks with only one beginning frame&#39;&#39;&#39;</span>
+        <span class="n">detections</span> <span class="o">=</span> <span class="p">[</span><span class="n">detections</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">u_detection</span><span class="p">]</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">iou_distance</span><span class="p">(</span><span class="n">unconfirmed</span><span class="p">,</span> <span class="n">detections</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">mot20</span><span class="p">:</span>
+            <span class="n">dists</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">fuse_score</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="n">detections</span><span class="p">)</span>
+        <span class="n">matches</span><span class="p">,</span> <span class="n">u_unconfirmed</span><span class="p">,</span> <span class="n">u_detection</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">linear_assignment</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">itracked</span><span class="p">,</span> <span class="n">idet</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">unconfirmed</span><span class="p">[</span><span class="n">itracked</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">detections</span><span class="p">[</span><span class="n">idet</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
+            <span class="n">activated_starcks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unconfirmed</span><span class="p">[</span><span class="n">itracked</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">u_unconfirmed</span><span class="p">:</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="n">unconfirmed</span><span class="p">[</span><span class="n">it</span><span class="p">]</span>
+            <span class="n">track</span><span class="o">.</span><span class="n">mark_removed</span><span class="p">()</span>
+            <span class="n">removed_stracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Step 4: Init new stracks&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">inew</span> <span class="ow">in</span> <span class="n">u_detection</span><span class="p">:</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="n">detections</span><span class="p">[</span><span class="n">inew</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">track</span><span class="o">.</span><span class="n">score</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">det_thresh</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">track</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kalman_filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
+            <span class="n">activated_starcks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Step 5: Update state&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">-</span> <span class="n">track</span><span class="o">.</span><span class="n">end_frame</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_time_lost</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">mark_removed</span><span class="p">()</span>
+                <span class="n">removed_stracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+
+        <span class="c1"># print(&#39;Ramained match {} s&#39;.format(t4-t3))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">TrackState</span><span class="o">.</span><span class="n">Tracked</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span> <span class="o">=</span> <span class="n">joint_stracks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span><span class="p">,</span> <span class="n">activated_starcks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span> <span class="o">=</span> <span class="n">joint_stracks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span><span class="p">,</span> <span class="n">refind_stracks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span> <span class="o">=</span> <span class="n">sub_stracks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lost_stracks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span> <span class="o">=</span> <span class="n">sub_stracks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">removed_stracks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removed_stracks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">removed_stracks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span> <span class="o">=</span> <span class="n">remove_duplicate_stracks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lost_stracks</span><span class="p">)</span>
+        <span class="c1"># get scores of lost tracks</span>
+        <span class="n">output_stracks</span> <span class="o">=</span> <span class="p">[</span><span class="n">track</span> <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracked_stracks</span> <span class="k">if</span> <span class="n">track</span><span class="o">.</span><span class="n">is_activated</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">output_stracks</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="joint_stracks">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.joint_stracks">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">joint_stracks</span><span class="p">(</span><span class="n">tlista</span><span class="p">,</span> <span class="n">tlistb</span><span class="p">):</span>
+    <span class="n">exists</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tlista</span><span class="p">:</span>
+        <span class="n">exists</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">track_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tlistb</span><span class="p">:</span>
+        <span class="n">tid</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">track_id</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">exists</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+
+<div class="viewcode-block" id="sub_stracks">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.sub_stracks">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sub_stracks</span><span class="p">(</span><span class="n">tlista</span><span class="p">,</span> <span class="n">tlistb</span><span class="p">):</span>
+    <span class="n">stracks</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tlista</span><span class="p">:</span>
+        <span class="n">stracks</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">track_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tlistb</span><span class="p">:</span>
+        <span class="n">tid</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">track_id</span>
+        <span class="k">if</span> <span class="n">stracks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">del</span> <span class="n">stracks</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">stracks</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="remove_duplicate_stracks">
+<a class="viewcode-back" href="../../../../api/bytetracker.html#utils.bytetracker.tracker.byte_tracker.remove_duplicate_stracks">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_duplicate_stracks</span><span class="p">(</span><span class="n">stracksa</span><span class="p">,</span> <span class="n">stracksb</span><span class="p">):</span>
+    <span class="n">pdist</span> <span class="o">=</span> <span class="n">matching</span><span class="o">.</span><span class="n">iou_distance</span><span class="p">(</span><span class="n">stracksa</span><span class="p">,</span> <span class="n">stracksb</span><span class="p">)</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pdist</span> <span class="o">&lt;</span> <span class="mf">0.15</span><span class="p">)</span>
+    <span class="n">dupa</span><span class="p">,</span> <span class="n">dupb</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">pairs</span><span class="p">):</span>
+        <span class="n">timep</span> <span class="o">=</span> <span class="n">stracksa</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">-</span> <span class="n">stracksa</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">start_frame</span>
+        <span class="n">timeq</span> <span class="o">=</span> <span class="n">stracksb</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">-</span> <span class="n">stracksb</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">.</span><span class="n">start_frame</span>
+        <span class="k">if</span> <span class="n">timep</span> <span class="o">&gt;</span> <span class="n">timeq</span><span class="p">:</span>
+            <span class="n">dupb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dupa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">resa</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stracksa</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dupa</span><span class="p">]</span>
+    <span class="n">resb</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stracksb</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dupb</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">resa</span><span class="p">,</span> <span class="n">resb</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aston Lynch, Erica Thompson, Jerome Liao Roong Jin, Kim Yao Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

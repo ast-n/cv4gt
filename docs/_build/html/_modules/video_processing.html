@@ -1,0 +1,912 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>video_processing &mdash; CV4GT 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CV4GT
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#software-requirements">Software Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-1-clone-the-repository">Step 1: Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-2-install-system-dependencies">Step 2: Install System Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#linux">Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#id2">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-3-install-python-dependencies">Step 3: Install Python Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-4-install-frontend-dependencies">Step 4: Install Frontend Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#step-5-download-models">Step 5: Download Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#running-the-application">Running the Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#full-stack">Full Stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#backend-only">Backend Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#frontend-only">Frontend Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#python-dependency-issues">Python Dependency Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#cuda-gpu-not-detected">CUDA/GPU Not Detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#realsense-camera-not-found">RealSense Camera Not Found</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html#turbojpeg-import-error">TurboJPEG Import Error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#configuration-file">Configuration File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#config-ini-structure">config.ini Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#video-section">VIDEO Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#input-video">input_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#use-realsense">use_realsense</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#output-video">output_video</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-auxiliary-display">enable_auxiliary_display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#smoothing-factor">smoothing_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#max-fps">max_fps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#system-section">SYSTEM Section</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#model-path">model_path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#enable-logging">enable_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#platform-specific-configs">Platform-Specific Configs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#jetson-configuration">Jetson Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#production-jetson">Production (Jetson)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../configuration.html#testing-with-video-files">Testing with Video Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-video-file">Running with Video File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#running-with-realsense-camera">Running with RealSense Camera</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#understanding-the-interface">Understanding the Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#video-panel">Video Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../usage.html#color-coding">Color Coding</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#object-list">Object List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#map-panel">Map Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#system-info">System Info</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#working-with-detection-data">Working with Detection Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#enabling-logging">Enabling Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#logged-data">Logged Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#reading-log-files">Reading Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#audio-feedback">Audio Feedback</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#bin-alignment-audio">Bin Alignment Audio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#custom-models">Custom Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#backend-only-mode">Backend-Only Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#recording-realsense-data">Recording RealSense Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#fps-optimization">FPS Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#smoothing">Smoothing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#no-detections">No Detections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#high-cpu-memory-usage">High CPU/Memory Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#audio-not-working">Audio Not Working</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#websocket-connection-issues">WebSocket Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/modules.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/video_processing.html">Video Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/video_processing.html#video_processing.begin_task"><code class="docutils literal notranslate"><span class="pre">begin_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/video_processing.html#video_processing.VideoProcessor"><code class="docutils literal notranslate"><span class="pre">VideoProcessor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/ai_handler.html">AI Handler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.TrackerArgs"><code class="docutils literal notranslate"><span class="pre">TrackerArgs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.ModelManager"><code class="docutils literal notranslate"><span class="pre">ModelManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.load_object_detection_model"><code class="docutils literal notranslate"><span class="pre">load_object_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.get_objects"><code class="docutils literal notranslate"><span class="pre">get_objects()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/ai_handler.html#ai_handler.get_tracking"><code class="docutils literal notranslate"><span class="pre">get_tracking()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/obstacle_relevance.html">Obstacle Relevance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.get_obstacle_relevance_rating"><code class="docutils literal notranslate"><span class="pre">get_obstacle_relevance_rating()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.estimate_depth"><code class="docutils literal notranslate"><span class="pre">estimate_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.real_depth"><code class="docutils literal notranslate"><span class="pre">real_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/obstacle_relevance.html#obstacle_relevance.get_object_median_depths"><code class="docutils literal notranslate"><span class="pre">get_object_median_depths()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/camera_feed.html">Camera Feed</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.RealSenseCam"><code class="docutils literal notranslate"><span class="pre">RealSenseCam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.setup_cam"><code class="docutils literal notranslate"><span class="pre">setup_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_frames"><code class="docutils literal notranslate"><span class="pre">get_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_depth_map"><code class="docutils literal notranslate"><span class="pre">get_depth_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.get_camera_gps"><code class="docutils literal notranslate"><span class="pre">get_camera_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/camera_feed.html#camera_feed.shutdown_cam"><code class="docutils literal notranslate"><span class="pre">shutdown_cam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/audio_alerts.html">Audio Alerts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/audio_alerts.html#audio_alerts.GripperState"><code class="docutils literal notranslate"><span class="pre">GripperState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/audio_alerts.html#audio_alerts.AudioHandler"><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/store.html">Data Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.to_deg"><code class="docutils literal notranslate"><span class="pre">to_deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.tag_and_store"><code class="docutils literal notranslate"><span class="pre">tag_and_store()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_gps"><code class="docutils literal notranslate"><span class="pre">get_gps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.store_image"><code class="docutils literal notranslate"><span class="pre">store_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.new_log"><code class="docutils literal notranslate"><span class="pre">new_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.create_new_element"><code class="docutils literal notranslate"><span class="pre">create_new_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.update_log"><code class="docutils literal notranslate"><span class="pre">update_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.save_and_close_log"><code class="docutils literal notranslate"><span class="pre">save_and_close_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_image"><code class="docutils literal notranslate"><span class="pre">get_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/store.html#store.get_grabber_indicator"><code class="docutils literal notranslate"><span class="pre">get_grabber_indicator()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/modules.html#third-party-utilities">Third-Party Utilities</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#python">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#javascript-vue">JavaScript/Vue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-process">Pull Request Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#areas-for-contribution">Areas for Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#high-priority">High Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#medium-priority">Medium Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#id1">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-of-conduct">Code of Conduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CV4GT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">video_processing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for video_processing</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Video Processing Module.</span>
+
+<span class="sd">This module contains the core video processing pipeline for the CV4GT solution.</span>
+<span class="sd">It orchestrates frame acquisition (from camera or video file), AI inference, depth</span>
+<span class="sd">integration, relevance scoring, frame annotation, and logging.</span>
+
+<span class="sd">The VideoProcessor class orchestrates the entire pipeline using async/await</span>
+<span class="sd">patterns to maximize performance by overlapping frame acquisition, AI processing,</span>
+<span class="sd">and annotation/display operations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ai_handler</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">store</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">obstacle_relevance</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_obstacle_relevance_rating</span><span class="p">,</span> <span class="n">get_object_median_depths</span><span class="p">,</span> <span class="n">MAX_DEPTH</span><span class="p">,</span> <span class="n">RELEVANCE_RATING</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">camera_feed</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">store</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">audio_alerts</span><span class="w"> </span><span class="kn">import</span> <span class="n">AudioHandler</span><span class="p">,</span> <span class="n">GripperState</span>
+
+<span class="n">RELEVANCE_COLORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>    <span class="c1"># Red - Highest relevance</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>  <span class="c1"># Orange</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>  <span class="c1"># Yellow</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>    <span class="c1"># Green</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>   <span class="c1"># Cyan - Lowest relevance</span>
+<span class="p">}</span>
+
+<span class="n">DEFAULT_COLOUR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># Blue</span>
+<span class="n">DEFAULT_TEXT_COLOUR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="c1"># White</span>
+<span class="n">BIN_AUDIO_CUTOFF_HEIGHT</span> <span class="o">=</span> <span class="mf">0.2</span>
+
+<div class="viewcode-block" id="begin_task">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.begin_task">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">begin_task</span><span class="p">(</span><span class="n">coro</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and start an async task without blocking.</span>
+
+<span class="sd">    Schedules a coroutine to run in the event loop and immediately yields</span>
+<span class="sd">    control back, allowing the task to execute in the background.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        coro: Coroutine to execute as a task.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        asyncio.Task: The created task object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">coro</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">task</span></div>
+
+
+<div class="viewcode-block" id="VideoProcessor">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VideoProcessor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main video processing pipeline coordinator.</span>
+
+<span class="sd">    This class manages the complete video processing workflow including frame</span>
+<span class="sd">    acquisition, AI inference, depth integration, relevance scoring, annotation,</span>
+<span class="sd">    audio feedback, and logging. Uses async processing for optimal performance.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        model_ready (bool): Whether the AI model is loaded and ready.</span>
+<span class="sd">        model_path (str): Path to the YOLO model file.</span>
+<span class="sd">        audio_handler (AudioHandler): Audio feedback manager.</span>
+<span class="sd">        persistent_bins (dict): Tracking data for persistent bin IDs.</span>
+<span class="sd">        next_persistent_id (int): Counter for assigning new bin IDs.</span>
+<span class="sd">        BIN_MATCH_THRESHOLD (int): Pixel distance for bin ID matching.</span>
+<span class="sd">        MAX_FRAMES_NO_SEE (int): Frames to keep unseen bins alive.</span>
+<span class="sd">        track_history (dict): History of tracked object positions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="VideoProcessor.__init__">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise video processor and load AI model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_path (str, optional): Path to YOLO model file. If None,</span>
+<span class="sd">                loads the most recent model from models/ directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_ready</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="n">model_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audio_handler</span> <span class="o">=</span> <span class="n">AudioHandler</span><span class="p">()</span>
+
+        <span class="c1"># Persistent bin IDs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">persistent_bins</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># pid -&gt; {&#39;last_position&#39;: (x, y), &#39;frames_since_seen&#39;: 0, &#39;handled&#39;: False}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_persistent_id</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BIN_MATCH_THRESHOLD</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># pixels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MAX_FRAMES_NO_SEE</span> <span class="o">=</span> <span class="mi">50</span>   <span class="c1"># Keep unseen bin IDs alive for this many frames</span>
+
+        <span class="k">if</span> <span class="n">ai_handler</span><span class="o">.</span><span class="n">load_object_detection_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_ready</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model successfully loaded, now to process&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model load failed&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="VideoProcessor.get_persistent_bin_id">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.get_persistent_bin_id">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_persistent_bin_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_position</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or create a persistent ID for a bin at the given position.</span>
+
+<span class="sd">        Matches bins across frames using distance-based matching. If the bin</span>
+<span class="sd">        position matches a previously seen bin (within threshold), returns the</span>
+<span class="sd">        existing ID. Otherwise, creates a new ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            current_position (tuple[float, float] or None): Bin center as (x, y).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int or None: Persistent bin ID, or None if position is None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">current_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">current_position</span>
+            <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">persistent_bins</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">last_x</span><span class="p">,</span> <span class="n">last_y</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;last_position&#39;</span><span class="p">]</span>
+                <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">last_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">last_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">BIN_MATCH_THRESHOLD</span><span class="p">:</span>
+                    <span class="c1"># Match found, update position and reset frame counter</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">persistent_bins</span><span class="p">[</span><span class="n">pid</span><span class="p">][</span><span class="s1">&#39;last_position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">persistent_bins</span><span class="p">[</span><span class="n">pid</span><span class="p">][</span><span class="s1">&#39;frames_since_seen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">return</span> <span class="n">pid</span>
+
+            <span class="c1"># No match, create new persistent ID</span>
+            <span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_persistent_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">persistent_bins</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;last_position&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="s1">&#39;frames_since_seen&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;handled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_persistent_id</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">pid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Bin not detected in frame; try to find nearest unseen bin within threshold</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="VideoProcessor.update_persistent_bins">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.update_persistent_bins">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_persistent_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update bin tracking and remove stale bins.</span>
+
+<span class="sd">        Increments the frames_since_seen counter for all bins and removes bins</span>
+<span class="sd">        that have been handled and haven&#39;t been seen for MAX_FRAMES_NO_SEE frames.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">remove_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">persistent_bins</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">info</span><span class="p">[</span><span class="s1">&#39;frames_since_seen&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;frames_since_seen&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_FRAMES_NO_SEE</span> <span class="ow">and</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;handled&#39;</span><span class="p">]:</span>
+                <span class="n">remove_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">remove_list</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">persistent_bins</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="VideoProcessor.annotate_frame">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.annotate_frame">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">annotate_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">detections</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw bounding boxes, labels, and UI elements on a frame.</span>
+
+<span class="sd">        Processes all detections and draws color-coded bounding boxes, labels with</span>
+<span class="sd">        metadata, bin gripper alignment guides, and manages audio feedback.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frame (numpy.ndarray): Input frame to annotate.</span>
+<span class="sd">            detections (list[dict]): List of detected objects with metadata.</span>
+<span class="sd">            smoothing (float): Smoothing factor (0-1) for box position interpolation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (annotated_frame, relevant_objects) where:</span>
+<span class="sd">                - annotated_frame (numpy.ndarray): Frame with annotations</span>
+<span class="sd">                - relevant_objects (list[dict]): Detections with relevance &gt; 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">annotated_frame</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">H</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span> <span class="c1"># Mask scaling</span>
+        <span class="n">relevant_objects_found</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">gripper_state</span> <span class="o">=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">NONE</span>
+        <span class="n">bin_detected_this_frame</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">current_bin_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">current_bin_y</span> <span class="o">=</span> <span class="n">H</span>
+        
+        <span class="n">indicator_x_line1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">W</span> <span class="o">*</span> <span class="mf">0.45</span><span class="p">)</span>
+        <span class="n">indicator_x_line2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">W</span> <span class="o">*</span> <span class="mf">0.65</span><span class="p">)</span>
+        <span class="n">indicator_y1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">indicator_y2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">audio_cutoff_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">BIN_AUDIO_CUTOFF_HEIGHT</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">detections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;track_id&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+                
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">])</span>
+            <span class="n">object_class</span> <span class="o">=</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span>
+            <span class="n">confidence</span> <span class="o">=</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span>
+            <span class="n">track_id</span> <span class="o">=</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;track_id&#39;</span><span class="p">]</span> <span class="c1"># Already an int</span>
+            <span class="n">depth</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> 
+
+            <span class="n">velocity</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])):</span>
+                    <span class="n">velocity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])</span> <span class="c1"># Linear norm a.k.a. magnitude</span>
+
+            <span class="c1"># --- Filter out objects that are too far ---</span>
+            <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="n">MAX_DEPTH</span><span class="p">:</span>
+                <span class="k">continue</span>  <span class="c1"># Skip object</span>
+            
+            <span class="n">relevance</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">colour</span> <span class="o">=</span> <span class="n">DEFAULT_COLOUR</span>
+            <span class="n">text_colour</span> <span class="o">=</span> <span class="n">DEFAULT_TEXT_COLOUR</span>
+            <span class="n">thickness</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">object_class</span> <span class="ow">in</span> <span class="n">RELEVANCE_RATING</span><span class="p">:</span>
+                <span class="n">relevance</span> <span class="o">=</span> <span class="n">get_obstacle_relevance_rating</span><span class="p">(</span><span class="n">object_class</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">velocity</span><span class="p">)</span>
+                <span class="n">colour</span> <span class="o">=</span> <span class="n">RELEVANCE_COLORS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">relevance</span><span class="p">,</span> <span class="n">DEFAULT_COLOUR</span><span class="p">)</span>
+                <span class="n">thickness</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">relevance</span> <span class="o">&gt;=</span> <span class="mi">4</span> <span class="k">else</span> <span class="mi">1</span>
+                <span class="n">text_colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span> <span class="o">&gt;</span> <span class="mi">127</span> <span class="k">else</span> <span class="n">text_colour</span>
+
+                <span class="c1"># Add detection to the list if relevance is defined</span>
+                <span class="n">det</span><span class="p">[</span><span class="s1">&#39;relevance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">relevance</span>  <span class="c1"># Adds to dict</span>
+                <span class="n">relevant_objects_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
+
+            <span class="c1"># Run smoothing</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_history</span><span class="p">[</span><span class="n">track_id</span><span class="p">][</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">smoothing</span><span class="p">:</span>
+                <span class="n">smoothing_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_smoothed_box_pos</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+                <span class="n">smoothing_offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">smoothing_offset</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">)</span>
+                
+                <span class="n">x1</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">smoothing_offset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">y1</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">smoothing_offset</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">x2</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">smoothing_offset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">y2</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">smoothing_offset</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># Cut off drawing here if relevance 0</span>
+            <span class="k">if</span> <span class="n">relevance</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            
+            <span class="k">if</span> <span class="n">object_class</span> <span class="o">==</span> <span class="s2">&quot;bin&quot;</span><span class="p">:</span>
+                <span class="n">bin_detected_this_frame</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">current_bin_id</span> <span class="o">=</span> <span class="n">track_id</span>
+                <span class="n">current_bin_y</span> <span class="o">=</span> <span class="n">y1</span>
+
+                <span class="n">local_bin_state</span> <span class="o">=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">NEUTRAL</span>
+
+                <span class="n">bin_inside</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="n">indicator_x_line1</span> <span class="o">&lt;=</span> <span class="n">x1</span> <span class="o">&lt;=</span> <span class="n">indicator_x_line2</span> <span class="ow">and</span> <span class="n">indicator_y1</span> <span class="o">&lt;=</span> <span class="n">y1</span> <span class="o">&lt;=</span> <span class="n">indicator_y2</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">indicator_x_line1</span> <span class="o">&lt;=</span> <span class="n">x2</span> <span class="o">&lt;=</span> <span class="n">indicator_x_line2</span> <span class="ow">and</span> <span class="n">indicator_y1</span> <span class="o">&lt;=</span> <span class="n">y2</span> <span class="o">&lt;=</span> <span class="n">indicator_y2</span><span class="p">)</span>
+                <span class="p">]</span>
+
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">bin_inside</span><span class="p">):</span>
+                    <span class="n">local_bin_state</span> <span class="o">=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">GOOD</span>
+                <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">bin_inside</span><span class="p">):</span>
+                    <span class="n">local_bin_state</span> <span class="o">=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">BAD</span>
+
+                <span class="c1"># Now, update the overall frame&#39;s state, giving BAD priority.</span>
+                <span class="k">if</span> <span class="n">local_bin_state</span> <span class="o">==</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">BAD</span><span class="p">:</span>
+                    <span class="n">gripper_state</span> <span class="o">=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">BAD</span>
+                <span class="k">elif</span> <span class="n">local_bin_state</span> <span class="o">==</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">GOOD</span> <span class="ow">and</span> <span class="n">gripper_state</span> <span class="o">!=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">BAD</span><span class="p">:</span>
+                    <span class="n">gripper_state</span> <span class="o">=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">GOOD</span>
+                <span class="k">elif</span> <span class="n">gripper_state</span> <span class="o">==</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+                    <span class="n">gripper_state</span> <span class="o">=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">NEUTRAL</span>
+            
+
+            <span class="c1"># Handle mask drawing</span>
+            <span class="k">if</span> <span class="n">det</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mask_polygon_norm&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">polygon_norm</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mask_polygon_norm&#39;</span><span class="p">)</span>
+                <span class="n">polygon_pixel</span> <span class="o">=</span> <span class="p">(</span><span class="n">polygon_norm</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">]))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+                <span class="c1"># Draw polygon</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="p">[</span><span class="n">polygon_pixel</span><span class="p">],</span> <span class="n">isClosed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+                <span class="c1"># Draw bounding box - a bit lighter</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span> <span class="n">colour</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Draw standard bounding box</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span> <span class="n">colour</span><span class="p">,</span> <span class="n">thickness</span><span class="p">)</span>
+
+            <span class="c1"># Draw label with all information - moved this</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">object_class</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> R:</span><span class="si">{</span><span class="n">relevance</span><span class="si">}</span><span class="s2"> D:</span><span class="si">{</span><span class="n">depth</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">m&quot;</span>
+            
+            <span class="c1"># Draw label background</span>
+            <span class="n">text_y</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="mi">10</span> <span class="k">if</span> <span class="n">y1</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="k">else</span> <span class="n">y1</span> <span class="o">+</span> <span class="mi">20</span>
+            <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getTextSize</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">thickness</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">text_y</span> <span class="o">-</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">text_y</span> <span class="o">+</span> <span class="mi">5</span><span class="p">),</span> <span class="n">colour</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">text_y</span><span class="p">),</span>
+                        <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">text_colour</span><span class="p">,</span> <span class="n">thickness</span><span class="p">)</span>
+
+            <span class="c1"># Draw tracking line</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))</span>
+<span class="sd">            cv2.polylines(annotated_frame, [points], isClosed=False, color=(230,230,230), thickness=5)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+        <span class="c1"># Since loop is done, tell handler what happened in this frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audio_handler</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">current_state</span><span class="o">=</span><span class="n">gripper_state</span><span class="p">,</span>
+        <span class="n">bin_in_frame</span><span class="o">=</span><span class="n">bin_detected_this_frame</span><span class="p">,</span>
+        <span class="n">bin_is_above_cutoff</span><span class="o">=</span><span class="p">(</span><span class="n">current_bin_y</span> <span class="o">&lt;</span> <span class="n">audio_cutoff_y</span><span class="p">),</span>
+        <span class="n">bin_id</span><span class="o">=</span><span class="n">current_bin_id</span>
+        <span class="p">)</span>
+
+        <span class="c1">#if not self.audio_handler.is_target_picked_up() and gripper_state != GripperState.NONE:</span>
+        <span class="k">if</span> <span class="n">gripper_state</span> <span class="o">!=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+            <span class="c1"># Draw bin alignment indicator</span>
+            <span class="k">if</span> <span class="n">gripper_state</span> <span class="o">!=</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+                <span class="k">match</span> <span class="n">gripper_state</span><span class="p">:</span>
+                    <span class="k">case</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">GOOD</span><span class="p">:</span>
+                        <span class="n">gripper_colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">gripper_icon</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_grabber_indicator</span><span class="p">(</span><span class="s2">&quot;check&quot;</span><span class="p">)</span>
+                    <span class="k">case</span> <span class="n">GripperState</span><span class="o">.</span><span class="n">BAD</span><span class="p">:</span>
+                        <span class="n">gripper_colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span>
+                        <span class="n">gripper_icon</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_grabber_indicator</span><span class="p">(</span><span class="s2">&quot;cross&quot;</span><span class="p">)</span>
+                    <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                        <span class="n">gripper_colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span>
+                        <span class="n">gripper_icon</span> <span class="o">=</span> <span class="kc">None</span>
+                
+                <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="p">(</span><span class="n">indicator_x_line1</span><span class="p">,</span> <span class="n">indicator_y1</span><span class="p">),</span> <span class="p">(</span><span class="n">indicator_x_line1</span><span class="p">,</span> <span class="n">indicator_y2</span><span class="p">),</span> <span class="n">gripper_colour</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="p">(</span><span class="n">indicator_x_line2</span><span class="p">,</span> <span class="n">indicator_y1</span><span class="p">),</span> <span class="p">(</span><span class="n">indicator_x_line2</span><span class="p">,</span> <span class="n">indicator_y2</span><span class="p">),</span> <span class="n">gripper_colour</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">gripper_icon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">overlay_transparent</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">,</span> <span class="n">gripper_icon</span><span class="p">,</span> <span class="p">(</span><span class="n">indicator_x_line1</span><span class="o">+</span><span class="n">indicator_x_line2</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">32</span><span class="p">,</span> <span class="n">indicator_y1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">annotated_frame</span><span class="p">,</span> <span class="n">relevant_objects_found</span></div>
+
+    
+<div class="viewcode-block" id="VideoProcessor.overlay_transparent">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.overlay_transparent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlay_transparent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overlay a transparent image (with alpha channel) onto a background.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            background (numpy.ndarray): Background image to draw on (modified in-place).</span>
+<span class="sd">            overlay (numpy.ndarray): Overlay image with alpha channel.</span>
+<span class="sd">            x (int): X coordinate for top-left corner of overlay.</span>
+<span class="sd">            y (int): Y coordinate for top-left corner of overlay.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">background_width</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">background_height</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">background_width</span> <span class="ow">or</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">background_height</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">background</span>
+
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">overlay</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">overlay</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span> <span class="o">&gt;</span> <span class="n">background_width</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">background_width</span> <span class="o">-</span> <span class="n">x</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[:,</span> <span class="p">:</span><span class="n">w</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="n">background_height</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">background_height</span> <span class="o">-</span> <span class="n">y</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[:</span><span class="n">h</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">overlay</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">overlay</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">overlay</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">overlay</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">overlay</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span>
+                <span class="p">],</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">overlay_image</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">:]</span> <span class="o">/</span> <span class="mf">255.0</span>
+
+        <span class="n">background</span><span class="p">[</span><span class="n">y</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="n">h</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">mask</span><span class="p">)</span> <span class="o">*</span> <span class="n">background</span><span class="p">[</span><span class="n">y</span><span class="p">:</span><span class="n">y</span><span class="o">+</span><span class="n">h</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">w</span><span class="p">]</span> <span class="o">+</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">overlay_image</span></div>
+
+
+<div class="viewcode-block" id="VideoProcessor.get_smoothed_box_pos">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.get_smoothed_box_pos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_smoothed_box_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracking_history</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate smoothed position offset using polynomial interpolation.</span>
+
+<span class="sd">        Uses the last 6 positions to fit a linear polynomial and predict the</span>
+<span class="sd">        next position, then returns the offset from the actual position.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tracking_history (list[tuple[float, float]]): List of (x, y) positions.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[float, float]: Offset as (dx, dy) to apply to bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Can&#39;t smooth if there isn&#39;t enough history</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tracking_history</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        
+        <span class="c1"># Separate out the true final position</span>
+        <span class="n">final_pos</span> <span class="o">=</span> <span class="n">tracking_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="n">prediction_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tracking_history</span><span class="p">)[</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span>
+        <span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">prediction_data</span><span class="p">)</span>
+        
+        <span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">polynomial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">coefficients</span><span class="p">)</span>
+        
+        <span class="c1"># Get average x distance between points</span>
+        <span class="n">differences</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">x_values</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">avg_distance</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">differences</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">differences</span><span class="p">)</span> <span class="c1"># Could also consider using median here.</span>
+        
+        <span class="n">x_pred</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x_values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">x_pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_pred</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">avg_distance</span><span class="p">)</span>
+        <span class="n">final_x</span> <span class="o">=</span> <span class="n">x_pred</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="n">final_y</span> <span class="o">=</span> <span class="n">polynomial</span><span class="p">(</span><span class="n">x_pred</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">((</span><span class="n">final_x</span><span class="p">,</span> <span class="n">final_y</span><span class="p">),</span> <span class="p">(</span><span class="n">final_pos</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VideoProcessor.update_track_ids">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.update_track_ids">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_track_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detections</span><span class="p">,</span> <span class="n">frame_num</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update tracking history and prune stale tracks.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            detections (list[dict]): List of detections with track_id and centre.</span>
+<span class="sd">            frame_num (int): Current frame number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Update tracking data</span>
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">detections</span><span class="p">:</span>
+            <span class="n">track_id</span> <span class="o">=</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;track_id&#39;</span><span class="p">]</span> <span class="c1"># already an int</span>
+            <span class="n">centre_x</span><span class="p">,</span> <span class="n">centre_y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;centre&#39;</span><span class="p">])</span>
+            <span class="n">object_class</span> <span class="o">=</span> <span class="n">det</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">track_history</span><span class="p">[</span><span class="n">track_id</span><span class="p">][</span><span class="s1">&#39;last_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_num</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_history</span><span class="p">[</span><span class="n">track_id</span><span class="p">][</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
+            
+            <span class="n">track</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">centre_x</span><span class="p">,</span> <span class="n">centre_y</span><span class="p">))</span>
+            
+            <span class="k">if</span> <span class="n">object_class</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">track</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">track</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Cut old IDs</span>
+        <span class="n">cut_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tracking_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_history</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_history</span><span class="p">[</span><span class="n">tracking_id</span><span class="p">][</span><span class="s1">&#39;last_frame&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">40</span> <span class="o">&lt;</span> <span class="n">frame_num</span><span class="p">:</span>
+                <span class="n">cut_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tracking_id</span><span class="p">)</span>
+                
+        <span class="k">for</span> <span class="n">cut_id</span> <span class="ow">in</span> <span class="n">cut_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">track_history</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">cut_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VideoProcessor.process_video">
+<a class="viewcode-back" href="../api/video_processing.html#video_processing.VideoProcessor.process_video">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_video_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_realsense</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output_video_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">logging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process video stream with object detection, tracking, and annotation.</span>
+
+<span class="sd">        Main async generator that yields processed frames. Implements a pipelined</span>
+<span class="sd">        architecture where AI runs on frame N+1 while frame N is being annotated.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_video_path (str, optional): Path to video file or .bag recording.</span>
+<span class="sd">            use_realsense (bool, optional): Use RealSense camera if True. Defaults to True.</span>
+<span class="sd">            output_video_path (str, optional): Path to save annotated video.</span>
+<span class="sd">            display (bool, optional): Show annotated frames in cv2 window. Defaults to True.</span>
+<span class="sd">            logging (bool, optional): Log high-relevance detections. Defaults to True.</span>
+<span class="sd">            smoothing (float, optional): Smoothing factor (0-1). Defaults to 1.0.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            tuple: (annotated_frame, relevant_objects) for each frame.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If input_video_path is None when not using RealSense.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cap</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_ready</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model not loaded. Cannot process frame&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">use_realsense</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using RealSense camera feed.&quot;</span><span class="p">)</span>
+            <span class="n">camera_feed</span><span class="o">.</span><span class="n">setup_cam</span><span class="p">(</span><span class="n">recording_path</span><span class="o">=</span><span class="n">input_video_path</span><span class="p">)</span>
+            <span class="n">frame_width</span><span class="p">,</span> <span class="n">frame_height</span> <span class="o">=</span> <span class="n">camera_feed</span><span class="o">.</span><span class="n">realsense_cam</span><span class="o">.</span><span class="n">get_resolution</span><span class="p">()</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="n">camera_feed</span><span class="o">.</span><span class="n">realsense_cam</span><span class="o">.</span><span class="n">get_fps</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using standard video file (OpenCV).&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">input_video_path</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;An input video path is required when not using RealSense.&quot;</span><span class="p">)</span>
+            <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">input_video_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: Could not open video file: </span><span class="si">{</span><span class="n">input_video_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="n">frame_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_WIDTH</span><span class="p">))</span>
+            <span class="n">frame_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_HEIGHT</span><span class="p">))</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
+        
+        <span class="c1"># Setup for saving if outputting video</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">output_video_path</span><span class="p">:</span>
+            <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output_video_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">output_dir</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s1">&#39;mp4v&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">output_video_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.mp4&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s1">&#39;XVID&#39;</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">output_video_path</span><span class="p">,</span> <span class="n">fourcc</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="p">(</span><span class="n">frame_width</span><span class="p">,</span> <span class="n">frame_height</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output video will be saved to: </span><span class="si">{</span><span class="n">output_video_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not create video writer for &#39;</span><span class="si">{</span><span class="n">output_video_path</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Main video processing loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_history</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[]))</span>
+                
+        <span class="n">frame_num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">stored_path_task</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">tracks_task</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">next_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">next_frame</span>
+                <span class="k">if</span> <span class="n">use_realsense</span><span class="p">:</span>
+                    <span class="n">aligned_frames</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">camera_feed</span><span class="o">.</span><span class="n">get_frames</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="n">next_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">camera_feed</span><span class="o">.</span><span class="n">get_image</span><span class="p">(</span><span class="n">aligned_frames</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2BGR</span><span class="p">)</span>                    
+                    <span class="n">next_depth_map</span> <span class="o">=</span> <span class="n">camera_feed</span><span class="o">.</span><span class="n">get_depth_map</span><span class="p">(</span><span class="n">aligned_frames</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span> <span class="c1"># Using standard video </span>
+                    <span class="n">ret</span><span class="p">,</span> <span class="n">next_frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="n">next_depth_map</span> <span class="o">=</span> <span class="kc">None</span>
+                
+
+                <span class="n">frame_num</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">frame_num</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing frame </span><span class="si">{</span><span class="n">frame_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+                <span class="c1"># Start sequential processing</span>
+
+                <span class="c1"># 1. Start AI processing on the next frame</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">next_frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">tracks_task</span> <span class="o">=</span> <span class="k">await</span> <span class="n">begin_task</span><span class="p">(</span><span class="n">ai_handler</span><span class="o">.</span><span class="n">get_tracking</span><span class="p">(</span><span class="n">next_frame</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error during tracking, frame: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">tracks_task</span> <span class="o">=</span> <span class="kc">None</span>
+                
+                <span class="c1"># Bail out of iteration if it is the first one, after finishing AI processing.</span>
+                <span class="k">if</span> <span class="n">frame_num</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tracks_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">next_frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">tracks</span> <span class="o">=</span> <span class="k">await</span> <span class="n">tracks_task</span>
+                        <span class="n">tracks_with_depth</span> <span class="o">=</span> <span class="n">get_object_median_depths</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">depth_map</span><span class="o">=</span><span class="n">next_depth_map</span><span class="p">)</span> <span class="c1"># Add depth map to tracking data</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">update_track_ids</span><span class="p">(</span><span class="n">tracks_with_depth</span><span class="p">,</span> <span class="n">frame_num</span><span class="p">)</span> <span class="c1"># Update tracking ID history</span>
+                        <span class="k">continue</span>
+                
+                <span class="c1"># Annotate current frame with current tracking data (provided by previous iteration&#39;s AI processing)</span>
+                <span class="n">annotated_frame</span><span class="p">,</span> <span class="n">relevant_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotate_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tracks_with_depth</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">)</span>
+
+                <span class="c1"># Store relevant objects</span>
+                <span class="k">if</span> <span class="n">relevant_objects</span><span class="p">:</span>
+                    <span class="n">high_relevance_objects</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">relevant_objects</span> <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;relevance&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">high_relevance_objects</span><span class="p">:</span>
+                        <span class="c1">#print(f&quot;High relevance object(s) (R&gt;=4) detected in frame {frame_num}: &quot;</span>
+                        <span class="c1">#    f&quot;{[(obj[&#39;class&#39;], obj[&#39;relevance&#39;]) for obj in high_relevance_objects]}&quot;)</span>
+                        <span class="k">if</span> <span class="n">logging</span><span class="p">:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">stored_path_task</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                                    <span class="k">await</span> <span class="n">stored_path_task</span> <span class="c1"># Pick up the previous logging task thread.</span>
+                                <span class="n">img_pil</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">))</span>
+                                <span class="n">stored_path_task</span> <span class="o">=</span> <span class="k">await</span> <span class="n">begin_task</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">tag_and_store</span><span class="p">(</span><span class="n">img_pil</span><span class="p">))</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stored frame with high relevance objects.&quot;</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Failed to store frame </span><span class="si">{</span><span class="n">frame_num</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="c1"># Log to textlog</span>
+                            <span class="n">store</span><span class="o">.</span><span class="n">update_log</span><span class="p">(</span><span class="n">relevant_objects</span><span class="p">,</span> <span class="n">frame_num</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="c1"># Write frames as output</span>
+                <span class="k">if</span> <span class="n">out</span><span class="p">:</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">annotated_frame</span><span class="p">)</span>
+
+                <span class="c1"># Yield frame</span>
+                <span class="k">yield</span> <span class="n">annotated_frame</span><span class="p">,</span> <span class="n">relevant_objects</span>
+                
+                <span class="c1"># Finish up AI processing for this iteration</span>
+                <span class="k">if</span> <span class="n">tracks_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">next_frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">tracks</span> <span class="o">=</span> <span class="k">await</span> <span class="n">tracks_task</span>
+                    <span class="n">tracks_with_depth</span> <span class="o">=</span> <span class="n">get_object_median_depths</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">depth_map</span><span class="o">=</span><span class="n">next_depth_map</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">update_track_ids</span><span class="p">(</span><span class="n">tracks_with_depth</span><span class="p">,</span> <span class="n">frame_num</span><span class="p">)</span>
+                    
+                <span class="k">if</span> <span class="n">next_frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">stored_path_task</span>
+                    <span class="k">if</span> <span class="n">logging</span><span class="p">:</span>
+                        <span class="n">store</span><span class="o">.</span><span class="n">save_and_close_log</span><span class="p">()</span>
+                    <span class="k">break</span>
+                
+                <span class="c1"># Display frames</span>
+                <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
+                    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Hazard detection&quot;</span><span class="p">,</span> <span class="n">annotated_frame</span><span class="p">)</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quitting&quot;</span><span class="p">)</span>
+                        <span class="k">await</span> <span class="n">stored_path_task</span>
+                        <span class="n">store</span><span class="o">.</span><span class="n">save_and_close_log</span><span class="p">()</span>
+                        <span class="k">break</span>
+                
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">use_realsense</span><span class="p">:</span>
+                <span class="n">camera_feed</span><span class="o">.</span><span class="n">shutdown_cam</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Aston Lynch, Erica Thompson, Jerome Liao Roong Jin, Kim Yao Chua.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

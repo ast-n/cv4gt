@@ -2,6 +2,7 @@ import { app, BrowserWindow, nativeImage } from 'electron';
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const isDev = !app.isPackaged;
 
@@ -10,9 +11,13 @@ const __dirname = path.dirname(__filename);
 
 const baseFolder = path.join(__dirname, '..', '..', '..', '..')
 
-const pythonExecutable = process.platform === 'win32'
+const venvPython = process.platform === 'win32'
       ? path.join(baseFolder, '.venv', 'Scripts', 'python.exe')
       : path.join(baseFolder, '.venv', 'bin', 'python');
+
+const pythonExecutable = fs.existsSync(venvPython)
+      ? venvPython
+      : 'python3';
 
 const apiScript = path.join(baseFolder, 'src', 'api.py')
 

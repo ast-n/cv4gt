@@ -17,3 +17,4 @@ loguru==0.7.3
 cython_bbox==0.1.5
 simpleaudio==1.0.4
 lap==0.5.12
+PyTurboJPEG==1.8.2

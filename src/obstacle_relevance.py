@@ -1,123 +1,76 @@
-import camera_feed
+"""Obstacle Relevance Scoring Module.
+
+This module provides functionality for assessing the relevance/danger level of
+detected obstacles based on their class, distance (depth), and velocity.
+Calculates both real depth from RealSense depth maps and estimated depth from
+bounding box size when depth data is unavailable.
+
+The relevance scoring system uses a 1-5 scale where 5 is highest priority
+(immediate danger) and 1 is lowest priority (distant or low-risk objects).
+"""
+
 import numpy as np
 
 # Mapping each obstacle class to its relevance rating
 RELEVANCE_RATING = {
     "person": 5,
-    "adult": 5,
-    "child": 5,
-    "dog": 4,
-    "cat": 4,
-    "car": 4,
-    "van": 4,
-    "truck": 4,
-    "motorbike": 5,
-    "bicycle": 5,
-    "person": 5,
-    "cyclist_back": 5,
-    "cyclist_front": 5, 
-    "cyclist_side": 5,
-    "head": 4,
-    "helmet": 3,
-    "sideloader_arm": 0,
+    "cyclist": 5,
     "fallen_bin": 4,
-    "junk": 3,
-    "bench": 2,
+    "animal": 4,
+    "vehicle": 4,
+    "ground_hazard": 3,
     "bin": 3,
-    "shopping_cart": 2,
-    "street_furniture": 3,
-    "mailbox": 2,
-    "bollard": 3,
-    "pole": 3,
-    "signpost": 2,
-    "sign": 2,
-    "power_box": 2,
-    "power_pole": 3,
-    "bus_shelter": 3,
-    "tree": 3,
-    "bird": 1,
-    "boat": 1,
-    "bottle": 1,
-    "bus": 4,
-    "chair": 1,
-    "diningtable": 1,
-    "horse": 4,
-    "pottedplant": 1,
-    "sheep": 3,
-    "sofa": 1,
-    "train": 4,
-    "tvmonitor": 1,
-    "aeroplane": 1
+    "fixed_obstacle": 3
 }
 
-#the numbers are the average pixel sizes of the objects in the dataset
+# The numbers are the average pixel sizes of the objects in the dataset
+# Used for depth estimation when RealSense depth map is unavailable
 OBJECT_SCALE_MAP = {
-    "person": 350,
-    "adult": 350,
-    "child": 250,
-    "dog": 200,
-    "cat": 150,
-    "car": 1000,
-    "van": 1500,
-    "truck": 2000,
-    "motorbike": 750,
-    "bicycle": 600,
-    "person": 350,
-    "cyclist_back": 500,
-    "cyclist_front": 500,
-    "cyclist_side": 500,
-    "head": 100,
-    "helmet": 75,
-    "sideloader_arm": 100,
+    "person": 350, 
+    "cyclist": 500,
+    "vehicle": 1500,
     "fallen_bin": 300,
-    "junk": 250,
-    "bench": 350,
     "bin": 250,
-    "shopping_cart": 400,
-    "street_furniture": 500,
-    "mailbox": 200,
-    "bollard": 200,
-    "pole": 400,
-    "signpost": 500,
-    "sign": 400,
-    "power_box": 200,
-    "power_pole": 400,
-    "bus_shelter": 2000,
-    "tree": 2500,
-    "bird": 50,
-    "boat": 2500,
-    "bottle": 40,
-    "bus": 3000,
-    "chair": 150,
-    "diningtable": 500,
-    "horse": 750,
-    "pottedplant": 150,
-    "sheep": 400,
-    "sofa": 500,
-    "train": 4000,
-    "tvmonitor": 150,
-    "aeroplane": 10000
+    "animal": 200,
+    "fixed_obstacle": 400,
+    "ground_hazard": 200
 }
+
 
 MAX_DEPTH = 15 # Maximum depth in meters for depth estimation
 
-def get_obstacle_relevance_rating(object_class:str, depth:float, velocity:float) -> int:
-    """
-    Returns the relevance rating for a given object class, adjusted by depth.
-    
+def get_obstacle_relevance_rating(object_class: str, depth: float, velocity: float) -> int:
+    """Calculate dynamic relevance rating for a detected object.
+
+    Computes a relevance score (1-5) based on object class, distance, and velocity.
+    The base rating comes from the object class, which is then adjusted down for
+    greater distances and up for moving objects.
+
+    Distance penalties:
+        - ≥7m: -4 to rating
+        - ≥5m: -2 to rating
+        - ≥3m: -1 to rating
+
+    Velocity bonus:
+        - 0.6-10 m/s: +2 to rating
+
     Args:
-        object_class (str): The class of the detected object.
+        object_class (str): The class of the detected object (e.g., "person", "bin").
         depth (float): The depth/distance to the object in meters.
-    
+        velocity (float): The object's velocity in meters per second.
+
     Returns:
-        int: The adjusted relevance rating for the object.
+        int: The adjusted relevance rating from 0-5, where:
+            - 5: Highest priority (immediate danger)
+            - 4: High priority
+            - 3: Medium priority
+            - 2: Low priority
+            - 1: Very low priority
+            - 0: Filtered out (too far or irrelevant)
     """
     base_rating = RELEVANCE_RATING.get(object_class, 1)
-
-    if object_class == "sideloader_arm":
-        return base_rating
-
     rating = base_rating
+    
     # Cull anything ≥ max depth — too far to be hazardous
     if depth >= MAX_DEPTH:
         return 0
@@ -134,10 +87,22 @@ def get_obstacle_relevance_rating(object_class:str, depth:float, velocity:float)
         
     return max(0, min(rating, 5))
 
-def estimate_depth(object_class:str, bbox):
-    """
-    Estimates the depth of an object based on the bounding box area
-    using a square root inverse area model.
+def estimate_depth(object_class: str, bbox):
+    """Estimate object depth from bounding box size.
+
+    Uses an inverse square root relationship between bounding box area and
+    distance to estimate depth when RealSense depth data is unavailable.
+    Each object class has a calibrated scale factor based on average real-world
+    sizes from the training dataset.
+
+    Formula: depth = object_scale / sqrt(bbox_area)
+
+    Args:
+        object_class (str): The class of the detected object.
+        bbox (list[float]): Bounding box as [x1, y1, x2, y2].
+
+    Returns:
+        float: Estimated depth in meters, or MAX_DEPTH if area is invalid.
     """
     x1, y1, x2, y2 = bbox
     width = x2 - x1
@@ -152,6 +117,20 @@ def estimate_depth(object_class:str, bbox):
     return depth
 
 def real_depth(bbox, depth_map):
+    """Calculate real depth from RealSense depth map.
+
+    Extracts depth values from the RealSense depth map within the bounding box,
+    filters out invalid readings, and returns the median depth.
+
+    Args:
+        bbox (list[float]): Bounding box as [x1, y1, x2, y2].
+        depth_map (numpy.ndarray or None): RealSense depth map in millimeters,
+            or None if unavailable.
+
+    Returns:
+        float: Median depth in meters within the bounding box, or MAX_DEPTH if
+            no valid depth data is available.
+    """
     x1, y1, x2, y2 = map(int, bbox)
     if x2 <= x1 or y2 <= y1 or depth_map is None:
         return MAX_DEPTH
@@ -173,9 +152,20 @@ def real_depth(bbox, depth_map):
     
     return float(median_depth)
 
-def get_object_median_depths(objects:list, depth_map: np.ndarray | None) -> list:
-    """
-        Takes in a list of objects then returns the same list with depths calculated and attached to them.
+def get_object_median_depths(objects: list, depth_map: np.ndarray | None) -> list:
+    """Add depth information to detected objects.
+
+    Processes a list of detected objects and adds 'depth' field to each using
+    either real depth from RealSense depth map (preferred) or estimated depth
+    from bounding box size (fallback).
+
+    Args:
+        objects (list[dict]): List of detected objects, each with 'bbox' and 'class' fields.
+        depth_map (numpy.ndarray or None): RealSense depth map in millimeters, or None.
+
+    Returns:
+        list[dict]: Same list of objects with 'depth' (float) field added to each,
+            representing distance in meters.
     """
     for obj in objects:    
         # Real Depth first

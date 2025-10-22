@@ -65,7 +65,7 @@ goto:countdown
 exit /b
 
 :countdown
-:: Scuffed ass way to get an ANSI escape code...
+:: Scuffed way to get an ANSI escape code...
 echo 1B 5B>ESC.hex
 del ESC.bin >NUL 2>&1
 certutil -decodehex ESC.hex ESC.bin >NUL 2>&1
@@ -84,8 +84,3 @@ for /L %%i in (3,-1,1) do (
     choice /c:xn /t:1 /d:x > nul
 )
 exit /b
-::echo Launching frontend...
-::start "Frontend" cmd /c "npm --prefix src/frontend start"
-
-::echo Launching backend...
-::python src/api.py
