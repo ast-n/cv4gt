@@ -52,6 +52,11 @@ goto :update
 echo Checking remaining requirements...
 pip install -r "%PROJECT_DIR%requirements.txt" | FINDSTR /V /C:"Requirement already satisfied"
 echo Requirements up-to-date.
+echo Checking model path...
+python src/utils/model_downloader.py
+if ERRORLEVEL 1 (
+    goto waitforexit
+)
 
 echo Installing frontend requirements...
 call npm --prefix src/frontend install --silent
@@ -83,4 +88,8 @@ for /L %%i in (3,-1,1) do (
     echo %Ansi%Closing in !timer! seconds...
     choice /c:xn /t:1 /d:x > nul
 )
+exit /b
+
+:waitforexit
+pause
 exit /b
