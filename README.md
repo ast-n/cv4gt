@@ -89,12 +89,16 @@ pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https
 ```bash
 pip install -r "requirements.txt"
 ```
-4. Install frontend requirements.
+4. Run the model downloader.
+```bash
+python src/utils/model_downloader.py
+```
+5. Install frontend requirements.
 ```bash
 npm --prefix src/frontend install
 ```
 
-5. Launch the application
+6. Launch the application
 
 ```bash
 npm --prefix src/frontend start
