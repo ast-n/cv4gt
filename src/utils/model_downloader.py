@@ -2,9 +2,24 @@ import os
 from configparser import ConfigParser
 from huggingface_hub import hf_hub_download
 from huggingface_hub.errors import EntryNotFoundError
+import platform
 
 config = ConfigParser(inline_comment_prefixes=";")
-config.read("config.ini")
+
+def on_jetson():
+    if platform.system() == "Linux":
+        if platform.machine() == "aarch64":
+            uname_info = platform.uname()
+            if "tegra" in uname_info.release.lower() or "tegra" in uname_info.version.lower():
+                return True
+    
+    return False
+
+if on_jetson():
+    config.read("config_jetson.ini") # Load config for Jetson
+else:
+    config.read("config.ini") # Load config for non-Jetson
+    
 model_path = config["SYSTEM"]["model_path"]
 
 if not os.path.exists(model_path):
