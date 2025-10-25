@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage } from 'electron';
+import { app, BrowserWindow, nativeImage, dialog } from 'electron';
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,6 +23,8 @@ const apiScript = path.join(baseFolder, 'src', 'api.py')
 
 const pythonProcess = spawn(pythonExecutable, [apiScript], {cwd: baseFolder})
 
+let closeSlated = false;
+
 pythonProcess.stdout.on('data', (data) => {
     console.log(`Backend: ${data}`);
 });
@@ -33,6 +35,10 @@ pythonProcess.stderr.on('data', (data) => {
 
 pythonProcess.on('close', (code) => {
     console.log(`Python process exited with code ${code}`);
+    if (!closeSlated){
+      dialog.showErrorBox("Backend Error", "Something caused the backend to close with an error. Check the console for more details.")
+    }
+    app.quit(); // Close frontend if backend closes or fails.
 });
 
 let mainWindow;
@@ -68,6 +74,7 @@ app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    closeSlated = true;
     pythonProcess.kill('SIGINT');
     app.quit();
   }
