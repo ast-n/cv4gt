@@ -40,7 +40,7 @@ def on_jetson():
     
     return False
 
-if on_jetson:
+if on_jetson():
     config.read("config_jetson.ini") # Load config for Jetson
 else:
     config.read("config.ini") # Load config for non-Jetson
