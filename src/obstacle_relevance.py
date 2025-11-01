@@ -18,7 +18,7 @@ RELEVANCE_RATING = {
     "fallen_bin": 4,
     "animal": 4,
     "vehicle": 4,
-    "ground_hazard": 3,
+    "ground_hazard": 2,
     "bin": 3,
     "fixed_obstacle": 3
 }

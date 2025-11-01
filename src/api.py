@@ -23,18 +23,28 @@ import json
 import time
 from configparser import ConfigParser
 import psutil
+from turbojpeg import TurboJPEG
+import platform
 
 from video_processing import VideoProcessor, begin_task
 import store
-from turbojpeg import TurboJPEG
 
 config = ConfigParser(inline_comment_prefixes=';')
 
-# Config for non-jetson devices
-config.read("config.ini")
+def on_jetson():
+    if platform.system() == "Linux":
+        if platform.machine() == "aarch64":
+            uname_info = platform.uname()
+            if "tegra" in uname_info.release.lower() or "tegra" in uname_info.version.lower():
+                return True
+    
+    return False
 
-# Config for jetson devices
-# config.read("config_jetson.ini")
+if on_jetson():
+    config.read("config_jetson.ini") # Load config for Jetson
+else:
+    config.read("config.ini") # Load config for non-Jetson
+
 
 video_config = config['VIDEO']
 # Video Config
